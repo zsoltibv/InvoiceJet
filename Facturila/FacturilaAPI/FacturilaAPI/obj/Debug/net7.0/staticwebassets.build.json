@@ -1,0 +1,11 @@
+{
+  "Version": 1,
+  "Hash": "0x2GE/HxQDndSIiB68hrWJe7Spm5DqC6haKSFYQzB9c=",
+  "Source": "FacturilaAPI",
+  "BasePath": "_content/FacturilaAPI",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": []
+}
