@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "e/ITjSxfYWY0E9CAFFkLKZ0NgS7JO/c6Beyq559dkZb7hFiCKrlwZFpUenwrNncrvNm21phNLaBLECAU6VZgXg==",
+  "dgSpecHash": "Jzv5IIlXGidv0/ReSyvD6td5qyP33AM/bRiit5iZU79myIRxuj62k8NmugkYou/Zg7XHoqVGoNwnQm1DcVjW0g==",
   "success": true,
-  "projectFilePath": "V:\\Facultate\\An3\\Licenta\\Facturila\\Facturila\\FacturilaAPI\\FacturilaAPI\\FacturilaAPI.csproj",
+  "projectFilePath": "V:\\Facultate\\An3\\Licenta\\Facturila\\FacturilaAPI\\FacturilaAPI\\FacturilaAPI.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\zsolti\\.nuget\\packages\\microsoft.aspnetcore.openapi\\7.0.3\\microsoft.aspnetcore.openapi.7.0.3.nupkg.sha512",
     "C:\\Users\\zsolti\\.nuget\\packages\\microsoft.entityframeworkcore\\7.0.13\\microsoft.entityframeworkcore.7.0.13.nupkg.sha512",

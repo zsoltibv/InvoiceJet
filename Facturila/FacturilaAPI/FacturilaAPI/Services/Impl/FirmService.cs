@@ -9,12 +9,12 @@ namespace FacturilaAPI.Services.Impl
     public class FirmService : IFirmService
     {
         private readonly HttpClient _httpClient;
-        private readonly String _apiUrl;
+        private readonly string _apiUrl;
 
         public FirmService(IConfiguration config)
         {
             _httpClient = new HttpClient();
-            _apiUrl = config.GetSection("AppSettings")["AnafApiUrl"];
+            _apiUrl = config.GetSection("AppSettings")?["AnafApiUrl"] ?? throw new ArgumentNullException("AnafApiUrl is not configured");
         }
 
         public async Task<FirmDataDto> GetFirmDataFromAnaf(string cui)
@@ -37,18 +37,28 @@ namespace FacturilaAPI.Services.Impl
                 var responseString = await response.Content.ReadAsStringAsync();
                 JObject json = JObject.Parse(responseString);
 
-                if (json["found"].HasValues && json["found"][0]?["date_generale"] != null)
+                var dateGenerale = json["found"]?[0]?["date_generale"];
+                if (dateGenerale != null)
                 {
-                    var dateGenerale = json["found"][0]["date_generale"];
-
-                    return new FirmDataDto
+                    if (dateGenerale != null)
                     {
-                        Name = dateGenerale["denumire"].ToString(),
-                        CUI = dateGenerale["cui"].ToString(),
-                        RegCom = dateGenerale["nrRegCom"].ToString(),
-                        Adress = dateGenerale["adresa"].ToString()
-                    };
-                };
+                        string? name = dateGenerale["denumire"]?.ToString();
+                        string? cuiValue = dateGenerale["cui"]?.ToString();
+                        string? regCom = dateGenerale["nrRegCom"]?.ToString();
+                        string? address = dateGenerale["adresa"]?.ToString();
+
+                        if (name != null && cuiValue != null && regCom != null && address != null)
+                        {
+                            return new FirmDataDto
+                            {
+                                Name = name,
+                                CUI = cuiValue,
+                                RegCom = regCom,
+                                Adress = address
+                            };
+                        }
+                    }
+                }
             }
 
             throw new AnafFirmNotFoundException(cui);
