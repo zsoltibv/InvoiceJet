@@ -5,6 +5,7 @@ namespace FacturilaAPI.Services
 {
     public interface IAuthService
     {
-        Task<User> RegisterUser(UserDto userDto);
+        Task<User> RegisterUser(UserRegisterDto userDto);
+        Task<User> LoginUser(UserLoginDto userDto);
     }
 }

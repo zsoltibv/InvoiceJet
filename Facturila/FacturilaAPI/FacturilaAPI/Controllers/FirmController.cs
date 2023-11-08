@@ -15,7 +15,7 @@ namespace FacturilaAPI.Controllers
             _firmService = firmService;
         }
 
-        [HttpGet("/fromAnaf/{cui}")]
+        [HttpGet("fromAnaf/{cui}")]
         public async Task<ActionResult<FirmDto>> GetFirmDataFromAnaf(string cui)
         {
             FirmDto firmDataDto = await _firmService.GetFirmDataFromAnaf(cui);
