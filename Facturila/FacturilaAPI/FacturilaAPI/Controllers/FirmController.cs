@@ -7,7 +7,7 @@ namespace FacturilaAPI.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    [Authorize]
+    [Authorize(Roles = "User")]
     public class FirmController : ControllerBase
     {
         private readonly IFirmService _firmService;

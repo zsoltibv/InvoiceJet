@@ -17,49 +17,55 @@ namespace FacturilaAPI.Services.Impl
 
         public async Task<FirmDto> GetFirmDataFromAnaf(string cui)
         {
-            string currentDate = DateTime.Now.ToString("yyyy-MM-dd");
-
-            var requestBody = new[]
+            try
             {
-                new
+                string currentDate = DateTime.Now.ToString("yyyy-MM-dd");
+
+                var requestBody = new[]
                 {
-                    cui = cui,
-                    data = currentDate
-                }
-            };
+                    new
+                    {
+                        cui = cui,
+                        data = currentDate
+                    }
+                };
 
-            var response = await _httpClient.PostAsJsonAsync(_apiUrl, requestBody);
+                var response = await _httpClient.PostAsJsonAsync(_apiUrl, requestBody);
 
-            if (response.IsSuccessStatusCode)
-            {
-                var responseString = await response.Content.ReadAsStringAsync();
-                JObject json = JObject.Parse(responseString);
-
-                var dateGenerale = json["found"]?[0]?["date_generale"];
-                if (dateGenerale != null)
+                if (response.IsSuccessStatusCode)
                 {
+                    var responseString = await response.Content.ReadAsStringAsync();
+                    JObject json = JObject.Parse(responseString);
+
+                    var dateGenerale = json["found"]?[0]?["date_generale"];
                     if (dateGenerale != null)
                     {
-                        string? name = dateGenerale["denumire"]?.ToString();
-                        string? cuiValue = dateGenerale["cui"]?.ToString();
-                        string? regCom = dateGenerale["nrRegCom"]?.ToString();
-                        string? address = dateGenerale["adresa"]?.ToString();
-
-                        if (name != null && cuiValue != null && regCom != null && address != null)
+                        if (dateGenerale != null)
                         {
-                            return new FirmDto
+                            string? name = dateGenerale["denumire"]?.ToString();
+                            string? cuiValue = dateGenerale["cui"]?.ToString();
+                            string? regCom = dateGenerale["nrRegCom"]?.ToString();
+                            string? address = dateGenerale["adresa"]?.ToString();
+
+                            if (name != null && cuiValue != null && regCom != null && address != null)
                             {
-                                Name = name,
-                                CUI = cuiValue,
-                                RegCom = regCom,
-                                Adress = address
-                            };
+                                return new FirmDto
+                                {
+                                    Name = name,
+                                    CUI = cuiValue,
+                                    RegCom = regCom,
+                                    Adress = address
+                                };
+                            }
                         }
                     }
                 }
+                throw new AnafFirmNotFoundException(cui);
             }
-
-            throw new AnafFirmNotFoundException(cui);
+            catch (Exception ex)
+            {
+                throw new AnafFirmNotFoundException(cui);
+            }
         }
     }
 }

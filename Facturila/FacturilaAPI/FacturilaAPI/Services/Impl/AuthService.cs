@@ -29,6 +29,7 @@ namespace FacturilaAPI.Services.Impl
             user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(userDto.Password);
             user.FirstName = userDto.FirstName;
             user.LastName = userDto.LastName;
+            user.Role = "User";
 
             await _dbContext.User.AddAsync(user);
             await _dbContext.SaveChangesAsync();
@@ -58,7 +59,8 @@ namespace FacturilaAPI.Services.Impl
         {
             List<Claim> claims = new List<Claim>
             {
-                new Claim(ClaimTypes.Email, user.Email)
+                new Claim(ClaimTypes.Email, user.Email),
+                new Claim(ClaimTypes.Role, "User")
             };
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(
