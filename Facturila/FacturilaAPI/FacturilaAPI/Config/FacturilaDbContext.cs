@@ -9,6 +9,7 @@ namespace FacturilaAPI.Config
         {
         }
 
-        public DbSet<FirmData> FirmData { get; set; }
+        public DbSet<User> User { get; set; }
+        public DbSet<Firm> Firm { get; set; }
     }
 }

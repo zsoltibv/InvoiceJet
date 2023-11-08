@@ -6,7 +6,7 @@ namespace FacturilaAPI.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class FirmController : Controller
+    public class FirmController : ControllerBase
     {
         private readonly IFirmService _firmService;
 
@@ -16,9 +16,9 @@ namespace FacturilaAPI.Controllers
         }
 
         [HttpGet("/fromAnaf/{cui}")]
-        public async Task<ActionResult<FirmDataDto>> GetFirmDataFromAnaf(string cui)
+        public async Task<ActionResult<FirmDto>> GetFirmDataFromAnaf(string cui)
         {
-            FirmDataDto firmDataDto = await _firmService.GetFirmDataFromAnaf(cui);
+            FirmDto firmDataDto = await _firmService.GetFirmDataFromAnaf(cui);
             return Ok(firmDataDto);
         }
     }

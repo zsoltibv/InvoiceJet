@@ -4,6 +4,6 @@ namespace FacturilaAPI.Services
 {
     public interface IFirmService
     {
-        Task<FirmDataDto> GetFirmDataFromAnaf(string cui);
+        Task<FirmDto> GetFirmDataFromAnaf(string cui);
     }
 }

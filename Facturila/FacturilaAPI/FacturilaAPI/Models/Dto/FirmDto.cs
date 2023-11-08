@@ -1,6 +1,6 @@
 ﻿namespace FacturilaAPI.Models.Dto
 {
-    public class FirmDataDto
+    public class FirmDto
     {
         public string Name { get; set; }
         public string CUI { get; set; }

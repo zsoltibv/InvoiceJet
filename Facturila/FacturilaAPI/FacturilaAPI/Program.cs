@@ -1,12 +1,19 @@
+using FacturilaAPI.Config;
 using FacturilaAPI.Exceptions.Middleware;
 using FacturilaAPI.Services;
 using FacturilaAPI.Services.Impl;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+builder.Services.AddDbContext<FacturilaDbContext>(options =>
+{
+    options.UseSqlServer(builder.Configuration.GetConnectionString("FacturilaConnectionString"));
+});
 
-builder.Services.AddTransient<IFirmService, FirmService>();
+builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IFirmService, FirmService>();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

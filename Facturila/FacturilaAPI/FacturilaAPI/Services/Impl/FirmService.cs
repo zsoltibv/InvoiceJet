@@ -1,8 +1,6 @@
 ﻿using FacturilaAPI.Exceptions;
 using FacturilaAPI.Models.Dto;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using System.Diagnostics;
 
 namespace FacturilaAPI.Services.Impl
 {
@@ -17,7 +15,7 @@ namespace FacturilaAPI.Services.Impl
             _apiUrl = config.GetSection("AppSettings")?["AnafApiUrl"] ?? throw new ArgumentNullException("AnafApiUrl is not configured");
         }
 
-        public async Task<FirmDataDto> GetFirmDataFromAnaf(string cui)
+        public async Task<FirmDto> GetFirmDataFromAnaf(string cui)
         {
             string currentDate = DateTime.Now.ToString("yyyy-MM-dd");
 
@@ -49,7 +47,7 @@ namespace FacturilaAPI.Services.Impl
 
                         if (name != null && cuiValue != null && regCom != null && address != null)
                         {
-                            return new FirmDataDto
+                            return new FirmDto
                             {
                                 Name = name,
                                 CUI = cuiValue,

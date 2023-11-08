@@ -1,8 +1,8 @@
 ﻿namespace FacturilaAPI.Models.Entity
 {
-    public class FirmData
+    public class Firm
     {
-        public int Id { get; set; }
+        public Guid Id { get; set; }
         public string Name { get; set; }
         public string CUI { get; set; }
         public string RegCom { get; set; }
