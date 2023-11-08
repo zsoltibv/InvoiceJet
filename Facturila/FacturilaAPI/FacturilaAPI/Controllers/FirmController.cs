@@ -1,11 +1,13 @@
 ﻿using FacturilaAPI.Models.Dto;
 using FacturilaAPI.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FacturilaAPI.Controllers
 {
     [ApiController]
     [Route("[controller]")]
+    [Authorize]
     public class FirmController : ControllerBase
     {
         private readonly IFirmService _firmService;
@@ -22,4 +24,4 @@ namespace FacturilaAPI.Controllers
             return Ok(firmDataDto);
         }
     }
-}
+} 

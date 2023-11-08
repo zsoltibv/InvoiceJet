@@ -112,3 +112,7 @@ V:\Facultate\An3\Licenta\Facturila\FacturilaAPI\FacturilaAPI\bin\Debug\net7.0\Mi
 V:\Facultate\An3\Licenta\Facturila\FacturilaAPI\FacturilaAPI\bin\Debug\net7.0\Microsoft.Extensions.DependencyModel.dll
 V:\Facultate\An3\Licenta\Facturila\FacturilaAPI\FacturilaAPI\bin\Debug\net7.0\Mono.TextTemplating.dll
 V:\Facultate\An3\Licenta\Facturila\FacturilaAPI\FacturilaAPI\bin\Debug\net7.0\System.CodeDom.dll
+V:\Facultate\An3\Licenta\Facturila\FacturilaAPI\FacturilaAPI\bin\Debug\net7.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
+V:\Facultate\An3\Licenta\Facturila\FacturilaAPI\FacturilaAPI\bin\Debug\net7.0\Scrutor.dll
+V:\Facultate\An3\Licenta\Facturila\FacturilaAPI\FacturilaAPI\bin\Debug\net7.0\Swashbuckle.AspNetCore.Filters.dll
+V:\Facultate\An3\Licenta\Facturila\FacturilaAPI\FacturilaAPI\bin\Debug\net7.0\Swashbuckle.AspNetCore.Filters.Abstractions.dll

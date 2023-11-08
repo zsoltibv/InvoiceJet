@@ -26,8 +26,8 @@ namespace FacturilaAPI.Controllers
         [HttpPost("login")]
         public async Task<ActionResult<User>> Login([FromBody] UserLoginDto userDto)
         {
-            User userToLogin = await _authService.LoginUser(userDto);
-            return Ok(userToLogin);
+            string token = await _authService.LoginUser(userDto);
+            return Ok(token);
         }
     }
 }
