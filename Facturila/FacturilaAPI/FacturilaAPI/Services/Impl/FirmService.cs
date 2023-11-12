@@ -62,7 +62,7 @@ namespace FacturilaAPI.Services.Impl
                 }
                 throw new AnafFirmNotFoundException(cui);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw new AnafFirmNotFoundException(cui);
             }

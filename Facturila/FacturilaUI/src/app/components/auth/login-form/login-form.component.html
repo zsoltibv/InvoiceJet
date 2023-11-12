@@ -1,0 +1,23 @@
+<div class="login-form">
+  <h1>Login</h1>
+  <form [formGroup]="userLoginForm">
+    <tui-input formControlName="email">
+      Email
+      <input tuiTextfield />
+    </tui-input>
+    <tui-input-password formControlName="password">
+      Password
+    </tui-input-password>
+  </form>
+
+  <button
+    appearance="primary"
+    tuiButton
+    size="m"
+    type="button"
+    class="tui-space_right-3 tui-space_bottom-3 tui-space_top-6"
+    (click)="login()"
+  >
+    Submit
+  </button>
+</div>

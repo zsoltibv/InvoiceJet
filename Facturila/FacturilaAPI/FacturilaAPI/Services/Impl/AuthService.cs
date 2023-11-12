@@ -2,12 +2,12 @@
 using FacturilaAPI.Models.Entity;
 using FacturilaAPI.Models.Dto;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Http.HttpResults;
 using FacturilaAPI.Exceptions;
 using System.Security.Claims;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using System.IdentityModel.Tokens.Jwt;
+using BC = BCrypt.Net.BCrypt;
 
 namespace FacturilaAPI.Services.Impl
 {
@@ -26,7 +26,7 @@ namespace FacturilaAPI.Services.Impl
         {
             User user = new User();
             user.Email = userDto.Email;
-            user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(userDto.Password);
+            user.PasswordHash = BC.HashPassword(userDto.Password);
             user.FirstName = userDto.FirstName;
             user.LastName = userDto.LastName;
             user.Role = "User";
@@ -45,7 +45,7 @@ namespace FacturilaAPI.Services.Impl
                 throw new UserNotFoundException(userDto.Email);
             }
 
-            if (!BCrypt.Net.BCrypt.Verify(userDto.Password, user.PasswordHash))
+            if (!BC.Verify(userDto.Password, user.PasswordHash))
             {
                 throw new Exception("Password is wrong");
             }
