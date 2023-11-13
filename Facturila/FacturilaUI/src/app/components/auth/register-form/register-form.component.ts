@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { FormControl, FormGroup } from "@angular/forms";
+import { FormControl, FormGroup, Validators } from "@angular/forms";
 import { UserRegister } from "src/app/models/user-register";
 import { AuthService } from "src/app/services/auth.service";
 
@@ -23,9 +23,9 @@ export class RegisterFormComponent {
   }
 
   userRegisterForm = new FormGroup({
-    firstName: new FormControl('John'),
-    lastName: new FormControl('Doe'),
-    email: new FormControl('john.doe.gmail.com'),
-    password: new FormControl('hehe'),
+    firstName: new FormControl(''),
+    lastName: new FormControl(''),
+    email: new FormControl(''),
+    password: new FormControl(''),
   });
 }

@@ -1,8 +1,9 @@
-import { UserLogin } from "src/app/models/user-login";
 import { AuthService } from './../../../services/auth.service';
 import { Component } from '@angular/core';
-import { FormControl, FormGroup } from "@angular/forms";
+import { AbstractControl, FormControl, FormGroup, Validators } from "@angular/forms";
 import { UserRegister } from "src/app/models/user-register";
+import { Router } from '@angular/router';
+import { distinctUntilChanged } from "rxjs";
 
 @Component({
   selector: 'app-login-form',
@@ -10,7 +11,18 @@ import { UserRegister } from "src/app/models/user-register";
   styleUrls: ['./login-form.component.scss']
 })
 export class LoginFormComponent {
-  constructor(private authService: AuthService) { }
+  isFormValid = true;
+
+  readonly userLoginForm = new FormGroup({
+    email: new FormControl('', [Validators.required, Validators.email]),
+    password: new FormControl('', [Validators.required, passwordValidator]),
+  });
+
+  constructor(private authService: AuthService, private router: Router) {
+    this.userLoginForm.valueChanges.pipe(distinctUntilChanged()).subscribe(() => {
+      this.userLoginForm.markAsTouched();
+    });
+  }
 
   login() {
     const user: UserRegister = Object.assign({
@@ -18,13 +30,25 @@ export class LoginFormComponent {
       password: this.userLoginForm.value.password,
     });
 
-    this.authService.login(user).subscribe((token: string) => {
-      localStorage.setItem('authToken', token);
+    this.authService.login(user).subscribe({
+      next: (token: string) => {
+        this.isFormValid = true;
+        localStorage.setItem('authToken', token);
+        this.router.navigateByUrl('dashboard');
+      },
+      error: () => {
+        this.isFormValid = false;
+      }
     });
   }
+}
 
-  userLoginForm = new FormGroup({
-    email: new FormControl('john.doe.gmail.com'),
-    password: new FormControl('hehe'),
-  });
+const latinChars = /^[a-zA-Z]+$/;
+
+export function passwordValidator(field: AbstractControl): Validators | null {
+  return field.value && latinChars.test(field.value)
+    ? null
+    : {
+      other: 'Only latin letters are allowed',
+    };
 }

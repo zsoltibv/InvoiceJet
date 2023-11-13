@@ -10,15 +10,31 @@ import { RegisterFormComponent } from './components/auth/register-form/register-
 import { ReactiveFormsModule } from "@angular/forms";
 import { FormsModule } from "@angular/forms";
 
-import { TuiRootModule, TuiDialogModule, TuiAlertModule, TuiButtonModule } from "@taiga-ui/core";
-import { TuiInputModule, TuiInputPasswordModule } from "@taiga-ui/kit";
+import {
+  TuiRootModule,
+  TuiDialogModule,
+  TuiAlertModule,
+  TuiButtonModule,
+  TuiErrorModule,
+  TuiScrollbarModule,
+  TuiTextfieldControllerModule,
+  TuiLabelModule,
+} from "@taiga-ui/core";
+import { TuiInputModule, TuiInputPasswordModule, TuiFieldErrorPipeModule } from "@taiga-ui/kit";
 import { AuthInterceptor } from "./services/interceptor/auth.interceptor";
+import { ErrorInterceptor } from "./services/interceptor/error.interceptor";
+import { DashboardComponent } from './components/dashboard/dashboard/dashboard.component';
+import { NavbarComponent } from './components/navbar/navbar.component';
+import { SidebarComponent } from './components/dashboard/sidebar/sidebar.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     LoginFormComponent,
-    RegisterFormComponent
+    RegisterFormComponent,
+    DashboardComponent,
+    NavbarComponent,
+    SidebarComponent
   ],
   imports: [
     BrowserModule,
@@ -34,10 +50,19 @@ import { AuthInterceptor } from "./services/interceptor/auth.interceptor";
     TuiInputModule,
     TuiInputPasswordModule,
     TuiButtonModule,
+    TuiErrorModule,
+    TuiScrollbarModule,
+    TuiFieldErrorPipeModule,
+    TuiTextfieldControllerModule,
+    TuiLabelModule
   ],
   providers: [{
     provide: HTTP_INTERCEPTORS,
     useClass: AuthInterceptor,
+    multi: true,
+  }, {
+    provide: HTTP_INTERCEPTORS,
+    useClass: ErrorInterceptor,
     multi: true,
   }],
   bootstrap: [AppComponent]

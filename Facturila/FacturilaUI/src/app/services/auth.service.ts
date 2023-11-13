@@ -19,7 +19,9 @@ export class AuthService {
 
   public register(user: UserRegister): Observable<any> {
     return this.http.post<any>(
-      this.apiEndpoint + '/register', user
+      this.apiEndpoint + '/register',
+      user,
+      this.options
     );
   }
 
@@ -27,7 +29,7 @@ export class AuthService {
     return this.http.post(
       this.apiEndpoint + '/login', user, {
       responseType: 'text'
-    });
+    })
   }
 
   public getUserData(): any {

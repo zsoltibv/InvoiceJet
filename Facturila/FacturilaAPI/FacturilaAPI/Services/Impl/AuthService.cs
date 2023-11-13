@@ -40,7 +40,7 @@ namespace FacturilaAPI.Services.Impl
         public async Task<string> LoginUser(UserLoginDto userDto)
         {
             User user = await _dbContext.User.FirstOrDefaultAsync(u => u.Email == userDto.Email);
-            if (user.Email != userDto.Email)
+            if (user == null || user.Email != userDto.Email)
             {
                 throw new UserNotFoundException(userDto.Email);
             }
