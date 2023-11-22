@@ -1,0 +1,22 @@
+form {
+  max-width: 500px;
+  .form-field {
+    display: flex;
+    flex-direction: column;
+    label {
+      margin: 10px 0;
+    }
+    input {
+      width: 100%;
+    }
+    ::ng-deep {
+      .p-password-input, .p-password {
+        width: 100%;
+      }
+    }
+  }
+
+  .controls {
+    padding-top: 20px;
+  }
+}

@@ -1,0 +1,17 @@
+<form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+  <h1>Login</h1>
+  <div class="form-field">
+    <label for="email">Email: </label>
+    <input id="email" type="text" pInputText formControlName="email" class="p-inputtext-sm"
+      placeholder="Enter your email" />
+  </div>
+  <div class="form-field">
+    <label for="password">Password: </label>
+    <p-password inputId="password" formControlName="password" [feedback]="false" [toggleMask]="true"
+      placeholder="Enter your password" class="p-inputtext-sm" />
+  </div>
+  <div *ngIf="errorMessage" class="p-error">{{ errorMessage }}</div>
+  <div class="controls">
+    <p-button size="small" label="Submit" type="submit"></p-button>
+  </div>
+</form>

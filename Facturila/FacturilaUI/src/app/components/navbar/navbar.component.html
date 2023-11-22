@@ -1,17 +1,13 @@
-<div class="navbar">
-  <div class="logo">
-    <a [routerLink]="'/'">
-      <img src="assets/img/logo.png" alt="">
-    </a>
-  </div>
-  <div class="user-info">
-    <ul class="user-commands tui-text_body-m">
-      <li>
-        <a [routerLink]="'/login'">Login</a>
-      </li>
-      <li>
-        <a [routerLink]="'/register'">Register</a>
-      </li>
-    </ul>
-  </div>
-</div>
+<p-menubar [model]="menuItems">
+  <ng-template pTemplate="end">
+    <ng-container *ngIf="!isLoggedIn()">
+      <div class="button-container">
+        <p-button size="small" type="button" label="Login" size="small" [routerLink]='"/login"'></p-button>
+        <p-button size="small" type="button" label="Register" size="small" [routerLink]='"/register"'></p-button>
+      </div>
+    </ng-container>
+    <ng-container *ngIf="isLoggedIn()">
+      <p-button size="small" (click)="logout()" type="button" label="Logout" size="small"></p-button>
+    </ng-container>
+  </ng-template>
+</p-menubar>

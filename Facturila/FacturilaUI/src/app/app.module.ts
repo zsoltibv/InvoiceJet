@@ -1,70 +1,64 @@
-import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { LoginFormComponent } from './components/auth/login-form/login-form.component';
-import { RegisterFormComponent } from './components/auth/register-form/register-form.component';
-import { ReactiveFormsModule } from "@angular/forms";
-import { FormsModule } from "@angular/forms";
+import { LoginComponent } from './components/login/login.component';
 
-import {
-  TuiRootModule,
-  TuiDialogModule,
-  TuiAlertModule,
-  TuiButtonModule,
-  TuiErrorModule,
-  TuiScrollbarModule,
-  TuiTextfieldControllerModule,
-  TuiLabelModule,
-} from "@taiga-ui/core";
-import { TuiInputModule, TuiInputPasswordModule, TuiFieldErrorPipeModule } from "@taiga-ui/kit";
-import { AuthInterceptor } from "./services/interceptor/auth.interceptor";
-import { ErrorInterceptor } from "./services/interceptor/error.interceptor";
-import { DashboardComponent } from './components/dashboard/dashboard/dashboard.component';
+import { ButtonModule } from 'primeng/button';
+import { InputTextModule } from 'primeng/inputtext';
+import { PasswordModule } from 'primeng/password';
+import { MenubarModule } from 'primeng/menubar';
+import { AvatarModule } from 'primeng/avatar';
+import { CardModule } from 'primeng/card';
+import { RatingModule } from 'primeng/rating';
+import { FileUploadModule } from 'primeng/fileupload';
+import { DialogModule } from 'primeng/dialog';
+import { PaginatorModule } from 'primeng/paginator';
+import { ToastModule } from 'primeng/toast';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { ConfirmationService, MessageService } from "primeng/api";
 import { NavbarComponent } from './components/navbar/navbar.component';
-import { SidebarComponent } from './components/dashboard/sidebar/sidebar.component';
+import { JwtHelperService, JWT_OPTIONS } from "@auth0/angular-jwt";
+import { DashboardComponent } from './components/dashboard/dashboard.component';
+import { RegisterComponent } from './components/register/register.component';
+
 
 @NgModule({
   declarations: [
     AppComponent,
-    LoginFormComponent,
-    RegisterFormComponent,
-    DashboardComponent,
+    LoginComponent,
     NavbarComponent,
-    SidebarComponent
+    DashboardComponent,
+    RegisterComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
-    HttpClientModule,
     BrowserAnimationsModule,
+
+    //Forms
     FormsModule,
     ReactiveFormsModule,
-    // tui imports
-    TuiRootModule,
-    TuiDialogModule,
-    TuiAlertModule,
-    TuiInputModule,
-    TuiInputPasswordModule,
-    TuiButtonModule,
-    TuiErrorModule,
-    TuiScrollbarModule,
-    TuiFieldErrorPipeModule,
-    TuiTextfieldControllerModule,
-    TuiLabelModule
+
+    //PrimeNG
+    ButtonModule,
+    InputTextModule,
+    PasswordModule,
+    MenubarModule,
+    AvatarModule,
+    CardModule,
+    RatingModule,
+    FileUploadModule,
+    DialogModule,
+    PaginatorModule,
+    ToastModule,
+    ConfirmDialogModule
   ],
-  providers: [{
-    provide: HTTP_INTERCEPTORS,
-    useClass: AuthInterceptor,
-    multi: true,
-  }, {
-    provide: HTTP_INTERCEPTORS,
-    useClass: ErrorInterceptor,
-    multi: true,
-  }],
+  providers: [ConfirmationService, MessageService, { provide: JWT_OPTIONS, useValue: JWT_OPTIONS },
+    JwtHelperService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

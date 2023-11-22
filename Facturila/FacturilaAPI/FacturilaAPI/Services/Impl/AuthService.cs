@@ -70,7 +70,7 @@ namespace FacturilaAPI.Services.Impl
 
             var token = new JwtSecurityToken(
                     claims: claims,
-                    expires: DateTime.Now.AddDays(30),
+                    expires: DateTime.Now.AddMinutes(30),
                     signingCredentials: credentials
                 );
 
