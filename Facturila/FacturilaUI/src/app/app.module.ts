@@ -6,7 +6,13 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { LoginComponent } from './components/login/login.component';
+import { NavbarComponent } from './components/navbar/navbar.component';
+import { JwtHelperService, JWT_OPTIONS } from "@auth0/angular-jwt";
+import { DashboardComponent } from './components/dashboard/dashboard.component';
+import { RegisterComponent } from './components/register/register.component';
+import { SidebarComponent } from './components/sidebar/sidebar.component';
 
+//PrimeNG
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 import { PasswordModule } from 'primeng/password';
@@ -18,13 +24,11 @@ import { FileUploadModule } from 'primeng/fileupload';
 import { DialogModule } from 'primeng/dialog';
 import { PaginatorModule } from 'primeng/paginator';
 import { ToastModule } from 'primeng/toast';
+import { TreeModule } from 'primeng/tree';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { SidebarModule } from 'primeng/sidebar';
 import { ConfirmationService, MessageService } from "primeng/api";
-import { NavbarComponent } from './components/navbar/navbar.component';
-import { JwtHelperService, JWT_OPTIONS } from "@auth0/angular-jwt";
-import { DashboardComponent } from './components/dashboard/dashboard.component';
-import { RegisterComponent } from './components/register/register.component';
-
+import { MenuModule } from 'primeng/menu';
 
 @NgModule({
   declarations: [
@@ -32,7 +36,8 @@ import { RegisterComponent } from './components/register/register.component';
     LoginComponent,
     NavbarComponent,
     DashboardComponent,
-    RegisterComponent
+    RegisterComponent,
+    SidebarComponent
   ],
   imports: [
     BrowserModule,
@@ -55,7 +60,10 @@ import { RegisterComponent } from './components/register/register.component';
     DialogModule,
     PaginatorModule,
     ToastModule,
-    ConfirmDialogModule
+    ConfirmDialogModule,
+    SidebarModule,
+    TreeModule,
+    MenuModule
   ],
   providers: [ConfirmationService, MessageService, { provide: JWT_OPTIONS, useValue: JWT_OPTIONS },
     JwtHelperService],

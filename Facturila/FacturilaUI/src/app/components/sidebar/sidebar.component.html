@@ -1,0 +1,21 @@
+<div class="sidebar-container" [ngClass]="{'hidden': !sidebarVisible}">
+  <p-tree
+    [value]="files"
+    class="w-full md:w-30rem"
+    [filter]="true"
+    filterPlaceholder="Cautare"
+  >
+    <ng-template let-node pTemplate="url">
+      <a
+        [href]="node.data"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="text-700 hover:text-primary"
+        >{{ node.label }}</a
+      >
+    </ng-template>
+    <ng-template let-node pTemplate="default">
+      <b>{{ node.label }}</b>
+    </ng-template>
+  </p-tree>
+</div>

@@ -2,3 +2,18 @@
   display: flex;
   gap: 8px;
 }
+
+.sidebarToggle{
+  padding-left: 15px;
+  i{
+    font-size: 1.7rem;
+  }
+  &:hover{
+    cursor: pointer;
+  }
+}
+
+p-avatar:hover{
+  cursor: pointer;
+}
+

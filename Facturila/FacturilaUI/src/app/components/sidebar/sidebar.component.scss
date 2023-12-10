@@ -1,0 +1,11 @@
+.sidebar-container {
+  height: calc(100vh - 65px);
+  p-tree {
+    display: flex;
+    height: 100%;
+  }
+}
+
+.hidden {
+  display: none;
+}
