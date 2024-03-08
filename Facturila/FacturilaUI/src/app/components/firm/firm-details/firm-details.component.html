@@ -80,6 +80,38 @@
               Address is required
             </mat-error>
           </mat-form-field>
+
+          <!-- County -->
+          <mat-label>County</mat-label>
+          <mat-form-field appearance="outline">
+            <input
+              matInput
+              formControlName="county"
+              required
+              placeholder="Enter you county"
+            />
+            <mat-error
+              *ngIf="registrationForm.get('county')?.errors?.['required']"
+            >
+              County is required
+            </mat-error>
+          </mat-form-field>
+
+          <!-- City -->
+          <mat-label>City</mat-label>
+          <mat-form-field appearance="outline">
+            <input
+              matInput
+              formControlName="city"
+              required
+              placeholder="Enter you city"
+            />
+            <mat-error
+              *ngIf="registrationForm.get('city')?.errors?.['required']"
+            >
+              City is required
+            </mat-error>
+          </mat-form-field>
         </div>
 
         <!-- Error Message Display -->

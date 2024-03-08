@@ -23,6 +23,10 @@ export class RegisterComponent {
   constructor(private authService: AuthService) { }
 
   onSubmit() {
+    if (this.registerForm.invalid) {
+      return;
+    }
+
     const user: RegisterUser = {
       firstName: this.registerForm.value.firstName!,
       lastName: this.registerForm.value.lastName!,

@@ -15,7 +15,9 @@ export class FirmDetailsComponent implements OnInit {
       firmName: new FormControl('', Validators.required),
       cuiValue: new FormControl('', Validators.required),
       regCom: new FormControl('', Validators.required),
-      address: new FormControl('', Validators.required)
+      address: new FormControl('', Validators.required),
+      county: new FormControl('', Validators.required),
+      city: new FormControl('', Validators.required)
     });
   }
 
