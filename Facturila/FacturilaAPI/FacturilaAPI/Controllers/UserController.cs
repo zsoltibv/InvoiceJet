@@ -8,7 +8,7 @@ using System.Data;
 namespace FacturilaAPI.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     [Authorize(Roles = "User")]
     public class UserController : Controller
     {

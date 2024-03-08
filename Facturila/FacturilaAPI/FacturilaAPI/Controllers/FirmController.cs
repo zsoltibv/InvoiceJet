@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace FacturilaAPI.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     [Authorize(Roles = "User")]
     public class FirmController : ControllerBase
     {
@@ -22,6 +22,20 @@ namespace FacturilaAPI.Controllers
         {
             FirmDto firmDataDto = await _firmService.GetFirmDataFromAnaf(cui);
             return Ok(firmDataDto);
+        }
+
+        [HttpPut("addOrEditFirm")]
+        public async Task<ActionResult> AddOrEditFirm([FromBody] FirmDto firmDto)
+        {
+            try
+            {
+                var updatedOrNewFirm = await _firmService.AddOrEditFirm(firmDto);
+                return Ok(updatedOrNewFirm);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
         }
     }
 } 

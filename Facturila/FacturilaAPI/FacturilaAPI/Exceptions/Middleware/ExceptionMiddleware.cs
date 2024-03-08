@@ -19,13 +19,13 @@
             {
                 context.Response.StatusCode = 404;
                 context.Response.ContentType = "application/json";
-                await context.Response.WriteAsync($"{{ \"error\": \"{ex.Message}\" }}");
+                await context.Response.WriteAsync($"{ex.Message}");
             }
             catch (Exception ex)
             {
                 context.Response.StatusCode = 500;
                 context.Response.ContentType = "application/json";
-                await context.Response.WriteAsync($"{{ \"error\": \"An unexpected error occurred: {ex.Message}\" }}");
+                await context.Response.WriteAsync($"{ex.Message}");
             }
         }
     }

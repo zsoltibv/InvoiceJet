@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { FormControl, FormGroup, Validators } from "@angular/forms";
-import { LoginUser } from "src/app/models/LoginUser";
-import { RegisterUser } from "src/app/models/RegisterUser";
+import { ILoginUser } from "src/app/models/ILoginUser";
+import { IRegisterUser } from "src/app/models/IRegisterUser";
 import { AuthService } from "src/app/services/auth.service";
 
 @Component({
@@ -27,7 +27,7 @@ export class RegisterComponent {
       return;
     }
 
-    const user: RegisterUser = {
+    const user: IRegisterUser = {
       firstName: this.registerForm.value.firstName!,
       lastName: this.registerForm.value.lastName!,
       email: this.registerForm.value.email!,

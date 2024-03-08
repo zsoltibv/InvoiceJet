@@ -1,7 +1,8 @@
+import { environment } from './../../../environment';
 import { Injectable } from '@angular/core';
-import { RegisterUser } from "../models/RegisterUser";
+import { IRegisterUser } from "../models/IRegisterUser";
 import { Observable } from "rxjs";
-import { LoginUser } from "../models/LoginUser";
+import { ILoginUser } from "../models/ILoginUser";
 import { HttpClient, HttpEvent } from "@angular/common/http";
 import { JwtHelperService } from '@auth0/angular-jwt';
 
@@ -12,23 +13,23 @@ export class AuthService {
 
   constructor(private http: HttpClient, private jwtHelper: JwtHelperService) { }
 
-  private apiEndpoint: string = 'https://localhost:7229/Auth';
+  private baseUrl = environment.apiUrl;
   private options: any = {
     observe: 'response',
     responseType: 'text',
   };
 
-  public register(user: RegisterUser): Observable<HttpEvent<string>> {
+  public register(user: IRegisterUser): Observable<HttpEvent<string>> {
     return this.http.post<string>(
-      this.apiEndpoint + '/register',
+      this.baseUrl + '/Auth/register',
       user,
       this.options
     );
   }
 
-  public login(user: LoginUser): Observable<string> {
+  public login(user: ILoginUser): Observable<string> {
     return this.http.post(
-      this.apiEndpoint + '/login',
+      this.baseUrl + '/Auth/login',
       user,
       {
         responseType: 'text'

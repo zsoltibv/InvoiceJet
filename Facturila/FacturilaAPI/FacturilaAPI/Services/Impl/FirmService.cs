@@ -1,16 +1,21 @@
-﻿using FacturilaAPI.Exceptions;
+﻿using FacturilaAPI.Config;
+using FacturilaAPI.Exceptions;
 using FacturilaAPI.Models.Dto;
+using FacturilaAPI.Models.Entity;
+using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json.Linq;
 
 namespace FacturilaAPI.Services.Impl
 {
     public class FirmService : IFirmService
     {
+        private readonly FacturilaDbContext _dbContext;
         private readonly HttpClient _httpClient;
         private readonly string _apiUrl;
 
-        public FirmService(IConfiguration config)
+        public FirmService(FacturilaDbContext dbContext, IConfiguration config)
         {
+            _dbContext = dbContext;
             _httpClient = new HttpClient();
             _apiUrl = config.GetSection("AppSettings")?["AnafApiUrl"] ?? throw new ArgumentNullException("AnafApiUrl is not configured");
         }
@@ -54,7 +59,7 @@ namespace FacturilaAPI.Services.Impl
                                     Name = name,
                                     CUI = cuiValue,
                                     RegCom = regCom,
-                                    Adress = address
+                                    Address = address
                                 };
                             }
                         }
@@ -66,6 +71,39 @@ namespace FacturilaAPI.Services.Impl
             {
                 throw new AnafFirmNotFoundException(cui);
             }
+        }
+
+        public async Task<FirmDto> AddOrEditFirm(FirmDto firmDto)
+        {
+            var existingFirm = await _dbContext.Firm.FindAsync(firmDto.Id);
+            if (existingFirm != null)
+            {
+                existingFirm.Name = firmDto.Name;
+                existingFirm.RegCom = firmDto.RegCom;
+                existingFirm.Address = firmDto.Address;
+                existingFirm.County = firmDto.County;
+                existingFirm.City = firmDto.City;
+                
+                _dbContext.Firm.Update(existingFirm);
+            }
+            else
+            {
+                var newFirm = new Firm
+                {
+                    CUI = firmDto.CUI,
+                    Name = firmDto.Name,
+                    RegCom = firmDto.RegCom,
+                    Address = firmDto.Address,
+                    County = firmDto.County,
+                    City = firmDto.City
+                };
+
+                _dbContext.Firm.Add(newFirm);
+            }
+
+            await _dbContext.SaveChangesAsync();
+
+            return firmDto;
         }
     }
 }

@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { FormControl, FormGroup, Validators } from "@angular/forms";
 import { Router } from "@angular/router";
-import { LoginUser } from "src/app/models/LoginUser";
+import { ILoginUser } from "src/app/models/ILoginUser";
 import { AuthService } from "src/app/services/auth.service";
 
 @Component({
@@ -22,7 +22,7 @@ export class LoginComponent {
 
   onSubmit(): void {
     if (this.loginForm.valid) {
-      const user: LoginUser = {
+      const user: ILoginUser = {
         email: this.loginForm.value.email!,
         password: this.loginForm.value.password!,
       };

@@ -47,7 +47,7 @@ namespace FacturilaAPI.Services.Impl
 
             if (!BC.Verify(userDto.Password, user.PasswordHash))
             {
-                throw new Exception("Password is wrong");
+                throw new Exception("Password is incorrect.");
             }
 
             string token = CreateToken(user);
