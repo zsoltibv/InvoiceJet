@@ -1,36 +1,28 @@
-<p-menubar>
-  <ng-template pTemplate="start">
-    <a (click)="toggleSidebar()" class="sidebarToggle">
-      <i class="pi pi-bars"></i>
-    </a>
-  </ng-template>
+<mat-toolbar color="primary">
+  <div class="left-align">
+    <button mat-icon-button (click)="toggleSidebar()">
+      <mat-icon>menu</mat-icon>
+    </button>
+  </div>
 
-  <ng-template pTemplate="end">
+  <div class="right-align">
     <ng-container *ngIf="!isLoggedIn()">
-      <div class="button-container">
-        <p-button
-          type="button"
-          label="Login"
-          [routerLink]="'/login'"
-        ></p-button>
-        <p-button
-          type="button"
-          label="Register"
-          [routerLink]="'/register'"
-        ></p-button>
-      </div>
+      <button mat-button [routerLink]="'/login'">Login</button>
+      <button mat-button [routerLink]="'/register'">Register</button>
     </ng-container>
+
     <ng-container *ngIf="isLoggedIn()">
-      <div class="user-avatar-dropdown">
-        <p-avatar
-          label="HZ"
-          styleClass="mr-2"
-          size="large"
-          [style]="{ 'background-color': '#2196F3', color: '#ffffff' }"
-          (click)="menu.toggle($event)"
-        ></p-avatar>
-        <p-menu #menu [model]="dropdownOptions" [popup]="true" [pTooltip]=""></p-menu>
-      </div>
+      <button mat-button [matMenuTriggerFor]="userMenu" class="profileButton">
+        <span>
+          {{ "HZ" }}
+        </span>
+      </button>
+      <mat-menu #userMenu="matMenu">
+        <button mat-menu-item (click)="logout()">
+          <mat-icon>logout</mat-icon>
+          <span>Logout</span>
+        </button>
+      </mat-menu>
     </ng-container>
-  </ng-template>
-</p-menubar>
+  </div>
+</mat-toolbar>

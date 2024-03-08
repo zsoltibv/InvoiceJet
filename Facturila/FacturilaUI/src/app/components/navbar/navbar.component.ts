@@ -1,6 +1,5 @@
 import { Component, ViewChild } from '@angular/core';
 import { Router } from "@angular/router";
-import { MenuItem } from "primeng/api";
 import { AuthService } from "src/app/services/auth.service";
 import { SidebarService } from "src/app/services/sidebar.service";
 
@@ -10,21 +9,11 @@ import { SidebarService } from "src/app/services/sidebar.service";
   styleUrls: ['./navbar.component.scss']
 })
 export class NavbarComponent {
-  menuItems: MenuItem[] = [];
-
-  selectedOption: any;
-  dropdownOptions: any[] = [
-    {
-      label: 'Logout', value: 'logout', icon: 'pi pi-sign-out', command: () => {
-        this.logout();
-      }
-    },
-  ];
-
-  constructor(private authService: AuthService, private router: Router, private sidebarService: SidebarService) { }
-
-  ngOnInit(): void {
-  }
+  constructor(
+    private authService: AuthService,
+    private router: Router,
+    private sidebarService: SidebarService
+  ) { }
 
   isLoggedIn(): boolean {
     return this.authService.isLoggedIn();
@@ -33,7 +22,7 @@ export class NavbarComponent {
   logout(): void {
     this.authService.logout();
     localStorage.removeItem('authToken');
-    this.router.navigateByUrl('login');
+    this.router.navigateByUrl('/login');
   }
 
   toggleSidebar(): void {

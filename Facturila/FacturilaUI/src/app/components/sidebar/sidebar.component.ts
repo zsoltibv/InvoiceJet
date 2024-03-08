@@ -1,88 +1,128 @@
-import { Component } from '@angular/core';
-import { TreeNode } from "primeng/api";
-import { Subscription } from "rxjs";
+import { Component, Injectable } from '@angular/core';
+import { BehaviorSubject, Observable, Subscription } from 'rxjs';
+import { MatTreeFlatDataSource, MatTreeFlattener } from '@angular/material/tree';
+import { FlatTreeControl } from '@angular/cdk/tree';
 import { SidebarService } from "src/app/services/sidebar.service";
+
+interface FileNode {
+  name: string;
+  children?: FileNode[];
+  route?: string;
+  icon?: string;
+}
+
+interface FlatNode {
+  expandable: boolean;
+  name: string;
+  level: number;
+  route?: string;
+  icon?: string;
+}
 
 @Component({
   selector: 'app-sidebar',
   templateUrl: './sidebar.component.html',
-  styleUrls: ['./sidebar.component.scss']
+  styleUrls: ['./sidebar.component.scss'],
 })
 export class SidebarComponent {
-  files: TreeNode[];
-
   sidebarVisible = true;
   private subscription: Subscription;
 
+  treeControl: FlatTreeControl<FlatNode>;
+  treeFlattener: MatTreeFlattener<FileNode, FlatNode>;
+  dataSource: MatTreeFlatDataSource<FileNode, FlatNode>;
+  TREE_DATA: FileNode[] = [];
+
   constructor(private sidebarService: SidebarService) {
     this.subscription = this.sidebarService.sidebarVisible.subscribe(
-      (visible) => (this.sidebarVisible = visible)
+      visible => (this.sidebarVisible = visible)
     );
 
-    this.files = [
-      {
-        label: 'Emitere',
-        icon: 'pi pi-inbox',
-        children: [
-          {
-            label: 'Factura',
-          },
-          {
-            label: 'Factura Storno',
-          },
-          {
-            label: 'Proforma',
-          }
-        ]
-      },
-      {
-        label: 'Rapoarte',
-        icon: 'pi pi-chart-bar',
-        children: [
-          {
-            label: 'Rapoarte Facturi',
-          },
-          {
-            label: 'Rapoarte Proforme',
-          },
-          {
-            label: 'Proforma',
-          }
-        ]
-      },
-      {
-        label: 'Setari',
-        icon: 'pi pi-cog',
-        children: [
-          {
-            label: 'Date Generale',
-            children: [
-              {
-                label: 'Date Cont',
-              },
-              {
-                label: 'Date Firma',
-              },
-              {
-                label: 'Conturi Bancare',
-              },
-            ]
-          },
-          {
-            label: 'Nomenclatoare',
-            children: [
-              {
-                label: 'Produse',
-              },
-              {
-                label: 'Clienti',
-              },
-            ]
-          },
-        ]
-      }
-    ];
+    // Initialize the tree flattener
+    this.treeFlattener = new MatTreeFlattener<FileNode, FlatNode>(
+      (node: FileNode, level: number) => ({
+        expandable: !!node.children,
+        name: node.name,
+        level: level,
+        route: node.route,
+        icon: node.icon,
+      }),
+      node => node.level,
+      node => node.expandable,
+      node => node.children
+    );
+
+    this.treeControl = new FlatTreeControl<FlatNode>(
+      node => node.level,
+      node => node.expandable
+    );
+
+    this.dataSource = new MatTreeFlatDataSource(this.treeControl, this.treeFlattener);
+
+    // Load your data into the dataSource
+    this.loadData();
   }
 
+  hasChild = (_: number, node: FlatNode) => node.expandable;
 
+  loadData() {
+    // You would fetch the tree data from the service and load it here
+    // For example, this.sidebarService.getTreeData().subscribe(data => this.dataSource.data = data);
+    // Hardcoded data for demonstration
+    this.TREE_DATA = [
+      {
+        name: 'Dashboard', route: '/dashboard', icon: 'dashboard',
+      },
+      {
+        name: 'Setari',
+        children: [
+          { name: 'Date Cont', route: '/dashboard/firm-details', },
+          { name: 'Clienti', route: '/dashboard/firm-details', },
+          { name: 'Produse', route: '/dashboard/firm-details', },
+          { name: 'Serii Facturi', route: '/dashboard/firm-details', },
+        ],
+      },
+    ];
+
+    this.dataSource.data = this.TREE_DATA;
+  }
+
+  // Implement a search/filter function
+  filterTree(event: Event) {
+    const target = event.target as HTMLInputElement;
+    const filterText = target.value.trim().toLowerCase();
+
+    if (!filterText) {
+      this.loadData(); // Reset the tree when there's no filter
+      this.treeControl.collapseAll(); // Optionally collapse all if resetting
+    } else {
+      // Filter the tree based on the input
+      this.dataSource.data = this.filterNodes(this.TREE_DATA, filterText);
+      this.treeControl.expandAll(); // Expand all for simplicity in showing filtered results
+    }
+  }
+
+  // Recursive function to filter nodes based on the search text
+  filterNodes(nodes: any[], searchText: string): any[] {
+    return nodes.reduce((filtered: any[], node) => {
+      // Clone the node to avoid mutating the original data
+      const filteredNode = Object.assign({}, node);
+
+      // If the node has children, recursively filter them
+      if (node.children) {
+        filteredNode.children = this.filterNodes(node.children, searchText);
+      }
+
+      // Determine if the current node or any of its filtered children match the search text
+      if (node.name.toLowerCase().includes(searchText) || (filteredNode.children && filteredNode.children.length > 0)) {
+        filtered.push(filteredNode);
+      }
+
+      return filtered;
+    }, []);
+  }
+
+  toggleNode(node: any): void {
+    this.treeControl.isExpanded(node) ? this.treeControl.collapse(node) : this.treeControl.expand(node);
+  }
 }

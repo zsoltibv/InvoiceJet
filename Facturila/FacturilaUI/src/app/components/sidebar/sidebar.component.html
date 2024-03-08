@@ -1,21 +1,44 @@
-<div class="sidebar-container" [ngClass]="{'hidden': !sidebarVisible}">
-  <p-tree
-    [value]="files"
-    class="w-full md:w-30rem"
-    [filter]="true"
-    filterPlaceholder="Cautare"
-  >
-    <ng-template let-node pTemplate="url">
-      <a
-        [href]="node.data"
-        target="_blank"
-        rel="noopener noreferrer"
-        class="text-700 hover:text-primary"
-        >{{ node.label }}</a
+<mat-sidenav-container class="example-container">
+  <mat-sidenav #sidenav mode="side" opened *ngIf="sidebarVisible">
+    <!-- Search Box -->
+    <mat-form-field appearance="outline">
+      <mat-icon matPrefix>search</mat-icon>
+      <input matInput (keyup)="filterTree($event)" placeholder="Search..." />
+    </mat-form-field>
+
+    <!-- Tree View -->
+    <mat-tree [dataSource]="dataSource" [treeControl]="treeControl">
+      <!-- Tree node template for leaf nodes -->
+      <mat-tree-node
+        *matTreeNodeDef="let node"
+        matTreeNodePadding
+        [routerLink]="node.route"
       >
-    </ng-template>
-    <ng-template let-node pTemplate="default">
-      <b>{{ node.label }}</b>
-    </ng-template>
-  </p-tree>
-</div>
+        <button mat-icon-button *ngIf="node.icon">
+          <mat-icon class="mat-icon-rtl-mirror" color="primary">
+            {{ node.icon }}
+          </mat-icon>
+        </button>
+        {{ node.name }}
+      </mat-tree-node>
+      <!-- Tree node template for expandable nodes -->
+      <mat-tree-node
+        *matTreeNodeDef="let node; when: hasChild"
+        matTreeNodeToggle
+        matTreeNodePadding
+        [routerLink]="node.route"
+      >
+        <button
+          mat-icon-button
+          [disableRipple]="true"
+          (click)="toggleNode(node); $event.stopPropagation()"
+        >
+          <mat-icon class="mat-icon-rtl-mirror" color="primary">
+            {{ "settings" }}
+          </mat-icon>
+        </button>
+        {{ node.name }}
+      </mat-tree-node>
+    </mat-tree>
+  </mat-sidenav>
+</mat-sidenav-container>

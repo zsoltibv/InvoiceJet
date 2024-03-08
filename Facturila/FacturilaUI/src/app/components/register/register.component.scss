@@ -1,29 +1,3 @@
 form {
   max-width: 800px;
-  .form-field {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    label {
-      margin: 10px 0;
-    }
-    input {
-      width: 100%;
-    }
-    ::ng-deep {
-      .p-password-input, .p-password {
-        width: 100%;
-      }
-    }
-  }
-
-  .controls {
-    padding-top: 20px;
-  }
-
-  .form-group{
-    gap: 20px;
-    display: flex;
-  }
 }
-

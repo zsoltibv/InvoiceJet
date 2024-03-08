@@ -4,11 +4,13 @@ import { LoginComponent } from "./components/login/login.component";
 import { DashboardComponent } from "./components/dashboard/dashboard.component";
 import { AuthGuard } from "./guards/auth.guard";
 import { RegisterComponent } from "./components/register/register.component";
+import { FirmDetailsComponent } from "./components/firm/firm-details/firm-details.component";
 
 const routes: Routes = [
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent },
-  { path: 'dashboard', component: DashboardComponent, canActivate: [AuthGuard]},
+  { path: 'dashboard', component: DashboardComponent, canActivate: [AuthGuard] },
+  { path: 'dashboard/firm-details', component: FirmDetailsComponent, canActivate: [AuthGuard] },
   { path: '**', component: LoginComponent },
 ];
 

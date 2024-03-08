@@ -1,0 +1,97 @@
+<div class="container">
+  <form
+    [formGroup]="registrationForm"
+    (ngSubmit)="onSubmit()"
+    class="example-form"
+  >
+    <mat-card>
+      <mat-card-header class="heading">
+        <mat-card-title>Firm Details</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <!-- Name Field -->
+        <div class="row">
+          <mat-label>Firm Name</mat-label>
+          <mat-form-field appearance="outline">
+            <input
+              matInput
+              formControlName="firmName"
+              required
+              placeholder="Enter your first name"
+            />
+            <mat-error
+              *ngIf="registrationForm.get('firmName')?.errors?.['required']"
+            >
+              Firm Name is required
+            </mat-error>
+          </mat-form-field>
+        </div>
+
+        <!-- CUI Value Field -->
+        <div class="row">
+          <mat-label>CUI Value</mat-label>
+          <mat-form-field appearance="outline" class="example-full-width">
+            <input
+              matInput
+              formControlName="cuiValue"
+              required
+              placeholder="Enter your CUI"
+            />
+            <button type="button" mat-icon-button matSuffix>
+              <mat-icon>cloud_download</mat-icon>
+            </button>
+            <mat-error
+              *ngIf="registrationForm.get('cuiValue')?.errors?.['required']"
+            >
+              CUI Value is required
+            </mat-error>
+          </mat-form-field>
+        </div>
+
+        <!-- Registration Company Field -->
+        <div class="row">
+          <mat-label>Registration Number (RegCom)</mat-label>
+          <mat-form-field appearance="outline">
+            <input
+              matInput
+              formControlName="regCom"
+              required
+              placeholder="Enter your registration number"
+            />
+            <mat-error
+              *ngIf="registrationForm.get('regCom')?.errors?.['required']"
+            >
+              Registration Number is required
+            </mat-error>
+          </mat-form-field>
+
+          <!-- Address -->
+          <mat-label>Address</mat-label>
+          <mat-form-field appearance="outline">
+            <input
+              matInput
+              formControlName="address"
+              required
+              placeholder="Enter you address"
+            />
+            <mat-error
+              *ngIf="registrationForm.get('address')?.errors?.['required']"
+            >
+              Address is required
+            </mat-error>
+          </mat-form-field>
+        </div>
+
+        <!-- Error Message Display -->
+        <div *ngIf="errorMessage" class="p-error">{{ errorMessage }}</div>
+
+        <!-- Form Controls -->
+        <div class="controls">
+          <button mat-raised-button color="primary" type="submit">
+            Submit
+          </button>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </form>
+</div>

@@ -11,9 +11,10 @@ import { AuthService } from "src/app/services/auth.service";
 })
 export class LoginComponent {
   errorMessage: string | null = null;
+  hide = true;
 
   loginForm = new FormGroup({
-    email: new FormControl('', Validators.required),
+    email: new FormControl('', [Validators.required, Validators.email]),
     password: new FormControl('', Validators.required),
   });
 
@@ -30,6 +31,10 @@ export class LoginComponent {
         next: (token: string) => {
           localStorage.setItem('authToken', token);
           this.router.navigateByUrl('dashboard');
+        },
+        error: (err) => {
+          console.log(err);
+          this.errorMessage = err.error;
         }
       });
     }

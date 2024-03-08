@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { FormControl, FormGroup } from "@angular/forms";
+import { FormControl, FormGroup, Validators } from "@angular/forms";
 import { LoginUser } from "src/app/models/LoginUser";
 import { RegisterUser } from "src/app/models/RegisterUser";
 import { AuthService } from "src/app/services/auth.service";
@@ -11,12 +11,13 @@ import { AuthService } from "src/app/services/auth.service";
 })
 export class RegisterComponent {
   errorMessage: string | null = null;
+  hide = true; // Use this to toggle password visibility
 
   registerForm = new FormGroup({
-    firstName: new FormControl(''),
-    lastName: new FormControl(''),
-    email: new FormControl(''),
-    password: new FormControl(''),
+    firstName: new FormControl('', [Validators.required]),
+    lastName: new FormControl('', [Validators.required]),
+    email: new FormControl('', [Validators.required, Validators.email]),
+    password: new FormControl('', [Validators.required]),
   });
 
   constructor(private authService: AuthService) { }
@@ -29,6 +30,13 @@ export class RegisterComponent {
       password: this.registerForm.value.password!,
     };
 
-    this.authService.register(user).subscribe();
+    this.authService.register(user).subscribe({
+      next: (response) => {
+        // Handle response
+      },
+      error: (err) => {
+        this.errorMessage = err.message;
+      }
+    });
   }
 }

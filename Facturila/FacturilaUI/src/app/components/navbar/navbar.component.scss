@@ -1,19 +1,19 @@
-.button-container{
+mat-toolbar {
   display: flex;
-  gap: 8px;
+  justify-content: space-between;
 }
 
-.sidebarToggle{
-  padding-left: 15px;
-  i{
-    font-size: 1.7rem;
+.profileButton {
+  background-color: white;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  min-width: 40px;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  span {
+    color: black;
   }
-  &:hover{
-    cursor: pointer;
-  }
 }
-
-p-avatar:hover{
-  cursor: pointer;
-}
-
