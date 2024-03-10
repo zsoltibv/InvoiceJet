@@ -3,6 +3,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpClientModule } from '@angular/common/http';
+import { HTTP_INTERCEPTORS } from '@angular/common/http';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -14,6 +15,7 @@ import { RegisterComponent } from './components/register/register.component';
 import { SidebarComponent } from './components/sidebar/sidebar.component';
 import { FirmDetailsComponent } from './components/firm/firm-details/firm-details.component';
 import { MaterialModule } from "./material/material.module";
+import { AuthInterceptor } from "./services/interceptor/auth.interceptor";
 
 @NgModule({
   declarations: [
@@ -36,6 +38,11 @@ import { MaterialModule } from "./material/material.module";
   ],
   providers: [
     { provide: JWT_OPTIONS, useValue: JWT_OPTIONS },
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: AuthInterceptor,
+      multi: true,
+    },
     JwtHelperService
   ],
   bootstrap: [AppComponent]

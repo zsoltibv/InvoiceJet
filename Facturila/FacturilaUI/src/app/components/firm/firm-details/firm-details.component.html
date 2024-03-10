@@ -1,6 +1,6 @@
 <div class="container">
   <form
-    [formGroup]="registrationForm"
+    [formGroup]="firmDetailsForm"
     (ngSubmit)="onSubmit()"
     class="example-form"
   >
@@ -20,7 +20,7 @@
               placeholder="Enter your first name"
             />
             <mat-error
-              *ngIf="registrationForm.get('firmName')?.errors?.['required']"
+              *ngIf="firmDetailsForm.get('firmName')?.errors?.['required']"
             >
               Firm Name is required
             </mat-error>
@@ -41,7 +41,7 @@
               <mat-icon>cloud_download</mat-icon>
             </button>
             <mat-error
-              *ngIf="registrationForm.get('cuiValue')?.errors?.['required']"
+              *ngIf="firmDetailsForm.get('cuiValue')?.errors?.['required']"
             >
               CUI Value is required
             </mat-error>
@@ -59,7 +59,7 @@
               placeholder="Enter your registration number"
             />
             <mat-error
-              *ngIf="registrationForm.get('regCom')?.errors?.['required']"
+              *ngIf="firmDetailsForm.get('regCom')?.errors?.['required']"
             >
               Registration Number is required
             </mat-error>
@@ -75,7 +75,7 @@
               placeholder="Enter you address"
             />
             <mat-error
-              *ngIf="registrationForm.get('address')?.errors?.['required']"
+              *ngIf="firmDetailsForm.get('address')?.errors?.['required']"
             >
               Address is required
             </mat-error>
@@ -91,7 +91,7 @@
               placeholder="Enter you county"
             />
             <mat-error
-              *ngIf="registrationForm.get('county')?.errors?.['required']"
+              *ngIf="firmDetailsForm.get('county')?.errors?.['required']"
             >
               County is required
             </mat-error>
@@ -107,7 +107,7 @@
               placeholder="Enter you city"
             />
             <mat-error
-              *ngIf="registrationForm.get('city')?.errors?.['required']"
+              *ngIf="firmDetailsForm.get('city')?.errors?.['required']"
             >
               City is required
             </mat-error>

@@ -44,11 +44,43 @@ namespace FacturilaAPI.Migrations
                 {
                     table.PrimaryKey("PK_User", x => x.Id);
                 });
+
+            migrationBuilder.CreateTable(
+                name: "UserFirm",
+                columns: table => new
+                {
+                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    FirmId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UserFirm", x => new { x.UserId, x.FirmId });
+                    table.ForeignKey(
+                        name: "FK_UserFirm_Firm_FirmId",
+                        column: x => x.FirmId,
+                        principalTable: "Firm",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_UserFirm_User_UserId",
+                        column: x => x.UserId,
+                        principalTable: "User",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UserFirm_FirmId",
+                table: "UserFirm",
+                column: "FirmId");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "UserFirm");
+
             migrationBuilder.DropTable(
                 name: "Firm");
 

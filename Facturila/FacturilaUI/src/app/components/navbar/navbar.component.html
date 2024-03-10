@@ -14,7 +14,7 @@
     <ng-container *ngIf="isLoggedIn()">
       <button mat-button [matMenuTriggerFor]="userMenu" class="profileButton">
         <span>
-          {{ "HZ" }}
+          {{ nameInitials }}
         </span>
       </button>
       <mat-menu #userMenu="matMenu">

@@ -10,6 +10,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatTreeModule } from '@angular/material/tree';
 import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatSelectModule } from '@angular/material/select';
 
 @NgModule({
   imports: [
@@ -22,7 +23,8 @@ import { MatSidenavModule } from '@angular/material/sidenav';
     MatInputModule,
     MatMenuModule,
     MatTreeModule,
-    MatSidenavModule
+    MatSidenavModule,
+    MatSelectModule
   ],
   exports: [
     MatButtonModule,
@@ -33,7 +35,8 @@ import { MatSidenavModule } from '@angular/material/sidenav';
     MatInputModule,
     MatMenuModule,
     MatTreeModule,
-    MatSidenavModule
+    MatSidenavModule,
+    MatSelectModule
   ]
 })
 export class MaterialModule { }

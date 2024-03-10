@@ -19,10 +19,10 @@ namespace FacturilaAPI.Controllers
             _userService = userService;
         }
 
-        [HttpGet("GetUserByEmail")]
-        public async Task<ActionResult<User>> GetUserByEmail(string email)
+        [HttpGet("GetUserByEmail/{email}")]
+        public async Task<ActionResult<UserRegisterDto>> GetUserByEmail(string email)
         {
-            User user = await _userService.GetUserByEmail(email);
+            UserRegisterDto user = await _userService.GetUserByEmail(email);
             return Ok(user);
         }
     }

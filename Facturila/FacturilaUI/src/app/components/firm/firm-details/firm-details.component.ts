@@ -1,5 +1,8 @@
+import { AuthService } from './../../../services/auth.service';
+import { FirmService } from './../../../services/firm.service';
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { IFirm } from "src/app/models/IFirm";
 
 @Component({
   selector: 'app-firm-details',
@@ -7,11 +10,11 @@ import { FormGroup, FormControl, Validators } from '@angular/forms';
   styleUrls: ['./firm-details.component.scss']
 })
 export class FirmDetailsComponent implements OnInit {
-  registrationForm: FormGroup;
+  firmDetailsForm: FormGroup;
   errorMessage: string | null = null;
 
-  constructor() {
-    this.registrationForm = new FormGroup({
+  constructor(private firmService: FirmService, private authService: AuthService) {
+    this.firmDetailsForm = new FormGroup({
       firmName: new FormControl('', Validators.required),
       cuiValue: new FormControl('', Validators.required),
       regCom: new FormControl('', Validators.required),
@@ -22,13 +25,35 @@ export class FirmDetailsComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    // this.firmService.getUsersFirm(this.authService.userId).subscribe({
 
+    // });
   }
 
   onSubmit(): void {
-    if (this.registrationForm.valid) {
-      console.log('Form Value', this.registrationForm.value);
-      // Here you can call a service to send the form data to your server
+    if (this.firmDetailsForm.invalid) {
+      return;
+    }
+
+    const firm: IFirm = {
+      id: 0,
+      name: this.firmDetailsForm.value.firmName!,
+      CUI: this.firmDetailsForm.value.cuiValue!,
+      regCom: this.firmDetailsForm.value.regCom!,
+      address: this.firmDetailsForm.value.address!,
+      county: this.firmDetailsForm.value.county!,
+      city: this.firmDetailsForm.value.city!
+    };
+
+    if (this.firmDetailsForm.valid) {
+      this.firmService.addOrEditFirm(firm, this.authService.userId.toString(), false).subscribe({
+        next: (response) => {
+          console.log('Response', response);
+        },
+        error: (err) => {
+          this.errorMessage = err.message;
+        }
+      });
     } else {
       this.errorMessage = 'Please fill all the required fields';
     }

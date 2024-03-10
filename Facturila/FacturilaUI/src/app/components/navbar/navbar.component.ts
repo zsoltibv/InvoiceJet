@@ -15,6 +15,14 @@ export class NavbarComponent {
     private sidebarService: SidebarService
   ) { }
 
+  nameInitialsString: string = '';
+
+  ngOnInit(): void {
+    this.authService.nameInitials$.subscribe(initials => {
+      this.nameInitialsString = initials;
+    });
+  }
+
   isLoggedIn(): boolean {
     return this.authService.isLoggedIn();
   }
@@ -27,5 +35,9 @@ export class NavbarComponent {
 
   toggleSidebar(): void {
     this.sidebarService.toggleSidebar();
+  }
+
+  get nameInitials(): string {
+    return this.nameInitialsString;
   }
 }

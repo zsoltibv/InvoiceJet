@@ -1,5 +1,6 @@
 export interface IFirm {
-  firmName: string;
+  id: number;
+  name: string;
   CUI: string;
   regCom: string;
   address: string;

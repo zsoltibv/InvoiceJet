@@ -73,21 +73,25 @@ namespace FacturilaAPI.Services.Impl
             }
         }
 
-        public async Task<FirmDto> AddOrEditFirm(FirmDto firmDto)
+        public async Task<FirmDto> AddOrEditFirm(FirmDto firmDto, Guid userId, bool isClient)
         {
+            Firm firm;
+            bool isNewFirm = false;
+
             var existingFirm = await _dbContext.Firm.FindAsync(firmDto.Id);
             if (existingFirm != null)
             {
+                // Update existing firm details
                 existingFirm.Name = firmDto.Name;
                 existingFirm.RegCom = firmDto.RegCom;
                 existingFirm.Address = firmDto.Address;
                 existingFirm.County = firmDto.County;
                 existingFirm.City = firmDto.City;
-                
-                _dbContext.Firm.Update(existingFirm);
+                firm = existingFirm;
             }
             else
             {
+                // Create new firm
                 var newFirm = new Firm
                 {
                     CUI = firmDto.CUI,
@@ -97,13 +101,42 @@ namespace FacturilaAPI.Services.Impl
                     County = firmDto.County,
                     City = firmDto.City
                 };
-
                 _dbContext.Firm.Add(newFirm);
+                firm = newFirm;
+                isNewFirm = true;
+            }
+            await _dbContext.SaveChangesAsync();
+
+            if (isNewFirm || isClient)
+            {
+                var existingUserFirm = await _dbContext.UserFirm
+                    .FirstOrDefaultAsync(uf => uf.UserId == userId && uf.FirmId == firm.Id);
+
+                if (existingUserFirm == null)
+                {
+                    var userFirm = new UserFirm
+                    {
+                        UserId = userId,
+                        FirmId = firm.Id,
+                        IsClient = isClient
+                    };
+                    _dbContext.UserFirm.Add(userFirm);
+                }
+                else
+                {
+                    existingUserFirm.IsClient = isClient;
+                }
             }
 
             await _dbContext.SaveChangesAsync();
+            firmDto.Id = firm.Id;
 
             return firmDto;
+        }
+
+        public async Task<FirmDto> GetUserFirmByUserId(int id)
+        {
+           throw new NotImplementedException();
         }
     }
 }

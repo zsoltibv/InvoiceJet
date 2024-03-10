@@ -1,6 +1,7 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from '@angular/core';
 import { environment } from "environment";
+import { IRegisterUser } from "../models/IRegisterUser";
 
 @Injectable({
   providedIn: 'root'
@@ -14,4 +15,10 @@ export class UserService {
     observe: 'response',
     responseType: 'text',
   };
+
+  public getUserByEmail(email: string) {
+    return this.http.get<IRegisterUser>(
+      this.baseUrl + '/User/GetUserByEmail/' + email,
+    );
+  }
 }

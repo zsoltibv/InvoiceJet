@@ -1,5 +1,6 @@
 ﻿using FacturilaAPI.Config;
 using FacturilaAPI.Exceptions;
+using FacturilaAPI.Models.Dto;
 using FacturilaAPI.Models.Entity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -15,7 +16,7 @@ namespace FacturilaAPI.Services.Impl
             _dbContext = dbContext;
         }
 
-        public async Task<User> GetUserByEmail(string email)
+        public async Task<UserRegisterDto> GetUserByEmail([FromQuery] string email)
         {
             User user = await _dbContext.User.FirstOrDefaultAsync(u => u.Email == email);
 
@@ -24,7 +25,14 @@ namespace FacturilaAPI.Services.Impl
                 throw new UserNotFoundException(email);
             }
 
-            return user;
+            return new UserRegisterDto
+            {
+                Id = user.Id,
+                Email = user.Email,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                Password = user.PasswordHash
+            };
         }
     }
 }

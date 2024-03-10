@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FacturilaAPI.Migrations
 {
     [DbContext(typeof(FacturilaDbContext))]
-    [Migration("20240308165942_initial-migration")]
+    [Migration("20240310144618_initial-migration")]
     partial class initialmigration
     {
         /// <inheritdoc />
@@ -91,6 +91,50 @@ namespace FacturilaAPI.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("User");
+                });
+
+            modelBuilder.Entity("FacturilaAPI.Models.Entity.UserFirm", b =>
+                {
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("FirmId")
+                        .HasColumnType("int");
+
+                    b.HasKey("UserId", "FirmId");
+
+                    b.HasIndex("FirmId");
+
+                    b.ToTable("UserFirm");
+                });
+
+            modelBuilder.Entity("FacturilaAPI.Models.Entity.UserFirm", b =>
+                {
+                    b.HasOne("FacturilaAPI.Models.Entity.Firm", "Firm")
+                        .WithMany("UserFirms")
+                        .HasForeignKey("FirmId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("FacturilaAPI.Models.Entity.User", "User")
+                        .WithMany("UserFirms")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Firm");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("FacturilaAPI.Models.Entity.Firm", b =>
+                {
+                    b.Navigation("UserFirms");
+                });
+
+            modelBuilder.Entity("FacturilaAPI.Models.Entity.User", b =>
+                {
+                    b.Navigation("UserFirms");
                 });
 #pragma warning restore 612, 618
         }

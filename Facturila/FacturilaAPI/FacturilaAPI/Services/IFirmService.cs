@@ -5,6 +5,7 @@ namespace FacturilaAPI.Services
     public interface IFirmService
     {
         Task<FirmDto> GetFirmDataFromAnaf(string cui);
-        Task<FirmDto> AddOrEditFirm(FirmDto firmDto);
+        Task<FirmDto> AddOrEditFirm(FirmDto firmDto, Guid userId, bool isClient);
+        Task<FirmDto> GetUserFirmByUserId(int id);
     }
 }

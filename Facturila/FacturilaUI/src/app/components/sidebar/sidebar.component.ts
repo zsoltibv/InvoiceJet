@@ -3,6 +3,7 @@ import { BehaviorSubject, Observable, Subscription } from 'rxjs';
 import { MatTreeFlatDataSource, MatTreeFlattener } from '@angular/material/tree';
 import { FlatTreeControl } from '@angular/cdk/tree';
 import { SidebarService } from "src/app/services/sidebar.service";
+import { Router } from "@angular/router";
 
 interface FileNode {
   name: string;
@@ -33,7 +34,7 @@ export class SidebarComponent {
   dataSource: MatTreeFlatDataSource<FileNode, FlatNode>;
   TREE_DATA: FileNode[] = [];
 
-  constructor(private sidebarService: SidebarService) {
+  constructor(private sidebarService: SidebarService, private router: Router) {
     this.subscription = this.sidebarService.sidebarVisible.subscribe(
       visible => (this.sidebarVisible = visible)
     );
@@ -77,9 +78,9 @@ export class SidebarComponent {
         name: 'Setari',
         children: [
           { name: 'Date Cont', route: '/dashboard/firm-details', },
-          { name: 'Clienti', route: '/dashboard/firm-details', },
-          { name: 'Produse', route: '/dashboard/firm-details', },
-          { name: 'Serii Facturi', route: '/dashboard/firm-details', },
+          { name: 'Clienti', route: '/', },
+          { name: 'Produse', route: '/', },
+          { name: 'Serii Facturi', route: '/', },
         ],
       },
     ];
@@ -124,5 +125,9 @@ export class SidebarComponent {
 
   toggleNode(node: any): void {
     this.treeControl.isExpanded(node) ? this.treeControl.collapse(node) : this.treeControl.expand(node);
+  }
+
+  isActiveRoute(nodeRoute: string): boolean {
+    return this.router.url === nodeRoute;
   }
 }

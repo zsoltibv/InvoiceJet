@@ -59,7 +59,8 @@ namespace FacturilaAPI.Services.Impl
         {
             List<Claim> claims = new List<Claim>
             {
-                new Claim(ClaimTypes.Email, user.Email),
+                new Claim("userId", user.Id.ToString()),
+                new Claim("email", user.Email),
                 new Claim(ClaimTypes.Role, "User")
             };
 

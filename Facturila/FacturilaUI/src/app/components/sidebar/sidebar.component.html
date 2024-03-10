@@ -13,6 +13,7 @@
         *matTreeNodeDef="let node"
         matTreeNodePadding
         [routerLink]="node.route"
+        [class.active-link]="isActiveRoute(node.route)"
       >
         <button mat-icon-button *ngIf="node.icon">
           <mat-icon class="mat-icon-rtl-mirror" color="primary">
@@ -27,6 +28,7 @@
         matTreeNodeToggle
         matTreeNodePadding
         [routerLink]="node.route"
+        [class.active-link]="isActiveRoute(node.route)"
       >
         <button
           mat-icon-button
