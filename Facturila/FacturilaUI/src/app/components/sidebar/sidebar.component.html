@@ -3,7 +3,21 @@
     <!-- Search Box -->
     <mat-form-field appearance="outline">
       <mat-icon matPrefix>search</mat-icon>
-      <input matInput (keyup)="filterTree($event)" placeholder="Search..." />
+      <input
+        #searchInput
+        matInput
+        [(ngModel)]="searchQuery"
+        (keyup)="filterTree($event)"
+        placeholder="Search..."
+      />
+      <button
+        matSuffix
+        mat-icon-button
+        *ngIf="searchQuery"
+        (click)="clearSearch()"
+      >
+        <mat-icon>close</mat-icon>
+      </button>
     </mat-form-field>
 
     <!-- Tree View -->
@@ -36,7 +50,7 @@
           (click)="toggleNode(node); $event.stopPropagation()"
         >
           <mat-icon class="mat-icon-rtl-mirror" color="primary">
-            {{ "settings" }}
+            {{ node.icon }}
           </mat-icon>
         </button>
         {{ node.name }}

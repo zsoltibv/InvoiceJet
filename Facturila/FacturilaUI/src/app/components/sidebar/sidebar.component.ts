@@ -1,9 +1,10 @@
-import { Component, Injectable } from '@angular/core';
+import { Component, Injectable, ViewChild } from '@angular/core';
 import { BehaviorSubject, Observable, Subscription } from 'rxjs';
 import { MatTreeFlatDataSource, MatTreeFlattener } from '@angular/material/tree';
 import { FlatTreeControl } from '@angular/cdk/tree';
 import { SidebarService } from "src/app/services/sidebar.service";
 import { Router } from "@angular/router";
+import { MatInput } from "@angular/material/input";
 
 interface FileNode {
   name: string;
@@ -28,6 +29,7 @@ interface FlatNode {
 export class SidebarComponent {
   sidebarVisible = true;
   private subscription: Subscription;
+  searchQuery: string = '';
 
   treeControl: FlatTreeControl<FlatNode>;
   treeFlattener: MatTreeFlattener<FileNode, FlatNode>;
@@ -75,13 +77,22 @@ export class SidebarComponent {
         name: 'Dashboard', route: '/dashboard', icon: 'dashboard',
       },
       {
+        name: 'Nomenclatoare',
+        children: [
+          { name: 'Clienti', route: '/' },
+          { name: 'Produse', route: '/', },
+        ],
+        icon: 'inventory'
+      },
+      {
         name: 'Setari',
         children: [
-          { name: 'Date Cont', route: '/dashboard/firm-details', },
-          { name: 'Clienti', route: '/', },
-          { name: 'Produse', route: '/', },
-          { name: 'Serii Facturi', route: '/', },
+          { name: 'Date Firma', route: '/dashboard/firm-details', },
+          { name: 'Date Cont', route: '/', },
+          { name: 'Conturi Bancare', route: '/', },
+          { name: 'Serii Documente', route: '/', },
         ],
+        icon: 'settings'
       },
     ];
 
@@ -129,5 +140,10 @@ export class SidebarComponent {
 
   isActiveRoute(nodeRoute: string): boolean {
     return this.router.url === nodeRoute;
+  }
+
+  clearSearch() {
+    this.searchQuery = '';
+    this.filterTree({ target: { value: '' } } as any);
   }
 }
