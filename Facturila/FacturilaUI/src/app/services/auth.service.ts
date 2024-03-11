@@ -11,8 +11,6 @@ import { JwtHelperService } from '@auth0/angular-jwt';
   providedIn: 'root'
 })
 export class AuthService {
-
-  loggedInUser: IRegisterUser = {} as IRegisterUser;
   decodedToken: any;
 
   private baseUrl = environment.apiUrl;
@@ -21,17 +19,10 @@ export class AuthService {
     responseType: 'text',
   };
 
-  private loggedInUserSubject = new BehaviorSubject<IRegisterUser | null>(null);
-  public loggedInUser$: Observable<IRegisterUser | null> = this.loggedInUserSubject.asObservable();
-
   constructor(private http: HttpClient, private jwtHelper: JwtHelperService, public userService: UserService) {
     const token = this.authToken;
     if (token) {
       this.decodedToken = this.jwtHelper.decodeToken(token);
-      this.userService.getUserByEmail(this.decodedToken.email).subscribe(user => {
-        this.loggedInUser = user;
-        this.loggedInUserSubject.next(user);
-      });
     }
   }
 
@@ -70,9 +61,8 @@ export class AuthService {
     return this.decodedToken.userId;
   }
 
-  get nameInitials$(): Observable<string> {
-    return this.loggedInUser$.pipe(
-      map(user => user ? `${user.firstName[0]}${user.lastName[0]}` : 'N/A')
-    );
+  get nameInitials(): string {
+    if (!this.decodedToken) return '';
+    return this.decodedToken.firstName.charAt(0) + this.decodedToken.lastName.charAt(0);
   }
 }

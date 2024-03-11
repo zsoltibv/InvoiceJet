@@ -11,6 +11,8 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatTreeModule } from '@angular/material/tree';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatSelectModule } from '@angular/material/select';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
 
 @NgModule({
   imports: [
@@ -24,7 +26,9 @@ import { MatSelectModule } from '@angular/material/select';
     MatMenuModule,
     MatTreeModule,
     MatSidenavModule,
-    MatSelectModule
+    MatSelectModule,
+    MatSnackBarModule,
+    MatProgressBarModule
   ],
   exports: [
     MatButtonModule,
@@ -36,7 +40,9 @@ import { MatSelectModule } from '@angular/material/select';
     MatMenuModule,
     MatTreeModule,
     MatSidenavModule,
-    MatSelectModule
+    MatSelectModule,
+    MatSnackBarModule,
+    MatProgressBarModule
   ]
 })
 export class MaterialModule { }

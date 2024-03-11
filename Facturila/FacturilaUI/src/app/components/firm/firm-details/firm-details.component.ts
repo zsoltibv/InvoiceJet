@@ -2,6 +2,7 @@ import { AuthService } from './../../../services/auth.service';
 import { FirmService } from './../../../services/firm.service';
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { MatSnackBar } from "@angular/material/snack-bar";
 import { IFirm } from "src/app/models/IFirm";
 
 @Component({
@@ -11,10 +12,11 @@ import { IFirm } from "src/app/models/IFirm";
 })
 export class FirmDetailsComponent implements OnInit {
   firmDetailsForm: FormGroup;
+  initialFormValues: any;
   currentUserFirm!: IFirm;
   errorMessage: string | null = null;
 
-  constructor(private firmService: FirmService, private authService: AuthService) {
+  constructor(private firmService: FirmService, private authService: AuthService, private snackBar: MatSnackBar) {
     this.firmDetailsForm = new FormGroup({
       firmName: new FormControl('', Validators.required),
       cuiValue: new FormControl('', Validators.required),
@@ -44,6 +46,8 @@ export class FirmDetailsComponent implements OnInit {
         console.log('Error', err);
       }
     });
+
+    this.initialFormValues = this.firmDetailsForm.value;
   }
 
   onSubmit(): void {
@@ -67,7 +71,9 @@ export class FirmDetailsComponent implements OnInit {
       console.log(this.authService.userId);
       this.firmService.addOrEditFirm(firm, this.authService.userId, false).subscribe({
         next: (response) => {
-          console.log('Response', response);
+          this.snackBar.open('Firm details updated successfully', 'Close', {
+            duration: 2000,
+          });
         },
         error: (err) => {
           this.errorMessage = err.message;
@@ -80,5 +86,9 @@ export class FirmDetailsComponent implements OnInit {
 
   onCloudIconClick(): void {
     console.log('Cloud icon clicked');
+  }
+
+  isFormChanged(): boolean {
+    return JSON.stringify(this.initialFormValues.value) !== JSON.stringify(this.initialFormValues);
   }
 }

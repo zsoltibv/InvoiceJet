@@ -1,4 +1,5 @@
-<div class="container">
+<mat-progress-bar mode="query" *ngIf="!currentUserFirm"></mat-progress-bar>
+<div class="container" *ngIf="currentUserFirm">
   <form
     [formGroup]="firmDetailsForm"
     (ngSubmit)="onSubmit()"
@@ -37,7 +38,7 @@
               required
               placeholder="Enter your CUI"
             />
-            <button type="button" mat-icon-button matSuffix>
+            <button type="button" color="primary" mat-icon-button matSuffix>
               <mat-icon>cloud_download</mat-icon>
             </button>
             <mat-error
