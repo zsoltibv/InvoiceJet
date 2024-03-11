@@ -1,7 +1,7 @@
 export interface IFirm {
   id: number;
   name: string;
-  CUI: string;
+  cui: string;
   regCom: string;
   address: string;
   county: string;

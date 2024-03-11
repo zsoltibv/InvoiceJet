@@ -11,6 +11,7 @@ import { IFirm } from "src/app/models/IFirm";
 })
 export class FirmDetailsComponent implements OnInit {
   firmDetailsForm: FormGroup;
+  currentUserFirm!: IFirm;
   errorMessage: string | null = null;
 
   constructor(private firmService: FirmService, private authService: AuthService) {
@@ -25,9 +26,24 @@ export class FirmDetailsComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    // this.firmService.getUsersFirm(this.authService.userId).subscribe({
-
-    // });
+    this.firmService.getUserActiveFirmById(this.authService.userId).subscribe({
+      next: (firm) => {
+        if (firm) {
+          this.currentUserFirm = firm;
+          this.firmDetailsForm.patchValue({
+            firmName: firm.name,
+            cuiValue: firm.cui,
+            regCom: firm.regCom,
+            address: firm.address,
+            county: firm.county,
+            city: firm.city
+          });
+        }
+      },
+      error: (err) => {
+        console.log('Error', err);
+      }
+    });
   }
 
   onSubmit(): void {
@@ -36,17 +52,20 @@ export class FirmDetailsComponent implements OnInit {
     }
 
     const firm: IFirm = {
-      id: 0,
+      id: this.currentUserFirm?.id! ?? 0,
       name: this.firmDetailsForm.value.firmName!,
-      CUI: this.firmDetailsForm.value.cuiValue!,
+      cui: this.firmDetailsForm.value.cuiValue!,
       regCom: this.firmDetailsForm.value.regCom!,
       address: this.firmDetailsForm.value.address!,
       county: this.firmDetailsForm.value.county!,
       city: this.firmDetailsForm.value.city!
     };
 
+    console.log(firm);
+
     if (this.firmDetailsForm.valid) {
-      this.firmService.addOrEditFirm(firm, this.authService.userId.toString(), false).subscribe({
+      console.log(this.authService.userId);
+      this.firmService.addOrEditFirm(firm, this.authService.userId, false).subscribe({
         next: (response) => {
           console.log('Response', response);
         },
@@ -60,8 +79,6 @@ export class FirmDetailsComponent implements OnInit {
   }
 
   onCloudIconClick(): void {
-    // Logic to handle the cloud icon click
     console.log('Cloud icon clicked');
-    // For example, you might want to open a file upload dialog here
   }
 }

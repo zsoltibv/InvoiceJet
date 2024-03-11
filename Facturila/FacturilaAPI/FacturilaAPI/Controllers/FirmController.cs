@@ -25,16 +25,16 @@ namespace FacturilaAPI.Controllers
         }
 
         [HttpPut("addOrEditFirm/{userId}/{isClient}")]
-        public async Task<ActionResult> AddOrEditFirm([FromBody] FirmDto firmDto, [FromQuery] Guid userId, [FromQuery] bool isClient)
+        public async Task<ActionResult> AddOrEditFirm([FromBody] FirmDto firmDto, Guid userId, bool isClient)
         {
             var updatedOrNewFirm = await _firmService.AddOrEditFirm(firmDto, userId, isClient);
             return Ok(updatedOrNewFirm);
         }
 
-        [HttpPut("GetUserFirmByUserId/{userId}")]
-        public async Task<ActionResult> GetUserFirmByUserId([FromQuery] int userId)
+        [HttpGet("GetUserActiveFirmById/{userId}")]
+        public async Task<ActionResult> GetUserActiveFirmById(Guid userId)
         {
-            var firm = await _firmService.GetUserFirmByUserId(userId);
+            var firm = await _firmService.GetUserActiveFirmById(userId);
             return Ok(firm);
         }
     }

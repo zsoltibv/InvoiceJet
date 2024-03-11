@@ -11,10 +11,6 @@ export class UserService {
   constructor(private http: HttpClient) { }
 
   private baseUrl = environment.apiUrl;
-  private options: any = {
-    observe: 'response',
-    responseType: 'text',
-  };
 
   public getUserByEmail(email: string) {
     return this.http.get<IRegisterUser>(

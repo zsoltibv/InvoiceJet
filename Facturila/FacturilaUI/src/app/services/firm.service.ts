@@ -18,10 +18,9 @@ export class FirmService {
     );
   }
 
-  public getUsersFirm(userId: string) {
-    return this.http.put<IFirm>(
-      `${this.baseUrl}/Firm/GetUserFirmByUserId/${userId}`,
-      userId
+  public getUserActiveFirmById(userId: string) {
+    return this.http.get<IFirm>(
+      `${this.baseUrl}/Firm/GetUserActiveFirmById/${userId}`
     );
   }
 }

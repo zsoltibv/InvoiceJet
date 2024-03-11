@@ -76,23 +76,27 @@ namespace FacturilaAPI.Services.Impl
         public async Task<FirmDto> AddOrEditFirm(FirmDto firmDto, Guid userId, bool isClient)
         {
             Firm firm;
-            bool isNewFirm = false;
 
-            var existingFirm = await _dbContext.Firm.FindAsync(firmDto.Id);
-            if (existingFirm != null)
+            if (firmDto.Id != 0)
             {
-                // Update existing firm details
-                existingFirm.Name = firmDto.Name;
-                existingFirm.RegCom = firmDto.RegCom;
-                existingFirm.Address = firmDto.Address;
-                existingFirm.County = firmDto.County;
-                existingFirm.City = firmDto.City;
-                firm = existingFirm;
+                // Edit existing firm
+                firm = await _dbContext.Firm.FindAsync(firmDto.Id);
+                if (firm == null)
+                {
+                    // Handle the case where the firm isn't found. Maybe throw an exception or handle it another way.
+                    return null;
+                }
+
+                firm.Name = firmDto.Name;
+                firm.RegCom = firmDto.RegCom;
+                firm.Address = firmDto.Address;
+                firm.County = firmDto.County;
+                firm.City = firmDto.City;
             }
             else
             {
-                // Create new firm
-                var newFirm = new Firm
+                // Add new firm
+                firm = new Firm
                 {
                     CUI = firmDto.CUI,
                     Name = firmDto.Name,
@@ -101,30 +105,44 @@ namespace FacturilaAPI.Services.Impl
                     County = firmDto.County,
                     City = firmDto.City
                 };
-                _dbContext.Firm.Add(newFirm);
-                firm = newFirm;
-                isNewFirm = true;
+                _dbContext.Firm.Add(firm);
             }
+
+            // Save changes to Firm before continuing, to ensure we have a FirmId for new firms.
             await _dbContext.SaveChangesAsync();
 
-            if (isNewFirm || isClient)
+            if (firmDto.Id == 0 || isClient)
             {
                 var existingUserFirm = await _dbContext.UserFirm
                     .FirstOrDefaultAsync(uf => uf.UserId == userId && uf.FirmId == firm.Id);
 
                 if (existingUserFirm == null)
                 {
-                    var userFirm = new UserFirm
+                    _dbContext.UserFirm.Add(new UserFirm
                     {
                         UserId = userId,
                         FirmId = firm.Id,
                         IsClient = isClient
-                    };
-                    _dbContext.UserFirm.Add(userFirm);
+                    });
                 }
                 else
                 {
                     existingUserFirm.IsClient = isClient;
+                }
+            }
+
+            // Update the user's active firm if necessary.
+            if (firmDto.Id == 0 && !isClient)
+            {
+                var existingUser = await _dbContext.User.FindAsync(userId);
+                if (existingUser != null)
+                {
+                    existingUser.ActiveFirmId = firm.Id;
+                }
+                else
+                {
+                    // Handle the case where the user isn't found. Maybe throw an exception or handle it another way.
+                    return null;
                 }
             }
 
@@ -134,9 +152,33 @@ namespace FacturilaAPI.Services.Impl
             return firmDto;
         }
 
-        public async Task<FirmDto> GetUserFirmByUserId(int id)
+        public async Task<FirmDto> GetUserActiveFirmById(Guid userId)
         {
-           throw new NotImplementedException();
+            var user = await _dbContext.User
+                .Where(u => u.Id == userId)
+                .Select(u => new { u.ActiveFirmId })
+                .FirstOrDefaultAsync();
+
+            if (user == null || !user.ActiveFirmId.HasValue)
+            {
+                return null;
+            }
+
+            var firm = await _dbContext.Firm
+                .FindAsync(user.ActiveFirmId.Value);
+
+            var firmDto = new FirmDto
+            {
+                Id = firm.Id,
+                Name = firm.Name,
+                CUI = firm.CUI,
+                RegCom = firm.RegCom,
+                Address = firm.Address,
+                County = firm.County,
+                City = firm.City
+            };
+
+            return firmDto;
         }
     }
 }
