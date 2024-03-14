@@ -37,5 +37,12 @@ namespace FacturilaAPI.Controllers
             var firm = await _firmService.GetUserActiveFirmById(userId);
             return Ok(firm);
         }
+
+        [HttpGet("GetUserClientFirmsById/{userId}")]
+        public async Task<ActionResult> GetUserClientFirmsById(Guid userId)
+        {
+            var firm = await _firmService.GetUserClientFirmsById(userId);
+            return Ok(firm);
+        }
     }
 }

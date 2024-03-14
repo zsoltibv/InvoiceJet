@@ -9,6 +9,6 @@ public class UserFirm
 
     public bool IsClient { get; set; } = true;
 
-    public User User { get; set; }
-    public Firm Firm { get; set; }
+    public virtual User User { get; set; } = null!;
+    public virtual Firm Firm { get; set; } = null!;
 }

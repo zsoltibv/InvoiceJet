@@ -23,4 +23,10 @@ export class FirmService {
       `${this.baseUrl}/Firm/GetUserActiveFirmById/${userId}`
     );
   }
+
+  public getUserClientFirmsById(userId: string) {
+    return this.http.get<IFirm[]>(
+      `${this.baseUrl}/Firm/GetUserClientFirmsById/${userId}`
+    );
+  }
 }

@@ -1,6 +1,92 @@
-<mat-card class="dialog-card" mat-elevation-z8>
-  <h1>New Client</h1>
-  <mat-card-content>
-    <form></form>
-  </mat-card-content>
-</mat-card>
+<div class="dialog-container">
+  <mat-card class="dialog-card" mat-elevation-z8>
+    <h1>New Client</h1>
+    <form
+      [formGroup]="firmDetailsForm"
+      (ngSubmit)="onSubmit()"
+      class="example-form"
+    >
+      <!-- Name Field -->
+      <div class="row">
+        <mat-label>Firm Name</mat-label>
+        <mat-form-field appearance="outline">
+          <input matInput formControlName="firmName" required />
+          <mat-error
+            *ngIf="firmDetailsForm.get('firmName')?.errors?.['required']"
+          >
+            Firm Name is required
+          </mat-error>
+        </mat-form-field>
+      </div>
+
+      <!-- CUI Value Field -->
+      <div class="row">
+        <mat-label>CUI Value</mat-label>
+        <mat-form-field appearance="outline" class="example-full-width">
+          <input matInput formControlName="cuiValue" required />
+          <button type="button" color="primary" mat-icon-button matSuffix>
+            <mat-icon>cloud_download</mat-icon>
+          </button>
+          <mat-error
+            *ngIf="firmDetailsForm.get('cuiValue')?.errors?.['required']"
+          >
+            CUI Value is required
+          </mat-error>
+        </mat-form-field>
+      </div>
+
+      <!-- Registration Company Field -->
+      <div class="row">
+        <mat-label>Registration Number (RegCom)</mat-label>
+        <mat-form-field appearance="outline">
+          <input matInput formControlName="regCom" required />
+          <mat-error
+            *ngIf="firmDetailsForm.get('regCom')?.errors?.['required']"
+          >
+            Registration Number is required
+          </mat-error>
+        </mat-form-field>
+
+        <!-- Address -->
+        <mat-label>Address</mat-label>
+        <mat-form-field appearance="outline">
+          <input matInput formControlName="address" required />
+          <mat-error
+            *ngIf="firmDetailsForm.get('address')?.errors?.['required']"
+          >
+            Address is required
+          </mat-error>
+        </mat-form-field>
+
+        <!-- County -->
+        <mat-label>County</mat-label>
+        <mat-form-field appearance="outline">
+          <input matInput formControlName="county" required />
+          <mat-error
+            *ngIf="firmDetailsForm.get('county')?.errors?.['required']"
+          >
+            County is required
+          </mat-error>
+        </mat-form-field>
+
+        <!-- City -->
+        <mat-label>City</mat-label>
+        <mat-form-field appearance="outline">
+          <input matInput formControlName="city" required />
+          <mat-error *ngIf="firmDetailsForm.get('city')?.errors?.['required']">
+            City is required
+          </mat-error>
+        </mat-form-field>
+      </div>
+
+      <!-- Error Message Display -->
+      <div *ngIf="errorMessage" class="p-error">{{ errorMessage }}</div>
+
+      <div class="controls">
+        <button mat-raised-button color="primary" type="submit">
+          {{ currentUserFirm ? "Update" : "Submit" }}
+        </button>
+      </div>
+    </form>
+  </mat-card>
+</div>

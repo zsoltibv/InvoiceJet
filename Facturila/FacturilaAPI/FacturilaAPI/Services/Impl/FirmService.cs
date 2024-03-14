@@ -1,4 +1,5 @@
-﻿using FacturilaAPI.Config;
+﻿using AutoMapper;
+using FacturilaAPI.Config;
 using FacturilaAPI.Exceptions;
 using FacturilaAPI.Models.Dto;
 using FacturilaAPI.Models.Entity;
@@ -11,12 +12,14 @@ namespace FacturilaAPI.Services.Impl
     {
         private readonly FacturilaDbContext _dbContext;
         private readonly HttpClient _httpClient;
+        private readonly IMapper _mapper;
         private readonly string _apiUrl;
 
-        public FirmService(FacturilaDbContext dbContext, IConfiguration config)
+        public FirmService(FacturilaDbContext dbContext, IConfiguration config, IMapper mapper)
         {
             _dbContext = dbContext;
             _httpClient = new HttpClient();
+            _mapper = mapper;
             _apiUrl = config.GetSection("AppSettings")?["AnafApiUrl"] ?? throw new ArgumentNullException("AnafApiUrl is not configured");
         }
 
@@ -179,6 +182,20 @@ namespace FacturilaAPI.Services.Impl
             };
 
             return firmDto;
+        }
+
+        public async Task<ICollection<FirmDto>> GetUserClientFirmsById(Guid userId)
+        {
+            var userFirms = await _dbContext.UserFirm
+                .Where(u => u.UserId == userId && u.IsClient)
+                .Include(f => f.Firm)
+                .ToListAsync();
+
+            var firms = userFirms.Select(u => u.Firm).ToList();
+
+            var firmDtos = _mapper.Map<ICollection<FirmDto>>(firms);
+
+            return firmDtos;
         }
     }
 }

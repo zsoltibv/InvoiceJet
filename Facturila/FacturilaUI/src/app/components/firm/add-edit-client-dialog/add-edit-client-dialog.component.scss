@@ -1,4 +1,4 @@
-.dialog-card {
+.dialog-container {
   position: fixed;
   top: 0;
   right: 0;
@@ -8,6 +8,12 @@
   opacity: 0;
   animation: fadeIn 0.3s ease forwards,
     magnify 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+.dialog-card {
+  height: 100%;
+  padding: 30px;
+  background-color: #f8fafc;
 }
 
 @keyframes fadeIn {
@@ -26,4 +32,8 @@
   to {
     transform: scale(1);
   }
+}
+
+h1 {
+  margin-bottom: 30px;
 }

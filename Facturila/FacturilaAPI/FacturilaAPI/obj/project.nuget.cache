@@ -1,9 +1,11 @@
 {
   "version": 2,
-  "dgSpecHash": "hi0uiDz7zlYXDOHntD1tDi9HDrNledzgZWoZ1vdX4YdUSDFqAZ0BFtwgHjNQf4rkGVcMVds+5yuaLfDvbEwCuw==",
+  "dgSpecHash": "Bi/bLKwdA4jE1HYu5lqGUpe7NS56D/KVJv1TAEGNsBe1tPwugHAFmxqzmiukV4OLOitcXH97oGMDogW5fJ0YTg==",
   "success": true,
   "projectFilePath": "V:\\Facultate\\An3\\Licenta\\Facturila\\FacturilaAPI\\FacturilaAPI\\FacturilaAPI.csproj",
   "expectedPackageFiles": [
+    "C:\\Users\\zsolti\\.nuget\\packages\\automapper\\13.0.1\\automapper.13.0.1.nupkg.sha512",
+    "C:\\Users\\zsolti\\.nuget\\packages\\automapper.collection\\10.0.0\\automapper.collection.10.0.0.nupkg.sha512",
     "C:\\Users\\zsolti\\.nuget\\packages\\azure.core\\1.25.0\\azure.core.1.25.0.nupkg.sha512",
     "C:\\Users\\zsolti\\.nuget\\packages\\azure.identity\\1.7.0\\azure.identity.1.7.0.nupkg.sha512",
     "C:\\Users\\zsolti\\.nuget\\packages\\bcrypt.net-next\\4.0.3\\bcrypt.net-next.4.0.3.nupkg.sha512",

@@ -10,8 +10,8 @@
         public string Role { get; set; }
 
         public int? ActiveFirmId { get; set; }
-        public Firm ActiveFirm { get; set; }
+        public virtual Firm ActiveFirm { get; set; } = null!;
 
-        public ICollection<UserFirm> UserFirms { get; set; }
+        public virtual ICollection<UserFirm> UserFirms { get; set; }
     }
 }
