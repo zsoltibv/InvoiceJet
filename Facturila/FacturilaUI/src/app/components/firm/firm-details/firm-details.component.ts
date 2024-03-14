@@ -91,4 +91,8 @@ export class FirmDetailsComponent implements OnInit {
   isFormChanged(): boolean {
     return JSON.stringify(this.initialFormValues.value) !== JSON.stringify(this.initialFormValues);
   }
+
+  addNewClient() {
+    console.log('Add new client');
+  }
 }

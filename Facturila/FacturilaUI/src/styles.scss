@@ -2,12 +2,16 @@
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap");
 
 .container {
+  padding: 24px;
   max-width: 1240px;
-  // margin: 0 auto;
+  margin: 0 auto;
+}
+
+.inner-container {
   padding: 24px;
 }
 
-h1,
+.c h1,
 h2,
 h3,
 h4,

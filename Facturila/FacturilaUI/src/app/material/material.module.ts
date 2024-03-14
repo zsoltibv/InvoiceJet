@@ -1,3 +1,4 @@
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
@@ -13,6 +14,8 @@ import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatTableModule } from '@angular/material/table';
+import { MatSortModule } from '@angular/material/sort';
 
 @NgModule({
   imports: [
@@ -28,7 +31,10 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
     MatSidenavModule,
     MatSelectModule,
     MatSnackBarModule,
-    MatProgressBarModule
+    MatProgressBarModule,
+    MatSortModule,
+    MatTableModule,
+    MatDialogModule
   ],
   exports: [
     MatButtonModule,
@@ -42,7 +48,10 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
     MatSidenavModule,
     MatSelectModule,
     MatSnackBarModule,
-    MatProgressBarModule
+    MatProgressBarModule,
+    MatSortModule,
+    MatTableModule,
+    MatDialogModule
   ]
 })
 export class MaterialModule { }

@@ -16,6 +16,8 @@ import { SidebarComponent } from './components/sidebar/sidebar.component';
 import { FirmDetailsComponent } from './components/firm/firm-details/firm-details.component';
 import { MaterialModule } from "./material/material.module";
 import { AuthInterceptor } from "./services/interceptor/auth.interceptor";
+import { ClientsComponent } from './components/firm/clients/clients.component';
+import { AddEditClientDialogComponent } from './components/firm/add-edit-client-dialog/add-edit-client-dialog.component';
 
 @NgModule({
   declarations: [
@@ -25,7 +27,9 @@ import { AuthInterceptor } from "./services/interceptor/auth.interceptor";
     DashboardComponent,
     RegisterComponent,
     SidebarComponent,
-    FirmDetailsComponent
+    FirmDetailsComponent,
+    ClientsComponent,
+    AddEditClientDialogComponent,
   ],
   imports: [
     BrowserModule,

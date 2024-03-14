@@ -1,14 +1,12 @@
 <mat-progress-bar mode="query" *ngIf="!currentUserFirm"></mat-progress-bar>
-<div class="container" *ngIf="currentUserFirm">
+<div class="inner-container" *ngIf="currentUserFirm">
+  <h1>Firm Details</h1>
   <form
     [formGroup]="firmDetailsForm"
     (ngSubmit)="onSubmit()"
     class="example-form"
   >
     <mat-card>
-      <mat-card-header class="heading">
-        <mat-card-title>Firm Details</mat-card-title>
-      </mat-card-header>
       <mat-card-content>
         <!-- Name Field -->
         <div class="row">
