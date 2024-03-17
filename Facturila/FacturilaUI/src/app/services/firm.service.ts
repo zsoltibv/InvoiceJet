@@ -29,4 +29,10 @@ export class FirmService {
       `${this.baseUrl}/Firm/GetUserClientFirmsById/${userId}`
     );
   }
+
+  public getFirmFromAnaf(cuiValue: string) {
+    return this.http.get<IFirm>(
+      `${this.baseUrl}/Firm/fromAnaf/${cuiValue}`
+    );
+  }
 }

@@ -86,6 +86,23 @@ export class FirmDetailsComponent implements OnInit {
 
   onCloudIconClick(): void {
     console.log('Cloud icon clicked');
+    this.firmService.getFirmFromAnaf(this.firmDetailsForm.value.cuiValue).subscribe({
+      next: (firm) => {
+        console.log(firm);
+        this.firmDetailsForm.patchValue({
+          firmName: firm.name,
+          regCom: firm.regCom,
+          address: firm.address,
+          county: firm.county,
+          city: firm.city
+        });
+      },
+      error: (err) => {
+        this.snackBar.open('Failed to retrieve firm data', 'Close', {
+          duration: 2000,
+        });
+      }
+    });
   }
 
   isFormChanged(): boolean {

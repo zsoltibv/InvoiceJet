@@ -5,6 +5,7 @@ using FacturilaAPI.Models.Dto;
 using FacturilaAPI.Models.Entity;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json.Linq;
+using System.Net;
 
 namespace FacturilaAPI.Services.Impl
 {
@@ -25,6 +26,7 @@ namespace FacturilaAPI.Services.Impl
 
         public async Task<FirmDto> GetFirmDataFromAnaf(string cui)
         {
+            FirmDto firmDto = new FirmDto();
             try
             {
                 string currentDate = DateTime.Now.ToString("yyyy-MM-dd");
@@ -55,18 +57,30 @@ namespace FacturilaAPI.Services.Impl
                             string? regCom = dateGenerale["nrRegCom"]?.ToString();
                             string? address = dateGenerale["adresa"]?.ToString();
 
+                            int startIndex = address.IndexOf("STR.");
+
                             if (name != null && cuiValue != null && regCom != null && address != null)
                             {
-                                return new FirmDto
-                                {
-                                    Name = name,
-                                    CUI = cuiValue,
-                                    RegCom = regCom,
-                                    Address = address
-                                };
+                                firmDto.Name = name;
+                                firmDto.RegCom = regCom;
+                                firmDto.CUI = cuiValue;
+                                firmDto.Address = address.Substring(startIndex);
                             }
                         }
                     }
+
+                    var adrDomiciliuFiscal = json["found"]?[0]?["adresa_domiciliu_fiscal"];
+                    if (adrDomiciliuFiscal != null)
+                    {
+                        string? county = adrDomiciliuFiscal["ddenumire_Judet"]?.ToString();
+                        string? city = adrDomiciliuFiscal["ddenumire_Localitate"]?.ToString();
+                        if (county != null && city != null)
+                        {
+                            firmDto.County = county;
+                            firmDto.City = city;
+                        }
+                    }
+                    return firmDto;
                 }
                 throw new AnafFirmNotFoundException(cui);
             }
@@ -79,26 +93,20 @@ namespace FacturilaAPI.Services.Impl
         public async Task<FirmDto> AddOrEditFirm(FirmDto firmDto, Guid userId, bool isClient)
         {
             Firm firm;
-
             if (firmDto.Id != 0)
             {
-                // Edit existing firm
                 firm = await _dbContext.Firm.FindAsync(firmDto.Id);
                 if (firm == null)
                 {
-                    // Handle the case where the firm isn't found. Maybe throw an exception or handle it another way.
                     return null;
                 }
                 firm = _mapper.Map(firmDto, firm);
             }
             else
             {
-                // Add new firm
                 firm = _mapper.Map<Firm>(firmDto);
                 _dbContext.Firm.Add(firm);
             }
-
-            // Save changes to Firm before continuing, to ensure we have a FirmId for new firms.
             await _dbContext.SaveChangesAsync();
 
             if (firmDto.Id == 0 || isClient)
@@ -121,7 +129,6 @@ namespace FacturilaAPI.Services.Impl
                 }
             }
 
-            // Update the user's active firm if necessary.
             if (firmDto.Id == 0 && !isClient)
             {
                 var existingUser = await _dbContext.User.FindAsync(userId);
@@ -131,12 +138,11 @@ namespace FacturilaAPI.Services.Impl
                 }
                 else
                 {
-                    // Handle the case where the user isn't found. Maybe throw an exception or handle it another way.
                     return null;
                 }
             }
-
             await _dbContext.SaveChangesAsync();
+
             firmDto.Id = firm.Id;
 
             return firmDto;

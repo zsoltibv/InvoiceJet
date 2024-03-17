@@ -26,7 +26,13 @@
           <mat-label>CUI Value</mat-label>
           <mat-form-field appearance="outline" class="example-full-width">
             <input matInput formControlName="cuiValue" required />
-            <button type="button" color="primary" mat-icon-button matSuffix>
+            <button
+              type="button"
+              color="primary"
+              mat-icon-button
+              matSuffix
+              (click)="onCloudIconClick()"
+            >
               <mat-icon>cloud_download</mat-icon>
             </button>
             <mat-error
