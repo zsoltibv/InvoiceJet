@@ -89,25 +89,12 @@ namespace FacturilaAPI.Services.Impl
                     // Handle the case where the firm isn't found. Maybe throw an exception or handle it another way.
                     return null;
                 }
-
-                firm.Name = firmDto.Name;
-                firm.RegCom = firmDto.RegCom;
-                firm.Address = firmDto.Address;
-                firm.County = firmDto.County;
-                firm.City = firmDto.City;
+                firm = _mapper.Map(firmDto, firm);
             }
             else
             {
                 // Add new firm
-                firm = new Firm
-                {
-                    CUI = firmDto.CUI,
-                    Name = firmDto.Name,
-                    RegCom = firmDto.RegCom,
-                    Address = firmDto.Address,
-                    County = firmDto.County,
-                    City = firmDto.City
-                };
+                firm = _mapper.Map<Firm>(firmDto);
                 _dbContext.Firm.Add(firm);
             }
 
@@ -159,7 +146,8 @@ namespace FacturilaAPI.Services.Impl
         {
             var user = await _dbContext.User
                 .Where(u => u.Id == userId)
-                .Select(u => new { u.ActiveFirmId })
+                .Include(u => u.ActiveFirm)
+                .Select(u => new { u.ActiveFirmId, u.ActiveFirm })
                 .FirstOrDefaultAsync();
 
             if (user == null || !user.ActiveFirmId.HasValue)
@@ -167,21 +155,7 @@ namespace FacturilaAPI.Services.Impl
                 return null;
             }
 
-            var firm = await _dbContext.Firm
-                .FindAsync(user.ActiveFirmId.Value);
-
-            var firmDto = new FirmDto
-            {
-                Id = firm.Id,
-                Name = firm.Name,
-                CUI = firm.CUI,
-                RegCom = firm.RegCom,
-                Address = firm.Address,
-                County = firm.County,
-                City = firm.City
-            };
-
-            return firmDto;
+            return _mapper.Map<FirmDto>(user.ActiveFirm);
         }
 
         public async Task<ICollection<FirmDto>> GetUserClientFirmsById(Guid userId)
