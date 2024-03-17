@@ -58,6 +58,10 @@ namespace FacturilaAPI.Services.Impl
                             string? address = dateGenerale["adresa"]?.ToString();
 
                             int startIndex = address.IndexOf("STR.");
+                            if (startIndex == -1)
+                            {
+                                startIndex = address.IndexOf("ŞOS.");
+                            }
 
                             if (name != null && cuiValue != null && regCom != null && address != null)
                             {

@@ -49,4 +49,18 @@ export class ClientsComponent {
       console.log('The dialog was closed');
     });
   }
+
+  openEditClientDialog(firm: IFirm) {
+    const dialogRef = this.dialog.open(AddEditClientDialogComponent, {
+      data: firm
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      console.log('The edit dialog was closed. Result:', result);
+      this.firmService.getUserClientFirmsById(this.authService.userId).subscribe((firms) => {
+        this.firms = firms;
+        this.dataSource.data = this.firms;
+      });
+    });
+  }
 }

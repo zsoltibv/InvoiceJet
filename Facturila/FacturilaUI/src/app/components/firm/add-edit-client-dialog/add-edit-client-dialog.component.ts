@@ -1,5 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, Inject } from '@angular/core';
 import { FormControl, FormGroup, Validators } from "@angular/forms";
+import { MAT_DIALOG_DATA, MatDialogRef } from "@angular/material/dialog";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { IFirm } from "src/app/models/IFirm";
 import { AuthService } from "src/app/services/auth.service";
@@ -15,8 +16,10 @@ export class AddEditClientDialogComponent {
   initialFormValues: any;
   currentUserFirm!: IFirm;
   errorMessage: string | null = null;
+  isEditMode: boolean = false;
 
-  constructor(private firmService: FirmService, private authService: AuthService, private snackBar: MatSnackBar) {
+  constructor(private firmService: FirmService, private authService: AuthService, private snackBar: MatSnackBar, @Inject(MAT_DIALOG_DATA) public data: IFirm,
+    private dialogRef: MatDialogRef<AddEditClientDialogComponent>) {
     this.firmDetailsForm = new FormGroup({
       firmName: new FormControl('', Validators.required),
       cuiValue: new FormControl('', Validators.required),
@@ -27,13 +30,27 @@ export class AddEditClientDialogComponent {
     });
   }
 
+  ngOnInit(): void {
+    if (this.data) {
+      this.isEditMode = true;
+      this.firmDetailsForm.setValue({
+        firmName: this.data.name || '',
+        cuiValue: this.data.cui || '',
+        regCom: this.data.regCom || '',
+        address: this.data.address || '',
+        county: this.data.county || '',
+        city: this.data.city || '',
+      });
+    }
+  }
+
   onSubmit(): void {
     if (this.firmDetailsForm.invalid) {
       return;
     }
 
     const firm: IFirm = {
-      id: this.currentUserFirm?.id! ?? 0,
+      id: this.data?.id! ?? 0,
       name: this.firmDetailsForm.value.firmName!,
       cui: this.firmDetailsForm.value.cuiValue!,
       regCom: this.firmDetailsForm.value.regCom!,
@@ -46,11 +63,12 @@ export class AddEditClientDialogComponent {
 
     if (this.firmDetailsForm.valid) {
       console.log(this.authService.userId);
-      this.firmService.addOrEditFirm(firm, this.authService.userId).subscribe({
+      this.firmService.addOrEditFirm(firm, this.authService.userId, false).subscribe({
         next: (response) => {
-          this.snackBar.open('Firm added successfully', 'Close', {
+          this.snackBar.open('Firm details updated successfully', 'Close', {
             duration: 2000,
           });
+          this.dialogRef.close(true);
         },
         error: (err) => {
           this.errorMessage = err.message;
@@ -59,5 +77,26 @@ export class AddEditClientDialogComponent {
     } else {
       this.errorMessage = 'Please fill all the required fields';
     }
+  }
+
+  onCloudIconClick(): void {
+    console.log('Cloud icon clicked');
+    this.firmService.getFirmFromAnaf(this.firmDetailsForm.value.cuiValue).subscribe({
+      next: (firm) => {
+        console.log(firm);
+        this.firmDetailsForm.patchValue({
+          firmName: firm.name,
+          regCom: firm.regCom,
+          address: firm.address,
+          county: firm.county,
+          city: firm.city
+        });
+      },
+      error: (err) => {
+        this.snackBar.open('Failed to retrieve firm data', 'Close', {
+          duration: 2000,
+        });
+      }
+    });
   }
 }
