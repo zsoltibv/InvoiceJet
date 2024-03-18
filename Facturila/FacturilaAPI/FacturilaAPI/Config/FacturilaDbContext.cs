@@ -11,12 +11,11 @@ namespace FacturilaAPI.Config
         
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<UserFirm>()
-                .HasKey(uf => new { uf.UserId, uf.FirmId }); 
         }
 
         public DbSet<User> User { get; set; }
         public DbSet<Firm> Firm { get; set; }
+        public DbSet<BankAccount> BankAccount { get; set; }
         public DbSet<UserFirm> UserFirm { get; set; }
     }
 }

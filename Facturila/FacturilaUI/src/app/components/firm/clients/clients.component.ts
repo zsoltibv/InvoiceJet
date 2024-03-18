@@ -23,6 +23,10 @@ export class ClientsComponent {
   @ViewChild(MatSort) sort!: MatSort;
 
   ngOnInit(): void {
+    this.getUserFirms();
+  }
+
+  getUserFirms(): void {
     this.firmService.getUserClientFirmsById(this.authService.userId).subscribe((firms) => {
       this.firms = firms;
       this.dataSource.data = this.firms;
@@ -46,7 +50,7 @@ export class ClientsComponent {
     });
 
     dialogRef.afterClosed().subscribe(() => {
-      console.log('The dialog was closed');
+      this.getUserFirms();
     });
   }
 
@@ -56,11 +60,7 @@ export class ClientsComponent {
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      console.log('The edit dialog was closed. Result:', result);
-      this.firmService.getUserClientFirmsById(this.authService.userId).subscribe((firms) => {
-        this.firms = firms;
-        this.dataSource.data = this.firms;
-      });
+      this.getUserFirms();
     });
   }
 }

@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FacturilaAPI.Migrations
 {
     [DbContext(typeof(FacturilaDbContext))]
-    [Migration("20240310144618_initial-migration")]
-    partial class initialmigration
+    [Migration("20240318125434_initial")]
+    partial class initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -24,6 +24,38 @@ namespace FacturilaAPI.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+
+            modelBuilder.Entity("FacturilaAPI.Models.Entity.BankAccount", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("BankName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Currency")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Iban")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("UserFirmId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserFirmId");
+
+                    b.ToTable("BankAccount");
+                });
 
             modelBuilder.Entity("FacturilaAPI.Models.Entity.Firm", b =>
                 {
@@ -68,6 +100,9 @@ namespace FacturilaAPI.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<int?>("ActiveFirmId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -90,22 +125,55 @@ namespace FacturilaAPI.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("ActiveFirmId");
+
                     b.ToTable("User");
                 });
 
             modelBuilder.Entity("FacturilaAPI.Models.Entity.UserFirm", b =>
                 {
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<int>("UserFirmId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("UserFirmId"));
 
                     b.Property<int>("FirmId")
                         .HasColumnType("int");
 
-                    b.HasKey("UserId", "FirmId");
+                    b.Property<bool>("IsClient")
+                        .HasColumnType("bit");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("UserFirmId");
 
                     b.HasIndex("FirmId");
 
+                    b.HasIndex("UserId");
+
                     b.ToTable("UserFirm");
+                });
+
+            modelBuilder.Entity("FacturilaAPI.Models.Entity.BankAccount", b =>
+                {
+                    b.HasOne("FacturilaAPI.Models.Entity.UserFirm", "UserFirm")
+                        .WithMany("BankAccounts")
+                        .HasForeignKey("UserFirmId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("UserFirm");
+                });
+
+            modelBuilder.Entity("FacturilaAPI.Models.Entity.User", b =>
+                {
+                    b.HasOne("FacturilaAPI.Models.Entity.Firm", "ActiveFirm")
+                        .WithMany()
+                        .HasForeignKey("ActiveFirmId");
+
+                    b.Navigation("ActiveFirm");
                 });
 
             modelBuilder.Entity("FacturilaAPI.Models.Entity.UserFirm", b =>
@@ -135,6 +203,11 @@ namespace FacturilaAPI.Migrations
             modelBuilder.Entity("FacturilaAPI.Models.Entity.User", b =>
                 {
                     b.Navigation("UserFirms");
+                });
+
+            modelBuilder.Entity("FacturilaAPI.Models.Entity.UserFirm", b =>
+                {
+                    b.Navigation("BankAccounts");
                 });
 #pragma warning restore 612, 618
         }

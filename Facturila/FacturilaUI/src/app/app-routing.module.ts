@@ -7,6 +7,7 @@ import { RegisterComponent } from "./components/register/register.component";
 import { FirmDetailsComponent } from "./components/firm/firm-details/firm-details.component";
 import { AuthService } from "./services/auth.service";
 import { ClientsComponent } from "./components/firm/clients/clients.component";
+import { BankAccountsComponent } from "./components/firm/bank-accounts/bank-accounts.component";
 
 const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -14,6 +15,7 @@ const routes: Routes = [
   { path: 'dashboard', component: DashboardComponent, canActivate: [AuthGuard] },
   { path: 'dashboard/firm-details', component: FirmDetailsComponent, canActivate: [AuthGuard] },
   { path: 'dashboard/clients', component: ClientsComponent, canActivate: [AuthGuard] },
+  { path: 'dashboard/bank-accounts', component: BankAccountsComponent, canActivate: [AuthGuard] },
   { path: '**', component: LoginComponent },
 ];
 

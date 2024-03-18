@@ -63,7 +63,7 @@ export class AddEditClientDialogComponent {
 
     if (this.firmDetailsForm.valid) {
       console.log(this.authService.userId);
-      this.firmService.addOrEditFirm(firm, this.authService.userId, false).subscribe({
+      this.firmService.addOrEditFirm(firm, this.authService.userId).subscribe({
         next: (response) => {
           this.snackBar.open('Firm details updated successfully', 'Close', {
             duration: 2000,

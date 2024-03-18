@@ -4,6 +4,8 @@ namespace FacturilaAPI.Models.Entity;
 
 public class UserFirm
 {
+    public int UserFirmId { get; set; } 
+
     public Guid UserId { get; set; }
     public int FirmId { get; set; }
 
@@ -11,4 +13,6 @@ public class UserFirm
 
     public virtual User User { get; set; } = null!;
     public virtual Firm Firm { get; set; } = null!;
+
+    public virtual ICollection<BankAccount>? BankAccounts { get; set; }
 }

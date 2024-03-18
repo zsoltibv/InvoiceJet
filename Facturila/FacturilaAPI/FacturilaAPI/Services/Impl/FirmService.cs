@@ -62,6 +62,10 @@ namespace FacturilaAPI.Services.Impl
                             {
                                 startIndex = address.IndexOf("ŞOS.");
                             }
+                            if (startIndex == -1)
+                            {
+                                startIndex = address.IndexOf("BLD.");
+                            }
 
                             if (name != null && cuiValue != null && regCom != null && address != null)
                             {
@@ -171,7 +175,7 @@ namespace FacturilaAPI.Services.Impl
         public async Task<ICollection<FirmDto>> GetUserClientFirmsById(Guid userId)
         {
             var userFirms = await _dbContext.UserFirm
-                .Where(u => u.UserId == userId && u.IsClient)
+                .Where(u => u.UserId.Equals(userId) && u.IsClient)
                 .Include(f => f.Firm)
                 .ToListAsync();
 

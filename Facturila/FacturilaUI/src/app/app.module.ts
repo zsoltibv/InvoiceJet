@@ -18,6 +18,8 @@ import { MaterialModule } from "./material/material.module";
 import { AuthInterceptor } from "./services/interceptor/auth.interceptor";
 import { ClientsComponent } from './components/firm/clients/clients.component';
 import { AddEditClientDialogComponent } from './components/firm/add-edit-client-dialog/add-edit-client-dialog.component';
+import { BankAccountsComponent } from './components/firm/bank-accounts/bank-accounts.component';
+import { AddOrEditBankAccountDialogComponent } from './components/firm/bank-accounts/add-or-edit-bank-account-dialog/add-or-edit-bank-account-dialog.component';
 
 @NgModule({
   declarations: [
@@ -30,6 +32,8 @@ import { AddEditClientDialogComponent } from './components/firm/add-edit-client-
     FirmDetailsComponent,
     ClientsComponent,
     AddEditClientDialogComponent,
+    BankAccountsComponent,
+    AddOrEditBankAccountDialogComponent,
   ],
   imports: [
     BrowserModule,

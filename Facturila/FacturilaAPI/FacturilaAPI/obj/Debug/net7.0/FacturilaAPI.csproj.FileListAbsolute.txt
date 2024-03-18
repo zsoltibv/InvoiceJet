@@ -48,6 +48,8 @@ V:\Facultate\An3\Licenta\Facturila\FacturilaAPI\FacturilaAPI\bin\Debug\net7.0\Fa
 V:\Facultate\An3\Licenta\Facturila\FacturilaAPI\FacturilaAPI\bin\Debug\net7.0\FacturilaAPI.runtimeconfig.json
 V:\Facultate\An3\Licenta\Facturila\FacturilaAPI\FacturilaAPI\bin\Debug\net7.0\FacturilaAPI.dll
 V:\Facultate\An3\Licenta\Facturila\FacturilaAPI\FacturilaAPI\bin\Debug\net7.0\FacturilaAPI.pdb
+V:\Facultate\An3\Licenta\Facturila\FacturilaAPI\FacturilaAPI\bin\Debug\net7.0\AutoMapper.dll
+V:\Facultate\An3\Licenta\Facturila\FacturilaAPI\FacturilaAPI\bin\Debug\net7.0\AutoMapper.Collection.dll
 V:\Facultate\An3\Licenta\Facturila\FacturilaAPI\FacturilaAPI\bin\Debug\net7.0\Azure.Core.dll
 V:\Facultate\An3\Licenta\Facturila\FacturilaAPI\FacturilaAPI\bin\Debug\net7.0\Azure.Identity.dll
 V:\Facultate\An3\Licenta\Facturila\FacturilaAPI\FacturilaAPI\bin\Debug\net7.0\BCrypt.Net-Next.dll
@@ -116,5 +118,3 @@ V:\Facultate\An3\Licenta\Facturila\FacturilaAPI\FacturilaAPI\obj\Debug\net7.0\re
 V:\Facultate\An3\Licenta\Facturila\FacturilaAPI\FacturilaAPI\obj\Debug\net7.0\FacturilaAPI.pdb
 V:\Facultate\An3\Licenta\Facturila\FacturilaAPI\FacturilaAPI\obj\Debug\net7.0\FacturilaAPI.genruntimeconfig.cache
 V:\Facultate\An3\Licenta\Facturila\FacturilaAPI\FacturilaAPI\obj\Debug\net7.0\ref\FacturilaAPI.dll
-V:\Facultate\An3\Licenta\Facturila\FacturilaAPI\FacturilaAPI\bin\Debug\net7.0\AutoMapper.dll
-V:\Facultate\An3\Licenta\Facturila\FacturilaAPI\FacturilaAPI\bin\Debug\net7.0\AutoMapper.Collection.dll

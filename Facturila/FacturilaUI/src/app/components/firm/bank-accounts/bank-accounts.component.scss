@@ -1,0 +1,14 @@
+table {
+  border-radius: 5px;
+  padding: 1px;
+  z-index: 9999;
+}
+
+h1 {
+  font-weight: semi-bold;
+}
+
+.app-header {
+  display: flex;
+  justify-content: space-between;
+}
