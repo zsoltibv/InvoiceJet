@@ -12,3 +12,23 @@ h1 {
   display: flex;
   justify-content: space-between;
 }
+
+.select-column {
+  width: 40px;
+  max-width: 40px;
+}
+
+/* Additional styling to ensure the checkbox aligns nicely in the center */
+.select-column mat-checkbox {
+  justify-content: center;
+  display: flex;
+}
+
+.right {
+  display: flex;
+  gap: 10px;
+}
+
+.right .mat-icon {
+  margin: 0;
+}

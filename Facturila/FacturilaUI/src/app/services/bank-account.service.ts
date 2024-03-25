@@ -17,9 +17,9 @@ export class BankAccountService {
     );
   }
 
-  addOrEditBankAccount(bankAccount: IBankAccount) {
+  addOrEditBankAccount(bankAccount: IBankAccount, userId: string) {
     return this.http.put<IBankAccount>(
-      `${this.baseUrl}/BankAccount/AddOrEditBankAccount`,
+      `${this.baseUrl}/BankAccount/AddOrEditBankAccount/${userId}`,
       bankAccount
     );
   }

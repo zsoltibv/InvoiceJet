@@ -25,11 +25,18 @@ namespace FacturilaAPI.Controllers
             return Ok(bankAccountDto);
         }
 
-        [HttpPut("AddOrEditBankAccount")]
-        public async Task<ActionResult<FirmDto>> AddOrEditBankAccount(BankAccountDto bankAccountDto)
+        [HttpPut("AddOrEditBankAccount/{userId}")]
+        public async Task<ActionResult<FirmDto>> AddOrEditBankAccount(BankAccountDto bankAccountDto, Guid userId)
         {
-            var updatedOrNewBankAccount = await _bankAccountService.AddOrEditBankAccount(bankAccountDto);
-            return Ok(updatedOrNewBankAccount);
+            try
+            {
+                var updatedOrNewBankAccount = await _bankAccountService.AddOrEditBankAccount(bankAccountDto, userId);
+                return Ok(updatedOrNewBankAccount);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
     }
 }

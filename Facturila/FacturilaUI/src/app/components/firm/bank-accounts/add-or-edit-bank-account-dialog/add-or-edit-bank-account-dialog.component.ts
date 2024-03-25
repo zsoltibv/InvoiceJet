@@ -1,3 +1,4 @@
+import { AuthService } from './../../../../services/auth.service';
 import { BankAccountService } from 'src/app/services/bank-account.service';
 import { Component, Inject } from '@angular/core';
 import { FormControl, FormGroup, Validators } from "@angular/forms";
@@ -30,14 +31,19 @@ export class AddOrEditBankAccountDialogComponent {
   constructor(@Inject(MAT_DIALOG_DATA) public data: IBankAccount,
     private dialogRef: MatDialogRef<AddOrEditBankAccountDialogComponent>,
     private snackBar: MatSnackBar,
-    private bankAccountService: BankAccountService) {
+    private bankAccountService: BankAccountService,
+    private authService: AuthService) {
+
     this.bankAccountForm = new FormGroup({
+      id: new FormControl(null),
       bankName: new FormControl('', Validators.required),
       iban: new FormControl('', Validators.required),
       currency: new FormControl(null, Validators.required),
       isActive: new FormControl(false)
     });
+  }
 
+  ngOnInit(): void {
     if (this.data) {
       this.isEditMode = true;
       this.bankAccountForm.setValue({
@@ -45,7 +51,7 @@ export class AddOrEditBankAccountDialogComponent {
         bankName: this.data.bankName,
         iban: this.data.iban,
         currency: this.data.currency,
-        isActive: this.data.isActive
+        isActive: this.data.isActive,
       });
     }
   }
@@ -57,11 +63,11 @@ export class AddOrEditBankAccountDialogComponent {
     }
 
     const bankAccountData: IBankAccount = this.bankAccountForm.value;
-    bankAccountData.id = 0;
+    bankAccountData.id = this.data?.id! ?? 0;
 
     console.log('Submitting bank account data:', bankAccountData);
 
-    this.bankAccountService.addOrEditBankAccount(bankAccountData).subscribe({
+    this.bankAccountService.addOrEditBankAccount(bankAccountData, this.authService.userId).subscribe({
       next: () => {
         this.snackBar.open(`${this.isEditMode ? 'Bank account updated' : 'Bank account added'} successfully`, 'Close', {
           duration: 2000,

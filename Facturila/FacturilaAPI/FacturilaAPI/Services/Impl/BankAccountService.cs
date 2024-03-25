@@ -35,7 +35,7 @@ namespace FacturilaAPI.Services.Impl
             return bankAccountDtos;
         }
 
-        public async Task<BankAccountDto> AddOrEditBankAccount(BankAccountDto bankAccountDto)
+        public async Task<BankAccountDto> AddOrEditBankAccount(BankAccountDto bankAccountDto, Guid userId)
         {
             BankAccount bankAccount;
 
@@ -51,7 +51,7 @@ namespace FacturilaAPI.Services.Impl
             else
             {
                 bankAccount = _mapper.Map<BankAccount>(bankAccountDto);
-                //add userFirm id
+                bankAccount.UserFirm = _dbContext.UserFirm.Where(u => u.UserId == userId && !u.IsClient).FirstOrDefault();
                 await _dbContext.BankAccount.AddAsync(bankAccount);
             }
             await _dbContext.SaveChangesAsync();
