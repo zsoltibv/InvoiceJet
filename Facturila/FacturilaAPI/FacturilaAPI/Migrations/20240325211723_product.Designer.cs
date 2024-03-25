@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FacturilaAPI.Migrations
 {
     [DbContext(typeof(FacturilaDbContext))]
-    [Migration("20240318125434_initial")]
-    partial class initial
+    [Migration("20240325211723_product")]
+    partial class product
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -100,7 +100,7 @@ namespace FacturilaAPI.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<int?>("ActiveFirmId")
+                    b.Property<int?>("ActiveUserFirmId")
                         .HasColumnType("int");
 
                     b.Property<string>("Email")
@@ -125,7 +125,7 @@ namespace FacturilaAPI.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ActiveFirmId");
+                    b.HasIndex("ActiveUserFirmId");
 
                     b.ToTable("User");
                 });
@@ -169,11 +169,11 @@ namespace FacturilaAPI.Migrations
 
             modelBuilder.Entity("FacturilaAPI.Models.Entity.User", b =>
                 {
-                    b.HasOne("FacturilaAPI.Models.Entity.Firm", "ActiveFirm")
+                    b.HasOne("FacturilaAPI.Models.Entity.UserFirm", "ActiveUserFirm")
                         .WithMany()
-                        .HasForeignKey("ActiveFirmId");
+                        .HasForeignKey("ActiveUserFirmId");
 
-                    b.Navigation("ActiveFirm");
+                    b.Navigation("ActiveUserFirm");
                 });
 
             modelBuilder.Entity("FacturilaAPI.Models.Entity.UserFirm", b =>

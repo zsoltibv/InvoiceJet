@@ -139,10 +139,32 @@ namespace FacturilaAPI.Services.Impl
 
             if (firmDto.Id == 0 && !isClient)
             {
-                var existingUser = await _dbContext.User.FindAsync(userId);
+                var existingUser = await _dbContext.User
+                    .Where(u => u.Id == userId)
+                    .FirstOrDefaultAsync();
+
                 if (existingUser != null)
                 {
-                    existingUser.ActiveFirmId = firm.Id;
+                    var activeUserFirm = await _dbContext.UserFirm
+                        .Where(uf => uf.UserId == userId && uf.FirmId == firm.Id)
+                        .FirstOrDefaultAsync();
+
+                    if (activeUserFirm == null)
+                    {
+                        activeUserFirm = new UserFirm
+                        {
+                            UserId = userId,
+                            FirmId = firm.Id,
+                            IsClient = false 
+                        };
+                        _dbContext.UserFirm.Add(activeUserFirm);
+                        await _dbContext.SaveChangesAsync();
+                        existingUser.ActiveUserFirmId = activeUserFirm.UserFirmId;
+                    }
+                    else
+                    {
+                        existingUser.ActiveUserFirmId = activeUserFirm.UserFirmId;
+                    }
                 }
                 else
                 {
@@ -152,24 +174,23 @@ namespace FacturilaAPI.Services.Impl
             await _dbContext.SaveChangesAsync();
 
             firmDto.Id = firm.Id;
-
             return firmDto;
         }
 
         public async Task<FirmDto> GetUserActiveFirmById(Guid userId)
         {
-            var user = await _dbContext.User
+            var activeUserFirm = await _dbContext.User
                 .Where(u => u.Id == userId)
-                .Include(u => u.ActiveFirm)
-                .Select(u => new { u.ActiveFirmId, u.ActiveFirm })
+                    .Include(u => u.ActiveUserFirm)
+                .Select(u => u.ActiveUserFirm.Firm)
                 .FirstOrDefaultAsync();
 
-            if (user == null || !user.ActiveFirmId.HasValue)
+            if (activeUserFirm == null)
             {
                 return null;
             }
 
-            return _mapper.Map<FirmDto>(user.ActiveFirm);
+            return _mapper.Map<FirmDto>(activeUserFirm);
         }
 
         public async Task<ICollection<FirmDto>> GetUserClientFirmsById(Guid userId)

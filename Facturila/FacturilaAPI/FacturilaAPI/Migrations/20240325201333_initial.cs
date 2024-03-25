@@ -30,6 +30,23 @@ namespace FacturilaAPI.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "BankAccount",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    BankName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Iban = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Currency = table.Column<int>(type: "int", nullable: false),
+                    IsActive = table.Column<bool>(type: "bit", nullable: false),
+                    UserFirmId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_BankAccount", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "User",
                 columns: table => new
                 {
@@ -39,16 +56,11 @@ namespace FacturilaAPI.Migrations
                     Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     PasswordHash = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Role = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ActiveFirmId = table.Column<int>(type: "int", nullable: true)
+                    ActiveUserFirmId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_User", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_User_Firm_ActiveFirmId",
-                        column: x => x.ActiveFirmId,
-                        principalTable: "Firm",
-                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -78,38 +90,15 @@ namespace FacturilaAPI.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
-            migrationBuilder.CreateTable(
-                name: "BankAccount",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    BankName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Iban = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Currency = table.Column<int>(type: "int", nullable: false),
-                    IsActive = table.Column<bool>(type: "bit", nullable: false),
-                    UserFirmId = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_BankAccount", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_BankAccount_UserFirm_UserFirmId",
-                        column: x => x.UserFirmId,
-                        principalTable: "UserFirm",
-                        principalColumn: "UserFirmId",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
             migrationBuilder.CreateIndex(
                 name: "IX_BankAccount_UserFirmId",
                 table: "BankAccount",
                 column: "UserFirmId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_User_ActiveFirmId",
+                name: "IX_User_ActiveUserFirmId",
                 table: "User",
-                column: "ActiveFirmId");
+                column: "ActiveUserFirmId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_UserFirm_FirmId",
@@ -120,11 +109,30 @@ namespace FacturilaAPI.Migrations
                 name: "IX_UserFirm_UserId",
                 table: "UserFirm",
                 column: "UserId");
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_BankAccount_UserFirm_UserFirmId",
+                table: "BankAccount",
+                column: "UserFirmId",
+                principalTable: "UserFirm",
+                principalColumn: "UserFirmId",
+                onDelete: ReferentialAction.Cascade);
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_User_UserFirm_ActiveUserFirmId",
+                table: "User",
+                column: "ActiveUserFirmId",
+                principalTable: "UserFirm",
+                principalColumn: "UserFirmId");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropForeignKey(
+                name: "FK_User_UserFirm_ActiveUserFirmId",
+                table: "User");
+
             migrationBuilder.DropTable(
                 name: "BankAccount");
 
@@ -132,10 +140,10 @@ namespace FacturilaAPI.Migrations
                 name: "UserFirm");
 
             migrationBuilder.DropTable(
-                name: "User");
+                name: "Firm");
 
             migrationBuilder.DropTable(
-                name: "Firm");
+                name: "User");
         }
     }
 }

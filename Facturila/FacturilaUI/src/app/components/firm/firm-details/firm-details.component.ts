@@ -13,7 +13,7 @@ import { IFirm } from "src/app/models/IFirm";
 export class FirmDetailsComponent implements OnInit {
   firmDetailsForm: FormGroup;
   initialFormValues: any;
-  currentUserFirm!: IFirm;
+  currentUserFirm: IFirm | null = null;
   errorMessage: string | null = null;
 
   constructor(private firmService: FirmService, private authService: AuthService, private snackBar: MatSnackBar) {

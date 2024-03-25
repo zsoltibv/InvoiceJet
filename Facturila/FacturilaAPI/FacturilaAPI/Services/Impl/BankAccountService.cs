@@ -19,19 +19,20 @@ namespace FacturilaAPI.Services.Impl
 
         public async Task<ICollection<BankAccountDto>> GetUserFirmBankAccounts(Guid userId)
         {
-            var user = await _dbContext.User
-                .FirstOrDefaultAsync(u => u.Id.Equals(userId));
+            // Find the active UserFirm for the given user that is not a client.
+            var activeUserFirm = await _dbContext.User
+                   .Where(u => u.Id == userId)
+                   .Include(u => u.ActiveUserFirm)
+                        .ThenInclude(uf => uf.BankAccounts)
+                   .Select(u => u.ActiveUserFirm)
+                   .FirstOrDefaultAsync();
 
-            var userFirm = await _dbContext.UserFirm
-                .Include(ba => ba.BankAccounts)
-                .FirstOrDefaultAsync(uf => uf.UserId.Equals(userId) && uf.FirmId == user.ActiveFirmId && !uf.IsClient);
-
-            if (userFirm == null)
+            if (activeUserFirm == null)
             {
-                throw new Exception("The UserFirm relationship was not found.");
+                throw new Exception("The active UserFirm relationship was not found or the user is a client.");
             }
 
-            var bankAccountDtos = _mapper.Map<List<BankAccountDto>>(userFirm.BankAccounts);
+            var bankAccountDtos = _mapper.Map<List<BankAccountDto>>(activeUserFirm.BankAccounts);
             return bankAccountDtos;
         }
 
@@ -51,11 +52,16 @@ namespace FacturilaAPI.Services.Impl
             else
             {
                 bankAccount = _mapper.Map<BankAccount>(bankAccountDto);
-                bankAccount.UserFirm = _dbContext.UserFirm.Where(u => u.UserId == userId && !u.IsClient).FirstOrDefault();
+                var activeUserFirm = await _dbContext.User
+                    .Where(u => u.Id == userId)
+                        .Include(u => u.ActiveUserFirm)
+                    .Select(u => u.ActiveUserFirm)
+                    .FirstOrDefaultAsync();
+
+                bankAccount.UserFirmId = activeUserFirm!.UserFirmId;
                 await _dbContext.BankAccount.AddAsync(bankAccount);
             }
             await _dbContext.SaveChangesAsync();
-
             return _mapper.Map<BankAccountDto>(bankAccount);
         }
     }
