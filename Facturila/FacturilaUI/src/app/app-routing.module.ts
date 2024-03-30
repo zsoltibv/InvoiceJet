@@ -9,6 +9,7 @@ import { AuthService } from "./services/auth.service";
 import { ClientsComponent } from "./components/firm/clients/clients.component";
 import { BankAccountsComponent } from "./components/firm/bank-accounts/bank-accounts.component";
 import { ProductsComponent } from "./components/products/products.component";
+import { DocumentSeriesComponent } from "./components/document-series/document-series.component";
 
 const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -18,6 +19,7 @@ const routes: Routes = [
   { path: 'dashboard/clients', component: ClientsComponent, canActivate: [AuthGuard] },
   { path: 'dashboard/bank-accounts', component: BankAccountsComponent, canActivate: [AuthGuard] },
   { path: 'dashboard/products', component: ProductsComponent, canActivate: [AuthGuard] },
+  { path: 'dashboard/document-series', component: DocumentSeriesComponent, canActivate: [AuthGuard] },
   { path: '**', component: LoginComponent },
 ];
 

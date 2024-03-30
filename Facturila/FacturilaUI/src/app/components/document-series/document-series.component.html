@@ -1,0 +1,84 @@
+<mat-progress-bar mode="query" *ngIf="!documentSeriesList"></mat-progress-bar>
+<div class="inner-container">
+  <div class="app-header">
+    <div class="left">
+      <h1>Document Series</h1>
+    </div>
+    <div class="right">
+      <button
+        mat-raised-button
+        color="primary"
+        (click)="openNewDocumentSeriesDialog()"
+      >
+        <mat-icon>add</mat-icon>
+        <span>New Series</span>
+      </button>
+      <button mat-raised-button color="warn" (click)="deleteSelected()">
+        <mat-icon>delete</mat-icon>
+        <span>Delete Selected</span>
+      </button>
+    </div>
+  </div>
+  <table
+    mat-table
+    [dataSource]="dataSource"
+    matSort
+    (matSortChange)="announceSortChange($event)"
+    class="mat-elevation-z2"
+  >
+    <!-- Checkbox Column -->
+    <ng-container matColumnDef="select">
+      <th mat-header-cell *matHeaderCellDef>
+        <mat-checkbox
+          color="primary"
+          (change)="$event ? masterToggle() : null"
+          [checked]="selection.hasValue() && isAllSelected()"
+          [indeterminate]="selection.hasValue() && !isAllSelected()"
+        >
+        </mat-checkbox>
+      </th>
+      <td mat-cell *matCellDef="let row">
+        <mat-checkbox
+          color="primary"
+          (click)="$event.stopPropagation()"
+          (change)="$event ? selection.toggle(row) : null"
+          [checked]="selection.isSelected(row)"
+        >
+        </mat-checkbox>
+      </td>
+    </ng-container>
+
+    <!-- Series Name Column -->
+    <ng-container matColumnDef="seriesName">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Series Name</th>
+      <td mat-cell *matCellDef="let row">{{ row.seriesName }}</td>
+    </ng-container>
+
+    <!-- First Number Column -->
+    <ng-container matColumnDef="firstNumber">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>First Number</th>
+      <td mat-cell *matCellDef="let row">{{ row.firstNumber }}</td>
+    </ng-container>
+
+    <!-- Current Number Column -->
+    <ng-container matColumnDef="currentNumber">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Current Number</th>
+      <td mat-cell *matCellDef="let row">{{ row.currentNumber }}</td>
+    </ng-container>
+
+    <!-- Is Default Column -->
+    <ng-container matColumnDef="isDefault">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Is Default</th>
+      <td mat-cell *matCellDef="let row">
+        <mat-checkbox [checked]="row.isDefault" disabled></mat-checkbox>
+      </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr
+      mat-row
+      *matRowDef="let row; columns: displayedColumns"
+      (click)="openEditDocumentSeriesDialog(row)"
+    ></tr>
+  </table>
+</div>

@@ -22,6 +22,8 @@ import { BankAccountsComponent } from './components/firm/bank-accounts/bank-acco
 import { AddOrEditBankAccountDialogComponent } from './components/firm/bank-accounts/add-or-edit-bank-account-dialog/add-or-edit-bank-account-dialog.component';
 import { ProductsComponent } from './components/products/products.component';
 import { AddOrEditProductDialogComponent } from './components/products/add-or-edit-product-dialog/add-or-edit-product-dialog.component';
+import { DocumentSeriesComponent } from './components/document-series/document-series.component';
+import { AddOrEditDocumentSeriesDialogComponent } from './components/document-series/add-or-edit-document-series-dialog/add-or-edit-document-series-dialog.component';
 
 @NgModule({
   declarations: [
@@ -38,6 +40,8 @@ import { AddOrEditProductDialogComponent } from './components/products/add-or-ed
     AddOrEditBankAccountDialogComponent,
     ProductsComponent,
     AddOrEditProductDialogComponent,
+    DocumentSeriesComponent,
+    AddOrEditDocumentSeriesDialogComponent,
   ],
   imports: [
     BrowserModule,

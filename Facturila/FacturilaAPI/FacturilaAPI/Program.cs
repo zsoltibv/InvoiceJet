@@ -72,7 +72,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-await DocumentTypeSeeder.Seed(app);
+await DbSeeder.SeedDocumentTypes(app);
+await DbSeeder.SeedDocumentSeries(app);
 
 app.UseCors("NgOrigins");
 

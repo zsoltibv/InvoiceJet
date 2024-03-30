@@ -90,7 +90,7 @@ export class SidebarComponent {
           { name: 'Date Firma', route: '/dashboard/firm-details', },
           { name: 'Date Cont', route: '/', },
           { name: 'Conturi Bancare', route: '/dashboard/bank-accounts', },
-          { name: 'Serii Documente', route: '/', },
+          { name: 'Serii Documente', route: '/dashboard/document-series', },
         ],
         icon: 'settings'
       },
