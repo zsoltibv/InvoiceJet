@@ -23,5 +23,7 @@ namespace FacturilaAPI.Config
         public DbSet<BankAccount> BankAccount { get; set; }
         public DbSet<UserFirm> UserFirm { get; set; }
         public DbSet<Product> Product { get; set; }
+        public DbSet<DocumentType> DocumentType { get; set; }
+        public DbSet<DocumentSeries> DocumentSeries { get; set; }
     }
 }

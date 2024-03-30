@@ -10,6 +10,8 @@ using Swashbuckle.AspNetCore.Filters;
 using System.Text;
 using Microsoft.Identity.Client;
 using Microsoft.AspNetCore.Hosting;
+using FacturilaAPI;
+using FacturilaAPI.Utils;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -69,6 +71,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+await DocumentTypeSeeder.Seed(app);
 
 app.UseCors("NgOrigins");
 
