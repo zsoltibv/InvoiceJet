@@ -15,4 +15,5 @@ public class UserFirm
     public virtual Firm Firm { get; set; } = null!;
 
     public virtual ICollection<BankAccount>? BankAccounts { get; set; }
+    public virtual ICollection<Product>? Products { get; set; }
 }

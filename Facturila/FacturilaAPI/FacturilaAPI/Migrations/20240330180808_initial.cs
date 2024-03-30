@@ -47,6 +47,24 @@ namespace FacturilaAPI.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Product",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Price = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    ContainsTVA = table.Column<bool>(type: "bit", nullable: false),
+                    UnitOfMeassurement = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    TVAValue = table.Column<int>(type: "int", nullable: false),
+                    UserFirmId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Product", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "User",
                 columns: table => new
                 {
@@ -96,6 +114,11 @@ namespace FacturilaAPI.Migrations
                 column: "UserFirmId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Product_UserFirmId",
+                table: "Product",
+                column: "UserFirmId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_User_ActiveUserFirmId",
                 table: "User",
                 column: "ActiveUserFirmId");
@@ -119,6 +142,14 @@ namespace FacturilaAPI.Migrations
                 onDelete: ReferentialAction.Cascade);
 
             migrationBuilder.AddForeignKey(
+                name: "FK_Product_UserFirm_UserFirmId",
+                table: "Product",
+                column: "UserFirmId",
+                principalTable: "UserFirm",
+                principalColumn: "UserFirmId",
+                onDelete: ReferentialAction.Cascade);
+
+            migrationBuilder.AddForeignKey(
                 name: "FK_User_UserFirm_ActiveUserFirmId",
                 table: "User",
                 column: "ActiveUserFirmId",
@@ -135,6 +166,9 @@ namespace FacturilaAPI.Migrations
 
             migrationBuilder.DropTable(
                 name: "BankAccount");
+
+            migrationBuilder.DropTable(
+                name: "Product");
 
             migrationBuilder.DropTable(
                 name: "UserFirm");

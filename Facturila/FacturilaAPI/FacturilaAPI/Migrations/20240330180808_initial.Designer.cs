@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FacturilaAPI.Migrations
 {
     [DbContext(typeof(FacturilaDbContext))]
-    [Migration("20240325211723_product")]
-    partial class product
+    [Migration("20240330180808_initial")]
+    partial class initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -94,6 +94,40 @@ namespace FacturilaAPI.Migrations
                     b.ToTable("Firm");
                 });
 
+            modelBuilder.Entity("FacturilaAPI.Models.Entity.Product", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("ContainsTVA")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal>("Price")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("TVAValue")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UnitOfMeassurement")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("UserFirmId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserFirmId");
+
+                    b.ToTable("Product");
+                });
+
             modelBuilder.Entity("FacturilaAPI.Models.Entity.User", b =>
                 {
                     b.Property<Guid>("Id")
@@ -167,6 +201,17 @@ namespace FacturilaAPI.Migrations
                     b.Navigation("UserFirm");
                 });
 
+            modelBuilder.Entity("FacturilaAPI.Models.Entity.Product", b =>
+                {
+                    b.HasOne("FacturilaAPI.Models.Entity.UserFirm", "UserFirm")
+                        .WithMany("Products")
+                        .HasForeignKey("UserFirmId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("UserFirm");
+                });
+
             modelBuilder.Entity("FacturilaAPI.Models.Entity.User", b =>
                 {
                     b.HasOne("FacturilaAPI.Models.Entity.UserFirm", "ActiveUserFirm")
@@ -208,6 +253,8 @@ namespace FacturilaAPI.Migrations
             modelBuilder.Entity("FacturilaAPI.Models.Entity.UserFirm", b =>
                 {
                     b.Navigation("BankAccounts");
+
+                    b.Navigation("Products");
                 });
 #pragma warning restore 612, 618
         }

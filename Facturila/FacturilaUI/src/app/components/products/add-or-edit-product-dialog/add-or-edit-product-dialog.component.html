@@ -1,0 +1,65 @@
+<div class="dialog-container">
+  <mat-card class="dialog-card" mat-elevation-z8>
+    <h1>{{ isEditMode ? "Edit Product" : "New Product" }}</h1>
+    <form
+      [formGroup]="productForm"
+      (ngSubmit)="onSubmit()"
+      class="example-form"
+    >
+      <!-- Product Name Field -->
+      <div class="row">
+        <mat-label>Name</mat-label>
+        <mat-form-field appearance="outline">
+          <input matInput formControlName="name" required />
+          <mat-error *ngIf="productForm.get('name')?.errors?.['required']">
+            Name is required
+          </mat-error>
+        </mat-form-field>
+      </div>
+
+      <!-- Price Field -->
+      <div class="row">
+        <mat-label>Price</mat-label>
+        <mat-form-field appearance="outline">
+          <input type="number" matInput formControlName="price" required />
+          <mat-error *ngIf="productForm.get('price')?.errors?.['required']">
+            Price is required
+          </mat-error>
+        </mat-form-field>
+      </div>
+
+      <!-- Unit Of Measurement Field -->
+      <div class="row">
+        <mat-label>Unit of Measurement</mat-label>
+        <mat-form-field appearance="outline">
+          <input matInput formControlName="unitOfMeasurement" />
+        </mat-form-field>
+      </div>
+
+      <!-- TVA Value Field -->
+      <div class="row">
+        <mat-label>TVA Value (%)</mat-label>
+        <mat-form-field appearance="outline">
+          <input type="number" matInput formControlName="tvaValue" />
+        </mat-form-field>
+      </div>
+
+      <!-- Contains TVA Checkbox -->
+      <div class="row">
+        <mat-checkbox formControlName="containsTVA" color="primary"
+          >Contains TVA</mat-checkbox
+        >
+      </div>
+
+      <!-- Error Message Display -->
+      <div *ngIf="errorMessage" class="p-error">{{ errorMessage }}</div>
+
+      <!-- Submit Button -->
+      <div class="controls">
+        <button mat-raised-button color="primary" type="submit">
+          {{ isEditMode ? "Update" : "Submit" }}
+        </button>
+      </div>
+    </form>
+  </mat-card>
+</div>

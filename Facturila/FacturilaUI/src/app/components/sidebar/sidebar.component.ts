@@ -80,7 +80,7 @@ export class SidebarComponent {
         name: 'Nomenclatoare',
         children: [
           { name: 'Clienti', route: '/dashboard/clients' },
-          { name: 'Produse', route: '/', },
+          { name: 'Produse', route: '/dashboard/products', },
         ],
         icon: 'inventory'
       },

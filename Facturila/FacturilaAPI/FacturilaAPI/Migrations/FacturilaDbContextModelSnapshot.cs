@@ -201,7 +201,7 @@ namespace FacturilaAPI.Migrations
             modelBuilder.Entity("FacturilaAPI.Models.Entity.Product", b =>
                 {
                     b.HasOne("FacturilaAPI.Models.Entity.UserFirm", "UserFirm")
-                        .WithMany()
+                        .WithMany("Products")
                         .HasForeignKey("UserFirmId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -250,6 +250,8 @@ namespace FacturilaAPI.Migrations
             modelBuilder.Entity("FacturilaAPI.Models.Entity.UserFirm", b =>
                 {
                     b.Navigation("BankAccounts");
+
+                    b.Navigation("Products");
                 });
 #pragma warning restore 612, 618
         }
