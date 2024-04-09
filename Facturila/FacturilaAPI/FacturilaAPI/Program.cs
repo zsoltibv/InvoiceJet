@@ -26,6 +26,7 @@ builder.Services.AddScoped<IFirmService, FirmService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IBankAccountService, BankAccountService>();
 builder.Services.AddScoped<IProductService, ProductService>();
+builder.Services.AddScoped<IDocumentSeriesService, DocumentSeriesService>();
 
 builder.Services.AddAutoMapper(typeof(Program));
 builder.Services.AddControllers();
@@ -73,7 +74,6 @@ if (app.Environment.IsDevelopment())
 }
 
 await DbSeeder.SeedDocumentTypes(app);
-await DbSeeder.SeedDocumentSeries(app);
 
 app.UseCors("NgOrigins");
 

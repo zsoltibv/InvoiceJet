@@ -10,7 +10,7 @@ namespace FacturilaAPI.Models.Entity
         [Column(TypeName = "decimal(18,2)")]
         public decimal Price { get; set; }
         public bool ContainsTVA { get; set; }
-        public string? UnitOfMeassurement { get; set;}
+        public string? UnitOfMeasurement { get; set;}
         public int TVAValue { get; set; }
 
         public int UserFirmId { get; set; }

@@ -9,6 +9,9 @@
         <mat-icon>add</mat-icon>
         <span>New client</span>
       </button>
+      <button mat-raised-button color="warn" (click)="deleteSelected()">
+        <mat-icon>delete</mat-icon>
+      </button>
     </div>
   </div>
   <table
@@ -18,6 +21,27 @@
     (matSortChange)="announceSortChange($event)"
     class="mat-elevation-z2"
   >
+    <!-- Checkbox Column -->
+    <ng-container matColumnDef="select">
+      <th mat-header-cell *matHeaderCellDef class="select-column">
+        <mat-checkbox
+          color="primary"
+          (change)="$event ? masterToggle() : null"
+          [checked]="selection.hasValue() && isAllSelected()"
+          [indeterminate]="selection.hasValue() && !isAllSelected()"
+        >
+        </mat-checkbox>
+      </th>
+      <td mat-cell *matCellDef="let row" class="select-column">
+        <mat-checkbox
+          color="primary"
+          (click)="$event.stopPropagation()"
+          (change)="$event ? selection.toggle(row) : null"
+          [checked]="selection.isSelected(row)"
+        >
+        </mat-checkbox>
+      </td>
+    </ng-container>
     <!-- Name Column -->
     <ng-container matColumnDef="name">
       <th

@@ -8,6 +8,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using System.IdentityModel.Tokens.Jwt;
 using BC = BCrypt.Net.BCrypt;
+using FacturilaAPI.Utils;
 
 namespace FacturilaAPI.Services.Impl
 {
@@ -51,7 +52,6 @@ namespace FacturilaAPI.Services.Impl
             }
 
             string token = CreateToken(user);
-
             return token;
         }
 

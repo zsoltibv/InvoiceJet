@@ -1,5 +1,5 @@
 import { LiveAnnouncer } from "@angular/cdk/a11y";
-import { Component, ViewChild } from '@angular/core';
+import { Component, ViewChild } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
 import { MatSort } from "@angular/material/sort";
 import { MatTableDataSource } from "@angular/material/table";
@@ -12,32 +12,38 @@ import { Currency } from "src/app/enums/Currency";
 import { SelectionModel } from "@angular/cdk/collections";
 
 @Component({
-  selector: 'app-bank-accounts',
-  templateUrl: './bank-accounts.component.html',
-  styleUrls: ['./bank-accounts.component.scss']
+  selector: "app-bank-accounts",
+  templateUrl: "./bank-accounts.component.html",
+  styleUrls: ["./bank-accounts.component.scss"],
 })
 export class BankAccountsComponent {
-  displayedColumns: string[] = ['select', 'bankName', 'iban', 'currency', 'isActive'];
+  displayedColumns: string[] = [
+    "select",
+    "bankName",
+    "iban",
+    "currency",
+    "isActive",
+  ];
   dataSource = new MatTableDataSource<IBankAccount>();
   selection = new SelectionModel<IBankAccount>(true, []);
   bankAccounts!: IBankAccount[];
   currencies: ICurrency[] = [
     {
       value: Currency.Ron,
-      name: 'RON'
+      name: "RON",
     },
     {
       value: Currency.Eur,
-      name: 'EUR'
-    }
-  ]
+      name: "EUR",
+    },
+  ];
 
   constructor(
     private _liveAnnouncer: LiveAnnouncer,
     public dialog: MatDialog,
     private bankAccountService: BankAccountService,
     private authService: AuthService
-  ) { }
+  ) {}
 
   @ViewChild(MatSort) sort!: MatSort;
 
@@ -46,10 +52,12 @@ export class BankAccountsComponent {
   }
 
   getUserBankAccounts(): void {
-    this.bankAccountService.getUserFirmBankAccounts(this.authService.userId).subscribe((accounts) => {
-      this.bankAccounts = this.mapCurrencyNames(accounts);
-      this.dataSource.data = this.bankAccounts;
-    });
+    this.bankAccountService
+      .getUserFirmBankAccounts(this.authService.userId)
+      .subscribe((accounts) => {
+        this.bankAccounts = this.mapCurrencyNames(accounts);
+        this.dataSource.data = this.bankAccounts;
+      });
   }
 
   ngAfterViewInit() {
@@ -60,13 +68,12 @@ export class BankAccountsComponent {
     if (sortState.direction) {
       this._liveAnnouncer.announce(`Sorted ${sortState.direction}ending`);
     } else {
-      this._liveAnnouncer.announce('Sorting cleared');
+      this._liveAnnouncer.announce("Sorting cleared");
     }
   }
 
   openNewBankAccountDialog() {
-    const dialogRef = this.dialog.open(AddOrEditBankAccountDialogComponent, {
-    });
+    const dialogRef = this.dialog.open(AddOrEditBankAccountDialogComponent, {});
 
     dialogRef.afterClosed().subscribe(() => {
       this.getUserBankAccounts();
@@ -75,20 +82,22 @@ export class BankAccountsComponent {
 
   openEditBankAccountDialog(bankAccount: IBankAccount) {
     const dialogRef = this.dialog.open(AddOrEditBankAccountDialogComponent, {
-      data: bankAccount
+      data: bankAccount,
     });
 
-    dialogRef.afterClosed().subscribe(result => {
+    dialogRef.afterClosed().subscribe((result) => {
       this.getUserBankAccounts();
     });
   }
 
   mapCurrencyNames(accounts: IBankAccount[]): IBankAccount[] {
-    return accounts.map(account => {
-      const currency = this.currencies.find(c => c.value === account.currency);
+    return accounts.map((account) => {
+      const currency = this.currencies.find(
+        (c) => c.value === account.currency
+      );
       return {
         ...account,
-        currencyName: currency ? currency.name : 'Unknown'
+        currencyName: currency ? currency.name : "Unknown",
       };
     });
   }
@@ -101,13 +110,13 @@ export class BankAccountsComponent {
 
   /** Selects all rows if they are not all selected; otherwise clear selection. */
   masterToggle() {
-    this.isAllSelected() ?
-      this.selection.clear() :
-      this.dataSource.data.forEach(row => this.selection.select(row));
+    this.isAllSelected()
+      ? this.selection.clear()
+      : this.dataSource.data.forEach((row) => this.selection.select(row));
   }
 
   deleteSelected() {
-    const selectedIds = this.selection.selected.map(s => s.id); // Get IDs of selected items
+    const selectedIds = this.selection.selected.map((s) => s.id); // Get IDs of selected items
     console.log(selectedIds); // Implement deletion logic here
     // After deletion, update the dataSource and clear selection
     // this.dataSource.data = newData;

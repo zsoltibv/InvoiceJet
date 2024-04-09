@@ -1,5 +1,6 @@
 ﻿using FacturilaAPI.Models.Dto;
 using FacturilaAPI.Services;
+using FacturilaAPI.Utils;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Data;

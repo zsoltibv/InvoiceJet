@@ -1,5 +1,6 @@
 ﻿using FacturilaAPI.Config;
 using FacturilaAPI.Models.Entity;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using System.Diagnostics.Metrics;
@@ -29,16 +30,12 @@ namespace FacturilaAPI.Utils
             }
         }
 
-        public static async Task SeedDocumentSeries(IApplicationBuilder applicationBuilder)
+        public static async Task SeedDocumentSeries(FacturilaDbContext context, int userFirmId)
         {
-            using (var serviceScope = applicationBuilder.ApplicationServices.CreateScope())
+            context.Database.EnsureCreated();
+            if (!context.DocumentSeries.Any())
             {
-                var context = serviceScope.ServiceProvider.GetService<FacturilaDbContext>();
-                context.Database.EnsureCreated();
-
-                if (!context.DocumentSeries.Any())
-                {
-                    var documentSeries = new List<DocumentSeries> {
+                var documentSeries = new List<DocumentSeries> {
                         new DocumentSeries
                         {
                             SeriesName = DateTime.Now.Year.ToString(),
@@ -47,7 +44,8 @@ namespace FacturilaAPI.Utils
                             IsDefault = true,
                             DocumentType = await context.DocumentType
                                 .Where(d => d.Name.Equals("Factura"))
-                                .FirstOrDefaultAsync()
+                                .FirstOrDefaultAsync(),
+                            UserFirmId = userFirmId
                         },
                         new DocumentSeries
                         {
@@ -57,7 +55,8 @@ namespace FacturilaAPI.Utils
                             IsDefault = true,
                             DocumentType = await context.DocumentType
                                 .Where(d => d.Name.Equals("Factura Storno"))
-                                .FirstOrDefaultAsync()
+                                .FirstOrDefaultAsync(),
+                            UserFirmId = userFirmId
                         },
                         new DocumentSeries
                         {
@@ -67,13 +66,13 @@ namespace FacturilaAPI.Utils
                             IsDefault = true,
                             DocumentType = await context.DocumentType
                                 .Where(d => d.Name.Equals("Proforma"))
-                                .FirstOrDefaultAsync()
+                                .FirstOrDefaultAsync(),
+                            UserFirmId = userFirmId
                         },
                     };
 
-                    context.DocumentSeries.AddRange(documentSeries);
-                    await context.SaveChangesAsync();
-                }
+                context.DocumentSeries.AddRange(documentSeries);
+                await context.SaveChangesAsync();
             }
         }
     }

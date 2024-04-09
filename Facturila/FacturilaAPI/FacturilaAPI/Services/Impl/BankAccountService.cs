@@ -29,7 +29,7 @@ namespace FacturilaAPI.Services.Impl
 
             if (activeUserFirm == null)
             {
-                throw new Exception("The active UserFirm relationship was not found or the user is a client.");
+                return new List<BankAccountDto>();
             }
 
             var bankAccountDtos = _mapper.Map<List<BankAccountDto>>(activeUserFirm.BankAccounts);

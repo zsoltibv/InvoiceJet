@@ -14,7 +14,6 @@
         <span>New Series</span>
       </button>
       <button mat-raised-button color="warn" (click)="deleteSelected()">
-        <mat-icon>delete</mat-icon>
         <span>Delete Selected</span>
       </button>
     </div>
@@ -28,7 +27,7 @@
   >
     <!-- Checkbox Column -->
     <ng-container matColumnDef="select">
-      <th mat-header-cell *matHeaderCellDef>
+      <th mat-header-cell *matHeaderCellDef class="select-column">
         <mat-checkbox
           color="primary"
           (change)="$event ? masterToggle() : null"
@@ -37,7 +36,7 @@
         >
         </mat-checkbox>
       </th>
-      <td mat-cell *matCellDef="let row">
+      <td mat-cell *matCellDef="let row" class="select-column">
         <mat-checkbox
           color="primary"
           (click)="$event.stopPropagation()"

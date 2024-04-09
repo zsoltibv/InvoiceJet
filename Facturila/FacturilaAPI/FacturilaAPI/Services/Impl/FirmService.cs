@@ -3,6 +3,7 @@ using FacturilaAPI.Config;
 using FacturilaAPI.Exceptions;
 using FacturilaAPI.Models.Dto;
 using FacturilaAPI.Models.Entity;
+using FacturilaAPI.Utils;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json.Linq;
 using System.Net;
@@ -136,6 +137,7 @@ namespace FacturilaAPI.Services.Impl
                     existingUserFirm.IsClient = isClient;
                 }
             }
+            await _dbContext.SaveChangesAsync();
 
             if (firmDto.Id == 0 && !isClient)
             {
@@ -143,7 +145,7 @@ namespace FacturilaAPI.Services.Impl
                     .Where(u => u.Id == userId)
                     .FirstOrDefaultAsync();
 
-                if (existingUser != null)
+                if (existingUser is not null)
                 {
                     var activeUserFirm = await _dbContext.UserFirm
                         .Where(uf => uf.UserId == userId && uf.FirmId == firm.Id)
@@ -164,6 +166,7 @@ namespace FacturilaAPI.Services.Impl
                     else
                     {
                         existingUser.ActiveUserFirmId = activeUserFirm.UserFirmId;
+                        await DbSeeder.SeedDocumentSeries(_dbContext, activeUserFirm.UserFirmId);
                     }
                 }
                 else
@@ -187,7 +190,7 @@ namespace FacturilaAPI.Services.Impl
 
             if (activeUserFirm == null)
             {
-                return null;
+                return new FirmDto();
             }
 
             return _mapper.Map<FirmDto>(activeUserFirm);

@@ -1,16 +1,15 @@
 import { HttpClient } from "@angular/common/http";
-import { Injectable } from '@angular/core';
+import { Injectable } from "@angular/core";
 import { environment } from "environment";
 import { IDocumentSeries } from "../models/IDocumentSeries";
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: "root",
 })
 export class DocumentSeriesService {
-
   private baseUrl = environment.apiUrl;
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {}
 
   public getDocumentSeriesForUserId(userId: string) {
     return this.http.get<IDocumentSeries[]>(

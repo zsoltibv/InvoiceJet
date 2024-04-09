@@ -1,22 +1,23 @@
-import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { MatDialog, MatDialogModule } from "@angular/material/dialog";
+import { NgModule } from "@angular/core";
+import { CommonModule } from "@angular/common";
 
-import { MatButtonModule } from '@angular/material/button';
-import { MatToolbarModule } from '@angular/material/toolbar';
-import { MatIconModule } from '@angular/material/icon';
-import { MatCardModule } from '@angular/material/card';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatMenuModule } from '@angular/material/menu';
-import { MatTreeModule } from '@angular/material/tree';
-import { MatSidenavModule } from '@angular/material/sidenav';
-import { MatSelectModule } from '@angular/material/select';
-import { MatSnackBarModule } from '@angular/material/snack-bar';
-import { MatProgressBarModule } from '@angular/material/progress-bar';
-import { MatTableModule } from '@angular/material/table';
-import { MatSortModule } from '@angular/material/sort';
-import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatButtonModule } from "@angular/material/button";
+import { MatToolbarModule } from "@angular/material/toolbar";
+import { MatIconModule } from "@angular/material/icon";
+import { MatCardModule } from "@angular/material/card";
+import { MatFormFieldModule } from "@angular/material/form-field";
+import { MatInputModule } from "@angular/material/input";
+import { MatMenuModule } from "@angular/material/menu";
+import { MatTreeModule } from "@angular/material/tree";
+import { MatSidenavModule } from "@angular/material/sidenav";
+import { MatSelectModule } from "@angular/material/select";
+import { MatSnackBarModule } from "@angular/material/snack-bar";
+import { MatProgressBarModule } from "@angular/material/progress-bar";
+import { MatTableModule } from "@angular/material/table";
+import { MatSortModule } from "@angular/material/sort";
+import { MatCheckboxModule } from "@angular/material/checkbox";
+import { MatDividerModule } from "@angular/material/divider";
 
 @NgModule({
   imports: [
@@ -36,7 +37,8 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
     MatSortModule,
     MatTableModule,
     MatDialogModule,
-    MatCheckboxModule
+    MatCheckboxModule,
+    MatDividerModule,
   ],
   exports: [
     MatButtonModule,
@@ -54,7 +56,8 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
     MatSortModule,
     MatTableModule,
     MatDialogModule,
-    MatCheckboxModule
-  ]
+    MatCheckboxModule,
+    MatDividerModule,
+  ],
 })
-export class MaterialModule { }
+export class MaterialModule {}

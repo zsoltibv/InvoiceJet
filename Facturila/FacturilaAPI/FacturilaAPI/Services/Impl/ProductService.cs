@@ -68,7 +68,7 @@ namespace FacturilaAPI.Services.Impl
                    .FirstOrDefaultAsync();
             if (activeUserFirm == null)
             {
-                return null;
+                return new List<ProductDto>();
             }
             var productDtos = _mapper.Map<ICollection<ProductDto>>(activeUserFirm.Products);
             return productDtos;

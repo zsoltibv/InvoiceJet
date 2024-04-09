@@ -14,10 +14,15 @@
     <ng-container *ngIf="isLoggedIn()">
       <button mat-button [matMenuTriggerFor]="userMenu" class="profileButton">
         <span>
-          {{ nameInitials }}
+          {{ userInfo.initials }}
         </span>
       </button>
       <mat-menu #userMenu="matMenu">
+        <div mat-menu-item class="mat-menu-item" style="pointer-events: none">
+          <span class="fullName">{{ userInfo.fullName }}</span>
+          <p>{{ userInfo.email }}</p>
+        </div>
+        <mat-divider></mat-divider>
         <button mat-menu-item (click)="logout()">
           <mat-icon>logout</mat-icon>
           <span>Logout</span>
