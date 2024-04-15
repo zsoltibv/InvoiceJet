@@ -10,8 +10,8 @@
       <mat-card-content>
         <!-- Name Field -->
         <div class="row">
-          <mat-label>Firm Name</mat-label>
           <mat-form-field appearance="outline">
+            <mat-label>Firm Name</mat-label>
             <input matInput formControlName="firmName" required />
             <mat-error
               *ngIf="firmDetailsForm.get('firmName')?.errors?.['required']"
@@ -23,8 +23,8 @@
 
         <!-- CUI Value Field -->
         <div class="row">
-          <mat-label>CUI Value</mat-label>
           <mat-form-field appearance="outline" class="example-full-width">
+            <mat-label>CUI Value</mat-label>
             <input matInput formControlName="cuiValue" required />
             <button
               type="button"
@@ -45,8 +45,8 @@
 
         <!-- Registration Company Field -->
         <div class="row">
-          <mat-label>Registration Number (RegCom)</mat-label>
           <mat-form-field appearance="outline">
+            <mat-label>Registration Number (RegCom)</mat-label>
             <input matInput formControlName="regCom" required />
             <mat-error
               *ngIf="firmDetailsForm.get('regCom')?.errors?.['required']"
@@ -56,8 +56,8 @@
           </mat-form-field>
 
           <!-- Address -->
-          <mat-label>Address</mat-label>
           <mat-form-field appearance="outline">
+            <mat-label>Address</mat-label>
             <input matInput formControlName="address" required />
             <mat-error
               *ngIf="firmDetailsForm.get('address')?.errors?.['required']"
@@ -67,8 +67,8 @@
           </mat-form-field>
 
           <!-- County -->
-          <mat-label>County</mat-label>
           <mat-form-field appearance="outline">
+            <mat-label>County</mat-label>
             <input matInput formControlName="county" required />
             <mat-error
               *ngIf="firmDetailsForm.get('county')?.errors?.['required']"
@@ -78,8 +78,8 @@
           </mat-form-field>
 
           <!-- City -->
-          <mat-label>City</mat-label>
           <mat-form-field appearance="outline">
+            <mat-label>City</mat-label>
             <input matInput formControlName="city" required />
             <mat-error
               *ngIf="firmDetailsForm.get('city')?.errors?.['required']"

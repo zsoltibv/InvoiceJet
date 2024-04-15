@@ -18,6 +18,8 @@ import { MatTableModule } from "@angular/material/table";
 import { MatSortModule } from "@angular/material/sort";
 import { MatCheckboxModule } from "@angular/material/checkbox";
 import { MatDividerModule } from "@angular/material/divider";
+import { MatDatepickerModule } from "@angular/material/datepicker";
+import { MatNativeDateModule } from "@angular/material/core";
 
 @NgModule({
   imports: [
@@ -39,6 +41,8 @@ import { MatDividerModule } from "@angular/material/divider";
     MatDialogModule,
     MatCheckboxModule,
     MatDividerModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
   ],
   exports: [
     MatButtonModule,
@@ -58,6 +62,8 @@ import { MatDividerModule } from "@angular/material/divider";
     MatDialogModule,
     MatCheckboxModule,
     MatDividerModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
   ],
 })
 export class MaterialModule {}

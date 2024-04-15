@@ -8,8 +8,8 @@
     >
       <!-- Bank Name Field -->
       <div class="row">
-        <mat-label>Bank Name</mat-label>
         <mat-form-field appearance="outline">
+          <mat-label>Bank Name</mat-label>
           <input matInput formControlName="bankName" required />
           <mat-error
             *ngIf="bankAccountForm.get('bankName')?.errors?.['required']"
@@ -21,8 +21,8 @@
 
       <!-- IBAN Field -->
       <div class="row">
-        <mat-label>IBAN</mat-label>
         <mat-form-field appearance="outline">
+          <mat-label>IBAN</mat-label>
           <input matInput formControlName="iban" required />
           <mat-error *ngIf="bankAccountForm.get('iban')?.errors?.['required']">
             IBAN is required
@@ -32,8 +32,8 @@
 
       <!-- Currency Field -->
       <div class="row">
-        <mat-label>Currency</mat-label>
         <mat-form-field appearance="outline">
+          <mat-label>Currency</mat-label>
           <mat-select formControlName="currency" required>
             <mat-option
               *ngFor="let currency of currencies"

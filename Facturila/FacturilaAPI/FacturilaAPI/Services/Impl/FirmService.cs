@@ -67,6 +67,10 @@ namespace FacturilaAPI.Services.Impl
                             {
                                 startIndex = address.IndexOf("BLD.");
                             }
+                            if (startIndex == -1)
+                            {
+                                startIndex = address.IndexOf("CAL.");
+                            }
 
                             if (name != null && cuiValue != null && regCom != null && address != null)
                             {

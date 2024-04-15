@@ -1,7 +1,10 @@
-import { Component, Injectable, ViewChild } from '@angular/core';
-import { BehaviorSubject, Observable, Subscription } from 'rxjs';
-import { MatTreeFlatDataSource, MatTreeFlattener } from '@angular/material/tree';
-import { FlatTreeControl } from '@angular/cdk/tree';
+import { Component, Injectable, ViewChild } from "@angular/core";
+import { BehaviorSubject, Observable, Subscription } from "rxjs";
+import {
+  MatTreeFlatDataSource,
+  MatTreeFlattener,
+} from "@angular/material/tree";
+import { FlatTreeControl } from "@angular/cdk/tree";
 import { SidebarService } from "src/app/services/sidebar.service";
 import { Router } from "@angular/router";
 import { MatInput } from "@angular/material/input";
@@ -22,14 +25,14 @@ interface FlatNode {
 }
 
 @Component({
-  selector: 'app-sidebar',
-  templateUrl: './sidebar.component.html',
-  styleUrls: ['./sidebar.component.scss'],
+  selector: "app-sidebar",
+  templateUrl: "./sidebar.component.html",
+  styleUrls: ["./sidebar.component.scss"],
 })
 export class SidebarComponent {
   sidebarVisible = true;
   private subscription: Subscription;
-  searchQuery: string = '';
+  searchQuery: string = "";
 
   treeControl: FlatTreeControl<FlatNode>;
   treeFlattener: MatTreeFlattener<FileNode, FlatNode>;
@@ -38,7 +41,7 @@ export class SidebarComponent {
 
   constructor(private sidebarService: SidebarService, private router: Router) {
     this.subscription = this.sidebarService.sidebarVisible.subscribe(
-      visible => (this.sidebarVisible = visible)
+      (visible) => (this.sidebarVisible = visible)
     );
 
     // Initialize the tree flattener
@@ -50,17 +53,20 @@ export class SidebarComponent {
         route: node.route,
         icon: node.icon,
       }),
-      node => node.level,
-      node => node.expandable,
-      node => node.children
+      (node) => node.level,
+      (node) => node.expandable,
+      (node) => node.children
     );
 
     this.treeControl = new FlatTreeControl<FlatNode>(
-      node => node.level,
-      node => node.expandable
+      (node) => node.level,
+      (node) => node.expandable
     );
 
-    this.dataSource = new MatTreeFlatDataSource(this.treeControl, this.treeFlattener);
+    this.dataSource = new MatTreeFlatDataSource(
+      this.treeControl,
+      this.treeFlattener
+    );
 
     // Load your data into the dataSource
     this.loadData();
@@ -74,25 +80,33 @@ export class SidebarComponent {
     // Hardcoded data for demonstration
     this.TREE_DATA = [
       {
-        name: 'Dashboard', route: '/dashboard', icon: 'dashboard',
+        name: "Dashboard",
+        route: "/dashboard",
+        icon: "dashboard",
       },
       {
-        name: 'Nomenclatoare',
+        name: "Emitere",
         children: [
-          { name: 'Clienti', route: '/dashboard/clients' },
-          { name: 'Produse', route: '/dashboard/products', },
+          { name: "Factura", route: "/dashboard/add-or-edit-invoice" },
         ],
-        icon: 'inventory'
+        icon: "description",
       },
       {
-        name: 'Setari',
+        name: "Nomenclatoare",
         children: [
-          { name: 'Date Firma', route: '/dashboard/firm-details', },
-          { name: 'Date Cont', route: '/', },
-          { name: 'Conturi Bancare', route: '/dashboard/bank-accounts', },
-          { name: 'Serii Documente', route: '/dashboard/document-series', },
+          { name: "Clienti", route: "/dashboard/clients" },
+          { name: "Produse", route: "/dashboard/products" },
         ],
-        icon: 'settings'
+        icon: "inventory",
+      },
+      {
+        name: "Setari",
+        children: [
+          { name: "Date Firma", route: "/dashboard/firm-details" },
+          { name: "Conturi Bancare", route: "/dashboard/bank-accounts" },
+          { name: "Serii Documente", route: "/dashboard/document-series" },
+        ],
+        icon: "settings",
       },
     ];
 
@@ -126,7 +140,10 @@ export class SidebarComponent {
       }
 
       // Determine if the current node or any of its filtered children match the search text
-      if (node.name.toLowerCase().includes(searchText) || (filteredNode.children && filteredNode.children.length > 0)) {
+      if (
+        node.name.toLowerCase().includes(searchText) ||
+        (filteredNode.children && filteredNode.children.length > 0)
+      ) {
         filtered.push(filteredNode);
       }
 
@@ -135,7 +152,9 @@ export class SidebarComponent {
   }
 
   toggleNode(node: any): void {
-    this.treeControl.isExpanded(node) ? this.treeControl.collapse(node) : this.treeControl.expand(node);
+    this.treeControl.isExpanded(node)
+      ? this.treeControl.collapse(node)
+      : this.treeControl.expand(node);
   }
 
   isActiveRoute(nodeRoute: string): boolean {
@@ -143,7 +162,7 @@ export class SidebarComponent {
   }
 
   clearSearch() {
-    this.searchQuery = '';
-    this.filterTree({ target: { value: '' } } as any);
+    this.searchQuery = "";
+    this.filterTree({ target: { value: "" } } as any);
   }
 }
