@@ -7,6 +7,7 @@ import {
   FormGroup,
   Validators,
 } from "@angular/forms";
+import { MatTableDataSource } from "@angular/material/table";
 
 @Component({
   selector: "app-add-or-edit-invoice",
@@ -14,15 +15,15 @@ import {
   styleUrls: ["./add-or-edit-invoice.component.scss"],
 })
 export class AddOrEditInvoiceComponent {
+  dataSource = new MatTableDataSource();
   invoiceForm!: FormGroup;
   displayedColumns: string[] = [
-    "index",
     "name",
     "price",
     "unitOfMeasurement",
     "tvaValue",
     "containsTVA",
-    "delete",
+    "actions",
   ];
 
   seriesList = [
@@ -41,14 +42,19 @@ export class AddOrEditInvoiceComponent {
       serieSiNumar: ["", Validators.required],
       products: this.fb.array([this.createProductGroup()]),
     });
+    this.updateTableData();
+  }
+
+  updateTableData() {
+    this.dataSource.data = this.getControls();
   }
 
   createProductGroup(): FormGroup {
     return this.fb.group({
       name: ["", Validators.required],
       price: [0, [Validators.required, Validators.min(0)]],
-      unitOfMeasurement: ["", Validators.required],
-      tvaValue: [0, [Validators.required, Validators.min(0)]],
+      unitOfMeasurement: ["buc", Validators.required],
+      tvaValue: [19, [Validators.required, Validators.min(0)]],
       containsTVA: [false],
     });
   }
@@ -64,11 +70,12 @@ export class AddOrEditInvoiceComponent {
   addProduct(): void {
     console.log(this.productsFormArray.value);
     this.productsFormArray.push(this.createProductGroup());
+    this.updateTableData();
   }
 
   deleteProduct(index: number): void {
     this.productsFormArray.removeAt(index);
-    console.log("Product deleted", this.productsFormArray.value);
+    this.updateTableData();
   }
 
   onSubmit(): void {

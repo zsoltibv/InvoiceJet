@@ -8,7 +8,7 @@
     >
       <!-- Product Name Field -->
       <div class="row">
-        <mat-form-field appearance="outline">
+        <mat-form-field>
           <mat-label>Name</mat-label>
           <input matInput formControlName="name" required />
           <mat-error *ngIf="productForm.get('name')?.errors?.['required']">
@@ -19,7 +19,7 @@
 
       <!-- Price Field -->
       <div class="row">
-        <mat-form-field appearance="outline">
+        <mat-form-field>
           <mat-label>Price</mat-label>
           <input type="number" matInput formControlName="price" required />
           <mat-error *ngIf="productForm.get('price')?.errors?.['required']">
@@ -30,7 +30,7 @@
 
       <!-- Unit Of Measurement Field -->
       <div class="row">
-        <mat-form-field appearance="outline">
+        <mat-form-field >
           <mat-label>Unit of Measurement</mat-label>
           <input matInput formControlName="unitOfMeasurement" />
         </mat-form-field>
@@ -38,7 +38,7 @@
 
       <!-- TVA Value Field -->
       <div class="row">
-        <mat-form-field appearance="outline">
+        <mat-form-field >
           <mat-label>TVA Value (%)</mat-label>
           <input type="number" matInput formControlName="tvaValue" />
         </mat-form-field>

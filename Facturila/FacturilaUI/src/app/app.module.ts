@@ -26,6 +26,7 @@ import { DocumentSeriesComponent } from "./components/document-series/document-s
 import { AddOrEditDocumentSeriesDialogComponent } from "./components/document-series/add-or-edit-document-series-dialog/add-or-edit-document-series-dialog.component";
 import { InvoicesComponent } from "./components/invoices/invoices.component";
 import { AddOrEditInvoiceComponent } from "./components/invoices/add-or-edit-invoice/add-or-edit-invoice.component";
+import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from "@angular/material/form-field";
 
 @NgModule({
   declarations: [
@@ -58,6 +59,10 @@ import { AddOrEditInvoiceComponent } from "./components/invoices/add-or-edit-inv
   ],
   providers: [
     { provide: JWT_OPTIONS, useValue: JWT_OPTIONS },
+    {
+      provide: MAT_FORM_FIELD_DEFAULT_OPTIONS,
+      useValue: { appearance: "outline" },
+    },
     {
       provide: HTTP_INTERCEPTORS,
       useClass: AuthInterceptor,
