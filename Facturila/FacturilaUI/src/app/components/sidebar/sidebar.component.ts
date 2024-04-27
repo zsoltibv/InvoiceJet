@@ -85,26 +85,26 @@ export class SidebarComponent {
         icon: "dashboard",
       },
       {
-        name: "Emitere",
+        name: "Issue",
         children: [
-          { name: "Factura", route: "/dashboard/add-or-edit-invoice" },
+          { name: "Invoice", route: "/dashboard/add-or-edit-invoice" },
         ],
         icon: "description",
       },
       {
-        name: "Nomenclatoare",
+        name: "Inventory",
         children: [
-          { name: "Clienti", route: "/dashboard/clients" },
-          { name: "Produse", route: "/dashboard/products" },
+          { name: "Clients", route: "/dashboard/clients" },
+          { name: "Products", route: "/dashboard/products" },
         ],
         icon: "inventory",
       },
       {
-        name: "Setari",
+        name: "Settings",
         children: [
-          { name: "Date Firma", route: "/dashboard/firm-details" },
-          { name: "Conturi Bancare", route: "/dashboard/bank-accounts" },
-          { name: "Serii Documente", route: "/dashboard/document-series" },
+          { name: "Firm Details", route: "/dashboard/firm-details" },
+          { name: "Bank Accounts", route: "/dashboard/bank-accounts" },
+          { name: "Document Series", route: "/dashboard/document-series" },
         ],
         icon: "settings",
       },

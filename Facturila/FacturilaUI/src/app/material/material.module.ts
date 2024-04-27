@@ -20,6 +20,7 @@ import { MatCheckboxModule } from "@angular/material/checkbox";
 import { MatDividerModule } from "@angular/material/divider";
 import { MatDatepickerModule } from "@angular/material/datepicker";
 import { MatNativeDateModule } from "@angular/material/core";
+import { MatAutocompleteModule } from "@angular/material/autocomplete";
 
 @NgModule({
   imports: [
@@ -43,6 +44,7 @@ import { MatNativeDateModule } from "@angular/material/core";
     MatDividerModule,
     MatDatepickerModule,
     MatNativeDateModule,
+    MatAutocompleteModule,
   ],
   exports: [
     MatButtonModule,
@@ -64,6 +66,7 @@ import { MatNativeDateModule } from "@angular/material/core";
     MatDividerModule,
     MatDatepickerModule,
     MatNativeDateModule,
+    MatAutocompleteModule,
   ],
 })
 export class MaterialModule {}

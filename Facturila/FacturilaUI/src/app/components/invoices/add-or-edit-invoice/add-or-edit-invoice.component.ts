@@ -1,3 +1,5 @@
+import { AuthService } from "./../../../services/auth.service";
+import { FirmService } from "./../../../services/firm.service";
 import { ChangeDetectorRef, Component } from "@angular/core";
 import {
   Form,
@@ -8,6 +10,8 @@ import {
   Validators,
 } from "@angular/forms";
 import { MatTableDataSource } from "@angular/material/table";
+import { Observable, map, startWith } from "rxjs";
+import { IFirm } from "src/app/models/IFirm";
 
 @Component({
   selector: "app-add-or-edit-invoice",
@@ -15,6 +19,10 @@ import { MatTableDataSource } from "@angular/material/table";
   styleUrls: ["./add-or-edit-invoice.component.scss"],
 })
 export class AddOrEditInvoiceComponent {
+  cuiControl = new FormControl();
+  filteredFirms!: Observable<any[]>;
+  clientFirms: IFirm[] = [];
+
   dataSource = new MatTableDataSource();
   invoiceForm!: FormGroup;
   displayedColumns: string[] = [
@@ -32,17 +40,41 @@ export class AddOrEditInvoiceComponent {
     },
   ];
 
-  constructor(private fb: FormBuilder) {}
+  constructor(
+    private fb: FormBuilder,
+    private firmService: FirmService,
+    private authService: AuthService
+  ) {}
 
   ngOnInit(): void {
+    this.firmService
+      .getUserClientFirmsById(this.authService.userId)
+      .subscribe((firms) => {
+        this.clientFirms = firms;
+      });
+
     this.invoiceForm = this.fb.group({
       cuiValue: ["", Validators.required],
       issueDate: [new Date(), Validators.required],
-      dueDate: ["", Validators.required],
+      dueDate: "",
       serieSiNumar: ["", Validators.required],
       products: this.fb.array([this.createProductGroup()]),
     });
     this.updateTableData();
+
+    this.filteredFirms = this.cuiControl.valueChanges.pipe(
+      startWith(""),
+      map((value) => this.filterFirms(value))
+    );
+  }
+
+  filterFirms(value: string): any[] {
+    const filterValue = value.toLowerCase();
+    return this.clientFirms.filter(
+      (firm) =>
+        firm.name.toLowerCase().includes(filterValue) ||
+        firm.cui.includes(filterValue)
+    );
   }
 
   updateTableData() {

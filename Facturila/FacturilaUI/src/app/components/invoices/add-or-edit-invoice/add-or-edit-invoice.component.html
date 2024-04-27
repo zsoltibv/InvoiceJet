@@ -1,6 +1,74 @@
 <div class="inner-container">
   <h1>Invoice Details</h1>
   <form [formGroup]="invoiceForm" (ngSubmit)="onSubmit()">
+    <div class="grid-container">
+      <!-- CUI Value Field -->
+      <mat-form-field appearance="outline" class="grid-item">
+        <mat-label>CUI Value</mat-label>
+        <input
+          matInput
+          [formControl]="cuiControl"
+          required
+          [matAutocomplete]="auto"
+        />
+        <mat-autocomplete #auto="matAutocomplete">
+          <mat-option
+            *ngFor="let firm of filteredFirms | async"
+            [value]="firm.name"
+          >
+            {{ firm.name }} ({{ firm.cui }})
+          </mat-option>
+        </mat-autocomplete>
+        <mat-error *ngIf="invoiceForm.get('cuiValue')?.errors?.['required']">
+          CUI Value is required
+        </mat-error>
+      </mat-form-field>
+
+      <!-- Issue Date Field -->
+      <mat-form-field appearance="outline" class="grid-item">
+        <mat-label>Issue Date</mat-label>
+        <input
+          matInput
+          [matDatepicker]="picker1"
+          formControlName="issueDate"
+          required
+        />
+        <mat-datepicker-toggle
+          matSuffix
+          [for]="picker1"
+        ></mat-datepicker-toggle>
+        <mat-datepicker #picker1></mat-datepicker>
+        <mat-error *ngIf="invoiceForm.get('issueDate')?.errors?.['required']">
+          Issue Date is required
+        </mat-error>
+      </mat-form-field>
+
+      <!-- Due Date Field -->
+      <mat-form-field appearance="outline" class="grid-item">
+        <mat-label>Due Date</mat-label>
+        <input matInput [matDatepicker]="picker2" formControlName="dueDate" />
+        <mat-datepicker-toggle
+          matSuffix
+          [for]="picker2"
+        ></mat-datepicker-toggle>
+        <mat-datepicker #picker2></mat-datepicker>
+      </mat-form-field>
+
+      <!-- Serie si Numar Dropdown -->
+      <mat-form-field appearance="outline" class="grid-item">
+        <mat-label>Serie si Numar</mat-label>
+        <mat-select formControlName="serieSiNumar" required>
+          <mat-option *ngFor="let series of seriesList" [value]="series">
+            {{ series }}
+          </mat-option>
+        </mat-select>
+        <mat-error
+          *ngIf="invoiceForm.get('serieSiNumar')?.errors?.['required']"
+        >
+          This field is required
+        </mat-error>
+      </mat-form-field>
+    </div>
     <table
       mat-table
       [dataSource]="dataSource"
@@ -88,14 +156,17 @@
         <th mat-header-cell *matHeaderCellDef>Actions</th>
         <td mat-cell *matCellDef="let product; let i = index">
           <button
+            type="button"
             mat-icon-button
-            color="primary"
+            color="warn"
+            *ngIf="productsFormArray.controls.length > 1"
             (click)="deleteProduct(i)"
             matTooltip="Remove"
           >
             <mat-icon>delete</mat-icon>
           </button>
           <button
+            type="button"
             mat-icon-button
             color="primary"
             (click)="addProduct()"
@@ -109,5 +180,13 @@
       <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
       <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
     </table>
+    <div class="controls">
+      <button mat-raised-button color="primary" type="submit">
+        Issue Invoice
+      </button>
+      <button mat-raised-button color="primary" type="button">
+        Preview Invoice
+      </button>
+    </div>
   </form>
 </div>
