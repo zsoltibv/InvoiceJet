@@ -1,3 +1,5 @@
+import { IDocumentType } from "./IDocumentType";
+
 export interface IDocumentSeries {
   id: number;
   seriesName: string;
@@ -5,4 +7,5 @@ export interface IDocumentSeries {
   currentNumber: number;
   isDefault: boolean;
   documentTypeId: number;
+  documentType: IDocumentType;
 }

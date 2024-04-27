@@ -1,166 +1,71 @@
 <div class="inner-container">
   <h1>Invoice Details</h1>
   <form [formGroup]="invoiceForm" (ngSubmit)="onSubmit()">
-    <div class="grid-container">
-      <!-- CUI Value Field -->
-      <mat-form-field appearance="outline" class="grid-item">
-        <mat-label>CUI Value</mat-label>
-        <input matInput formControlName="cuiValue" required />
-        <mat-error *ngIf="invoiceForm.get('cuiValue')?.errors?.['required']">
-          CUI Value is required
-        </mat-error>
-      </mat-form-field>
-
-      <!-- Issue Date Field -->
-      <mat-form-field appearance="outline" class="grid-item">
-        <mat-label>Issue Date</mat-label>
-        <input
-          matInput
-          [matDatepicker]="picker1"
-          formControlName="issueDate"
-          required
-        />
-        <mat-datepicker-toggle
-          matSuffix
-          [for]="picker1"
-        ></mat-datepicker-toggle>
-        <mat-datepicker #picker1></mat-datepicker>
-        <mat-error *ngIf="invoiceForm.get('issueDate')?.errors?.['required']">
-          Issue Date is required
-        </mat-error>
-      </mat-form-field>
-
-      <!-- Due Date Field -->
-      <mat-form-field appearance="outline" class="grid-item">
-        <mat-label>Due Date</mat-label>
-        <input
-          matInput
-          [matDatepicker]="picker2"
-          formControlName="dueDate"
-          required
-        />
-        <mat-datepicker-toggle
-          matSuffix
-          [for]="picker2"
-        ></mat-datepicker-toggle>
-        <mat-datepicker #picker2></mat-datepicker>
-        <mat-error *ngIf="invoiceForm.get('dueDate')?.errors?.['required']">
-          Due Date is required
-        </mat-error>
-      </mat-form-field>
-
-      <!-- Serie si Numar Dropdown -->
-      <mat-form-field appearance="outline" class="grid-item">
-        <mat-label>Serie si Numar</mat-label>
-        <mat-select formControlName="serieSiNumar" required>
-          <mat-option *ngFor="let series of seriesList" [value]="series">
-            {{ series }}
-          </mat-option>
-        </mat-select>
-        <mat-error
-          *ngIf="invoiceForm.get('serieSiNumar')?.errors?.['required']"
-        >
-          This field is required
-        </mat-error>
-      </mat-form-field>
-    </div>
-
-    <!-- Dynamic Table for Products -->
-    <div class="products-section">
-      <table
-        mat-table
-        [dataSource]="productsFormArray.controls"
-        multiTemplateDataRows
-        class="mat-elevation-z2"
+    <div formArrayName="products">
+      <div
+        class="row"
+        *ngFor="let product of getControls(); let i = index"
+        [formGroupName]="i"
       >
-        <!-- Name Column -->
-        <ng-container matColumnDef="name">
-          <th mat-header-cell *matHeaderCellDef>Name</th>
-          <td
-            mat-cell
-            *matCellDef="let productFormGroup = index; let form = $implicit"
-          >
-            <input
-              matInput
-              placeholder="Product Name"
-              [formControl]="form.get('name')"
-              required
-            />
-          </td>
-        </ng-container>
+        <div class="col-1">
+          <mat-icon class="mt-3">email</mat-icon>
+        </div>
 
-        <!-- Price Column -->
-        <ng-container matColumnDef="price">
-          <th mat-header-cell *matHeaderCellDef>Price</th>
-          <td
-            mat-cell
-            *matCellDef="let productFormGroup = index; let form = $implicit"
-          >
-            <input
-              matInput
-              type="number"
-              min="0"
-              placeholder="Price"
-              [formControl]="form.get('price')"
-              required
-            />
-          </td>
-        </ng-container>
+        <mat-form-field class="col-4">
+          <input matInput formControlName="name" placeholder="Product Name" />
+        </mat-form-field>
 
-        <!-- Unit Of Measurement Column -->
-        <ng-container matColumnDef="unitOfMeasurement">
-          <th mat-header-cell *matHeaderCellDef>Unit</th>
-          <td
-            mat-cell
-            *matCellDef="let productFormGroup = index; let form = $implicit"
-          >
-            <input
-              matInput
-              placeholder="Unit"
-              [formControl]="form.get('unitOfMeasurement')"
-              required
-            />
-          </td>
-        </ng-container>
+        <mat-form-field class="col-4">
+          <input matInput formControlName="price" placeholder="Product Name" />
+        </mat-form-field>
 
-        <!-- TVA Value Column -->
-        <ng-container matColumnDef="tvaValue">
-          <th mat-header-cell *matHeaderCellDef>TVA (%)</th>
-          <td
-            mat-cell
-            *matCellDef="let productFormGroup = index; let form = $implicit"
-          >
-            <input
-              matInput
-              type="number"
-              min="0"
-              placeholder="TVA"
-              [formControl]="form.get('tvaValue')"
-              required
-            />
-          </td>
-        </ng-container>
+        <mat-form-field class="col-4">
+          <input
+            matInput
+            formControlName="unitOfMeasurement"
+            placeholder="Product Name"
+          />
+        </mat-form-field>
 
-        <!-- Contains TVA Column -->
-        <ng-container matColumnDef="containsTVA">
-          <th mat-header-cell *matHeaderCellDef>Includes TVA</th>
-          <td
-            mat-cell
-            *matCellDef="let productFormGroup = index; let form = $implicit"
-          >
-            <mat-checkbox
-              [formControl]="form.get('containsTVA')"
-            ></mat-checkbox>
-          </td>
-        </ng-container>
+        <mat-form-field class="col-4">
+          <input
+            matInput
+            formControlName="tvaValue"
+            placeholder="Product Name"
+          />
+        </mat-form-field>
 
-        <!-- Table Rows -->
-        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-        <tr mat-row *matRowDef="let form; columns: displayedColumns"></tr>
-      </table>
-      <button mat-raised-button color="primary" (click)="addProduct()">
-        Add Product
-      </button>
+        <mat-form-field class="col-4">
+          <input
+            matInput
+            formControlName="containsTVA"
+            placeholder="Product Name"
+          />
+        </mat-form-field>
+
+        <div class="col-3">
+          <!-- <button
+            class="float-left"
+            mat-icon-button
+            color="primary"
+            aria-label="Remove/clear"
+            (click)="removeOrClearEmail(i)"
+            matTooltip="Remove"
+          >
+            <mat-icon>highlight_off</mat-icon>
+          </button> -->
+          <button
+            class="float-left"
+            mat-icon-button
+            color="primary"
+            aria-label="Add"
+            (click)="addProduct()"
+            matTooltip="Add"
+          >
+            <mat-icon>add_circle_outline</mat-icon>
+          </button>
+        </div>
+      </div>
     </div>
   </form>
 </div>

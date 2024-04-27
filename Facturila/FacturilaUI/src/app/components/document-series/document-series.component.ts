@@ -16,6 +16,7 @@ import { DocumentSeriesService } from "src/app/services/document-series.service"
 export class DocumentSeriesComponent {
   displayedColumns: string[] = [
     "select",
+    "documentType",
     "seriesName",
     "firstNumber",
     "currentNumber",

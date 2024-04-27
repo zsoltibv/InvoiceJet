@@ -21,16 +21,17 @@ namespace FacturilaAPI.Services.Impl
         {
             var userWithFirm = await _dbContext.User
                 .Where(u => u.Id == userId)
-                    .Include(u => u.ActiveUserFirm)
-                        .ThenInclude(ds => ds.DocumentSeries)
+                .Include(u => u.ActiveUserFirm)
+                .ThenInclude(ds => ds.DocumentSeries)!
+                            .ThenInclude(dt => dt.DocumentType)
                 .FirstOrDefaultAsync();
 
-            if (userWithFirm?.ActiveUserFirm == null)
+            if (userWithFirm?.ActiveUserFirm is null)
             {
                 return new List<DocumentSeriesDto>();
             }
 
-            return _mapper.Map<ICollection<DocumentSeries>, ICollection<DocumentSeriesDto>>(userWithFirm.ActiveUserFirm.DocumentSeries);
+            return _mapper.Map<ICollection<DocumentSeries>, ICollection<DocumentSeriesDto>>(userWithFirm.ActiveUserFirm.DocumentSeries!);
         }
     }
 }

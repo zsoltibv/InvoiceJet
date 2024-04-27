@@ -1,5 +1,12 @@
-import { Component } from "@angular/core";
-import { FormArray, FormControl, FormGroup, Validators } from "@angular/forms";
+import { ChangeDetectorRef, Component } from "@angular/core";
+import {
+  Form,
+  FormArray,
+  FormBuilder,
+  FormControl,
+  FormGroup,
+  Validators,
+} from "@angular/forms";
 
 @Component({
   selector: "app-add-or-edit-invoice",
@@ -7,13 +14,15 @@ import { FormArray, FormControl, FormGroup, Validators } from "@angular/forms";
   styleUrls: ["./add-or-edit-invoice.component.scss"],
 })
 export class AddOrEditInvoiceComponent {
-  invoiceForm: FormGroup;
+  invoiceForm!: FormGroup;
   displayedColumns: string[] = [
+    "index",
     "name",
     "price",
     "unitOfMeasurement",
     "tvaValue",
     "containsTVA",
+    "delete",
   ];
 
   seriesList = [
@@ -22,34 +31,44 @@ export class AddOrEditInvoiceComponent {
     },
   ];
 
-  constructor() {
-    this.invoiceForm = new FormGroup({
-      cuiValue: new FormControl("", Validators.required),
-      issueDate: new FormControl(new Date(), Validators.required),
-      dueDate: new FormControl("", Validators.required),
-      serieSiNumar: new FormControl("", Validators.required),
-      products: new FormArray([]),
+  constructor(private fb: FormBuilder) {}
+
+  ngOnInit(): void {
+    this.invoiceForm = this.fb.group({
+      cuiValue: ["", Validators.required],
+      issueDate: [new Date(), Validators.required],
+      dueDate: ["", Validators.required],
+      serieSiNumar: ["", Validators.required],
+      products: this.fb.array([this.createProductGroup()]),
     });
   }
 
-  ngOnInit(): void {
-    // Initialize with any necessary data
+  createProductGroup(): FormGroup {
+    return this.fb.group({
+      name: ["", Validators.required],
+      price: [0, [Validators.required, Validators.min(0)]],
+      unitOfMeasurement: ["", Validators.required],
+      tvaValue: [0, [Validators.required, Validators.min(0)]],
+      containsTVA: [false],
+    });
   }
 
   get productsFormArray(): FormArray {
     return this.invoiceForm.get("products") as FormArray;
   }
 
-  addProduct(): void {
-    const productGroup = new FormGroup({
-      name: new FormControl("", Validators.required),
-      price: new FormControl(0, [Validators.required, Validators.min(0)]),
-      unitOfMeasurement: new FormControl("", Validators.required),
-      tvaValue: new FormControl(0, [Validators.required, Validators.min(0)]),
-      containsTVA: new FormControl(false),
-    });
+  getControls() {
+    return (this.invoiceForm.get("products") as FormArray).controls;
+  }
 
-    (this.invoiceForm.get("products") as FormArray).push(productGroup);
+  addProduct(): void {
+    console.log(this.productsFormArray.value);
+    this.productsFormArray.push(this.createProductGroup());
+  }
+
+  deleteProduct(index: number): void {
+    this.productsFormArray.removeAt(index);
+    console.log("Product deleted", this.productsFormArray.value);
   }
 
   onSubmit(): void {

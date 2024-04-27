@@ -10,5 +10,6 @@ namespace FacturilaAPI.Models.Dto
         public int CurrentNumber { get; set; }
         public bool IsDefault { get; set; }
         public int DocumentTypeId { get; set; }
+        public DocumentType? DocumentType { get; set; }
     }
 }
