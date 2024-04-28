@@ -12,6 +12,6 @@
         public int? ActiveUserFirmId { get; set; }
         public virtual UserFirm ActiveUserFirm { get; set; } = null!;
 
-        public virtual ICollection<UserFirm> UserFirms { get; set; }
+        public virtual ICollection<UserFirm>? UserFirms { get; set; }
     }
 }

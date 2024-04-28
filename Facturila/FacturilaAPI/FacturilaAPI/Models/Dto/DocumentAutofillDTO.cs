@@ -1,6 +1,10 @@
-﻿namespace FacturilaAPI.Models.Dto;
+﻿using FacturilaAPI.Models.Entity;
 
-public class DocumentAutofillDTO
+namespace FacturilaAPI.Models.Dto;
+
+public class DocumentAutofillDto
 {
-    
+    public List<Firm> Clients { get; set; }
+    public List<DocumentSeries> DocumentSeries { get;set; }
+    public List<Product> Products { get; set; }
 }

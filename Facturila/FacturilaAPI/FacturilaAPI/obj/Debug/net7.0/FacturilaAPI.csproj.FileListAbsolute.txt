@@ -112,9 +112,10 @@ V:\Facultate\An3\Licenta\Facturila\FacturilaAPI\FacturilaAPI\obj\Debug\net7.0\st
 V:\Facultate\An3\Licenta\Facturila\FacturilaAPI\FacturilaAPI\obj\Debug\net7.0\staticwebassets.build.json
 V:\Facultate\An3\Licenta\Facturila\FacturilaAPI\FacturilaAPI\obj\Debug\net7.0\staticwebassets.development.json
 V:\Facultate\An3\Licenta\Facturila\FacturilaAPI\FacturilaAPI\obj\Debug\net7.0\scopedcss\bundle\FacturilaAPI.styles.css
-V:\Facultate\An3\Licenta\Facturila\FacturilaAPI\FacturilaAPI\obj\Debug\net7.0\FacturilaAPI.csproj.CopyComplete
 V:\Facultate\An3\Licenta\Facturila\FacturilaAPI\FacturilaAPI\obj\Debug\net7.0\FacturilaAPI.dll
 V:\Facultate\An3\Licenta\Facturila\FacturilaAPI\FacturilaAPI\obj\Debug\net7.0\refint\FacturilaAPI.dll
 V:\Facultate\An3\Licenta\Facturila\FacturilaAPI\FacturilaAPI\obj\Debug\net7.0\FacturilaAPI.pdb
 V:\Facultate\An3\Licenta\Facturila\FacturilaAPI\FacturilaAPI\obj\Debug\net7.0\FacturilaAPI.genruntimeconfig.cache
 V:\Facultate\An3\Licenta\Facturila\FacturilaAPI\FacturilaAPI\obj\Debug\net7.0\ref\FacturilaAPI.dll
+V:\Facultate\An3\Licenta\Facturila\FacturilaAPI\FacturilaAPI\obj\Debug\net7.0\FacturilaAPI.sourcelink.json
+V:\Facultate\An3\Licenta\Facturila\FacturilaAPI\FacturilaAPI\obj\Debug\net7.0\Facturil.5F5CB26A.Up2Date

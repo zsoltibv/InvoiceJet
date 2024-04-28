@@ -1,6 +1,8 @@
-﻿namespace FacturilaAPI.Services;
+﻿using FacturilaAPI.Models.Dto;
 
-public class IDocumentService
+namespace FacturilaAPI.Services;
+
+public interface IDocumentService
 {
-    
+    Task<DocumentAutofillDto> GetDocumentAutofillInfo(Guid userId, int documentTypeId);
 }

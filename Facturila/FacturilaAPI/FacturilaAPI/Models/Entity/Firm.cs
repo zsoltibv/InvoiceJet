@@ -10,6 +10,6 @@
         public string County { get; set; }
         public string City { get; set; }
 
-        public virtual ICollection<UserFirm> UserFirms { get; set; }
+        public virtual ICollection<UserFirm>? UserFirms { get; set; }
     }
 }

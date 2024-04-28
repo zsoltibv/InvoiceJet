@@ -13,9 +13,9 @@ namespace FacturilaAPI.Config
         {
             modelBuilder.Entity<User>()
                 .HasOne(u => u.ActiveUserFirm)
-                .WithMany() // No inverse navigation property defined in UserFirm
+                .WithMany() 
                 .HasForeignKey(u => u.ActiveUserFirmId)
-                .IsRequired(false); // Assuming it can be null
+                .IsRequired(false);
         }
 
         public DbSet<User> User { get; set; }
@@ -25,5 +25,7 @@ namespace FacturilaAPI.Config
         public DbSet<Product> Product { get; set; }
         public DbSet<DocumentType> DocumentType { get; set; }
         public DbSet<DocumentSeries> DocumentSeries { get; set; }
+        public DbSet<Document> Document { get; set; }
+        public DbSet<DocumentProduct> DocumentProduct { get; set; }
     }
 }

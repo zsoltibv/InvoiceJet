@@ -1,5 +1,4 @@
-﻿using FacturilaAPI.Models.Entity;
-using FacturilaAPI.Models.Enums;
+﻿using FacturilaAPI.Models.Enums;
 
 namespace FacturilaAPI.Models.Dto
 {

@@ -17,4 +17,5 @@ public class UserFirm
     public virtual ICollection<BankAccount>? BankAccounts { get; set; }
     public virtual ICollection<Product>? Products { get; set; }
     public virtual ICollection<DocumentSeries>? DocumentSeries { get; set; }
+    public virtual ICollection<Document>? Documents { get; set; }
 }

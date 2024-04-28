@@ -8,9 +8,6 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.Filters;
 using System.Text;
-using Microsoft.Identity.Client;
-using Microsoft.AspNetCore.Hosting;
-using FacturilaAPI;
 using FacturilaAPI.Utils;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -27,6 +24,7 @@ builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IBankAccountService, BankAccountService>();
 builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<IDocumentSeriesService, DocumentSeriesService>();
+builder.Services.AddScoped<IDocumentService, DocumentService>();
 
 builder.Services.AddAutoMapper(typeof(Program));
 builder.Services.AddControllers();

@@ -4,7 +4,7 @@
     <div class="grid-container">
       <!-- CUI Value Field -->
       <mat-form-field appearance="outline" class="grid-item">
-        <mat-label>CUI Value</mat-label>
+        <mat-label>Client Name or CUI</mat-label>
         <input
           matInput
           [formControl]="cuiControl"
@@ -58,8 +58,11 @@
       <mat-form-field appearance="outline" class="grid-item">
         <mat-label>Serie si Numar</mat-label>
         <mat-select formControlName="serieSiNumar" required>
-          <mat-option *ngFor="let series of seriesList" [value]="series">
-            {{ series }}
+          <mat-option
+            *ngFor="let series of invoiceAutofillData.documentSeries"
+            [value]="series"
+          >
+            {{ series.seriesName }} - {{ series.currentNumber }}
           </mat-option>
         </mat-select>
         <mat-error
@@ -69,117 +72,133 @@
         </mat-error>
       </mat-form-field>
     </div>
-    <table
-      mat-table
-      [dataSource]="dataSource"
-      class="mat-elevation-z2"
-      formArrayName="products"
-    >
-      <!-- Product Name Column -->
-      <ng-container matColumnDef="name">
-        <th mat-header-cell *matHeaderCellDef>Product Name</th>
-        <td
-          mat-cell
-          *matCellDef="let product; let i = index"
-          [formGroupName]="i"
-        >
-          <mat-form-field class="full-width" subscriptSizing="dynamic">
-            <input matInput formControlName="name" placeholder="Product Name" />
-          </mat-form-field>
-        </td>
-      </ng-container>
-
-      <!-- Price Column -->
-      <ng-container matColumnDef="price">
-        <th mat-header-cell *matHeaderCellDef>Price</th>
-        <td
-          mat-cell
-          *matCellDef="let product; let i = index"
-          [formGroupName]="i"
-        >
-          <mat-form-field class="full-width" subscriptSizing="dynamic">
-            <input matInput formControlName="price" placeholder="Price" />
-          </mat-form-field>
-        </td>
-      </ng-container>
-
-      <!-- Unit of Measurement Column -->
-      <ng-container matColumnDef="unitOfMeasurement">
-        <th mat-header-cell *matHeaderCellDef>Unit of Measurement</th>
-        <td
-          mat-cell
-          *matCellDef="let product; let i = index"
-          [formGroupName]="i"
-        >
-          <mat-form-field class="full-width" subscriptSizing="dynamic">
-            <input
-              matInput
-              formControlName="unitOfMeasurement"
-              placeholder="Unit of Measurement"
-            />
-          </mat-form-field>
-        </td>
-      </ng-container>
-
-      <!-- TVA Value Column -->
-      <ng-container matColumnDef="tvaValue">
-        <th mat-header-cell *matHeaderCellDef>TVA Value</th>
-        <td
-          mat-cell
-          *matCellDef="let product; let i = index"
-          [formGroupName]="i"
-        >
-          <mat-form-field class="full-width" subscriptSizing="dynamic">
-            <input
-              matInput
-              formControlName="tvaValue"
-              placeholder="TVA Value"
-            />
-          </mat-form-field>
-        </td>
-      </ng-container>
-
-      <!-- Contains TVA Checkbox Column -->
-      <ng-container matColumnDef="containsTVA">
-        <th mat-header-cell *matHeaderCellDef>Contains TVA</th>
-        <td
-          mat-cell
-          *matCellDef="let product; let i = index"
-          [formGroupName]="i"
-        >
-          <mat-checkbox formControlName="containsTVA">Yes</mat-checkbox>
-        </td>
-      </ng-container>
-
-      <!-- Actions Column -->
-      <ng-container matColumnDef="actions">
-        <th mat-header-cell *matHeaderCellDef>Actions</th>
-        <td mat-cell *matCellDef="let product; let i = index">
-          <button
-            type="button"
-            mat-icon-button
-            color="warn"
-            *ngIf="productsFormArray.controls.length > 1"
-            (click)="deleteProduct(i)"
-            matTooltip="Remove"
+    <div class="table-container">
+      <table
+        mat-table
+        [dataSource]="dataSource"
+        class="mat-elevation-z2"
+        formArrayName="products"
+      >
+        <!-- Product Name Column -->
+        <ng-container matColumnDef="name">
+          <th mat-header-cell *matHeaderCellDef>Product Name</th>
+          <td
+            mat-cell
+            *matCellDef="let product; let i = index"
+            [formGroupName]="i"
           >
-            <mat-icon>delete</mat-icon>
-          </button>
-          <button
-            type="button"
-            mat-icon-button
-            color="primary"
-            (click)="addProduct()"
-            matTooltip="Add"
-          >
-            <mat-icon>add_circle_outline</mat-icon>
-          </button>
-        </td>
-      </ng-container>
+            <mat-form-field class="full-width" subscriptSizing="dynamic">
+              <input
+                matInput
+                formControlName="name"
+                placeholder="Product Name"
+                [formControl]="productControl"
+                [matAutocomplete]="auto2"
+              />
+              <mat-autocomplete #auto2="matAutocomplete">
+                <mat-option
+                  *ngFor="let product of filteredProducts | async"
+                  [value]="product.name"
+                >
+                  {{ product.name }} ({{ product.price }} RON)
+                </mat-option>
+              </mat-autocomplete>
+            </mat-form-field>
+          </td>
+        </ng-container>
 
-      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-      <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
-    </table>
+        <!-- Price Column -->
+        <ng-container matColumnDef="price">
+          <th mat-header-cell *matHeaderCellDef>Price</th>
+          <td
+            mat-cell
+            *matCellDef="let product; let i = index"
+            [formGroupName]="i"
+          >
+            <mat-form-field class="full-width" subscriptSizing="dynamic">
+              <input matInput formControlName="price" placeholder="Price" />
+            </mat-form-field>
+          </td>
+        </ng-container>
+
+        <!-- Unit of Measurement Column -->
+        <ng-container matColumnDef="unitOfMeasurement">
+          <th mat-header-cell *matHeaderCellDef>Unit of Measurement</th>
+          <td
+            mat-cell
+            *matCellDef="let product; let i = index"
+            [formGroupName]="i"
+          >
+            <mat-form-field class="full-width" subscriptSizing="dynamic">
+              <input
+                matInput
+                formControlName="unitOfMeasurement"
+                placeholder="Unit of Measurement"
+              />
+            </mat-form-field>
+          </td>
+        </ng-container>
+
+        <!-- TVA Value Column -->
+        <ng-container matColumnDef="tvaValue">
+          <th mat-header-cell *matHeaderCellDef>TVA Value</th>
+          <td
+            mat-cell
+            *matCellDef="let product; let i = index"
+            [formGroupName]="i"
+          >
+            <mat-form-field class="full-width" subscriptSizing="dynamic">
+              <input
+                matInput
+                formControlName="tvaValue"
+                placeholder="TVA Value"
+              />
+            </mat-form-field>
+          </td>
+        </ng-container>
+
+        <!-- Contains TVA Checkbox Column -->
+        <ng-container matColumnDef="containsTVA">
+          <th mat-header-cell *matHeaderCellDef>Contains TVA</th>
+          <td
+            mat-cell
+            *matCellDef="let product; let i = index"
+            [formGroupName]="i"
+          >
+            <mat-checkbox formControlName="containsTVA">Yes</mat-checkbox>
+          </td>
+        </ng-container>
+
+        <!-- Actions Column -->
+        <ng-container matColumnDef="actions">
+          <th mat-header-cell *matHeaderCellDef>Actions</th>
+          <td mat-cell *matCellDef="let product; let i = index">
+            <button
+              type="button"
+              mat-icon-button
+              color="warn"
+              *ngIf="productsFormArray.controls.length > 1"
+              (click)="deleteProduct(i)"
+              matTooltip="Remove"
+            >
+              <mat-icon>delete</mat-icon>
+            </button>
+            <button
+              type="button"
+              mat-icon-button
+              color="primary"
+              (click)="addProduct()"
+              matTooltip="Add"
+            >
+              <mat-icon>add_circle_outline</mat-icon>
+            </button>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+      </table>
+    </div>
     <div class="controls">
       <button mat-raised-button color="primary" type="submit">
         Issue Invoice

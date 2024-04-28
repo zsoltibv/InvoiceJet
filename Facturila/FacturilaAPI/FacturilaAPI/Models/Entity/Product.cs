@@ -13,7 +13,7 @@ namespace FacturilaAPI.Models.Entity
         public string? UnitOfMeasurement { get; set;}
         public int TVAValue { get; set; }
 
-        public int UserFirmId { get; set; }
+        public int? UserFirmId { get; set; }
         public virtual UserFirm? UserFirm { get; set; }
     }
 }

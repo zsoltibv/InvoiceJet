@@ -1,6 +1,7 @@
+import { DocumentService } from "./../../../services/document.service";
 import { AuthService } from "./../../../services/auth.service";
 import { FirmService } from "./../../../services/firm.service";
-import { ChangeDetectorRef, Component } from "@angular/core";
+import { Component } from "@angular/core";
 import {
   Form,
   FormArray,
@@ -12,6 +13,8 @@ import {
 import { MatTableDataSource } from "@angular/material/table";
 import { Observable, map, startWith } from "rxjs";
 import { IFirm } from "src/app/models/IFirm";
+import { IDocumentAutofill } from "src/app/models/IDocumentAutofill";
+import { IProduct } from "src/app/models/IProduct";
 
 @Component({
   selector: "app-add-or-edit-invoice",
@@ -19,8 +22,11 @@ import { IFirm } from "src/app/models/IFirm";
   styleUrls: ["./add-or-edit-invoice.component.scss"],
 })
 export class AddOrEditInvoiceComponent {
+  invoiceAutofillData: IDocumentAutofill = {} as IDocumentAutofill;
   cuiControl = new FormControl();
+  productControl = new FormControl();
   filteredFirms!: Observable<any[]>;
+  filteredProducts!: Observable<any[]>;
   clientFirms: IFirm[] = [];
 
   dataSource = new MatTableDataSource();
@@ -43,14 +49,21 @@ export class AddOrEditInvoiceComponent {
   constructor(
     private fb: FormBuilder,
     private firmService: FirmService,
-    private authService: AuthService
+    private authService: AuthService,
+    private documentService: DocumentService
   ) {}
 
   ngOnInit(): void {
-    this.firmService
-      .getUserClientFirmsById(this.authService.userId)
-      .subscribe((firms) => {
-        this.clientFirms = firms;
+    this.documentService
+      .getDocumentSeriesForUserId(this.authService.userId, 1)
+      .subscribe({
+        next: (data) => {
+          this.invoiceAutofillData = data;
+          this.initFilters();
+        },
+        error: (err) => {
+          console.error("Error fetching data", err);
+        },
       });
 
     this.invoiceForm = this.fb.group({
@@ -61,19 +74,34 @@ export class AddOrEditInvoiceComponent {
       products: this.fb.array([this.createProductGroup()]),
     });
     this.updateTableData();
+  }
 
+  initFilters() {
     this.filteredFirms = this.cuiControl.valueChanges.pipe(
       startWith(""),
       map((value) => this.filterFirms(value))
+    );
+
+    this.filteredProducts = this.productControl.valueChanges.pipe(
+      startWith(""),
+      map((value) => this.filterProducts(value))
     );
   }
 
   filterFirms(value: string): any[] {
     const filterValue = value.toLowerCase();
-    return this.clientFirms.filter(
+    return this.invoiceAutofillData.clients.filter(
       (firm) =>
         firm.name.toLowerCase().includes(filterValue) ||
         firm.cui.includes(filterValue)
+    );
+  }
+
+  filterProducts(value: string): any[] {
+    console.log("Filtering products", value);
+    const filterValue = value.toLowerCase();
+    return this.invoiceAutofillData.products.filter((product) =>
+      product.name.toLowerCase().includes(filterValue)
     );
   }
 
