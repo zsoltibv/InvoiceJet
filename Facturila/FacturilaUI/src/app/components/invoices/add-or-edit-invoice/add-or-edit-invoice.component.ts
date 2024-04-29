@@ -11,7 +11,7 @@ import {
   Validators,
 } from "@angular/forms";
 import { MatTableDataSource } from "@angular/material/table";
-import { Observable, map, startWith } from "rxjs";
+import { Observable, map, merge, startWith } from "rxjs";
 import { IFirm } from "src/app/models/IFirm";
 import { IDocumentAutofill } from "src/app/models/IDocumentAutofill";
 import { IProduct } from "src/app/models/IProduct";
@@ -23,9 +23,7 @@ import { IProduct } from "src/app/models/IProduct";
 })
 export class AddOrEditInvoiceComponent {
   invoiceAutofillData: IDocumentAutofill = {} as IDocumentAutofill;
-  cuiControl = new FormControl();
-  productControl = new FormControl();
-  filteredFirms!: Observable<any[]>;
+  filteredFirms!: Observable<IFirm[]>;
   filteredProducts!: Observable<any[]>;
   clientFirms: IFirm[] = [];
 
@@ -59,7 +57,8 @@ export class AddOrEditInvoiceComponent {
       .subscribe({
         next: (data) => {
           this.invoiceAutofillData = data;
-          this.initFilters();
+          this.setupClientFilters();
+          this.setupProductFilters();
         },
         error: (err) => {
           console.error("Error fetching data", err);
@@ -67,7 +66,7 @@ export class AddOrEditInvoiceComponent {
       });
 
     this.invoiceForm = this.fb.group({
-      cuiValue: ["", Validators.required],
+      client: ["", Validators.required],
       issueDate: [new Date(), Validators.required],
       dueDate: "",
       serieSiNumar: ["", Validators.required],
@@ -76,24 +75,46 @@ export class AddOrEditInvoiceComponent {
     this.updateTableData();
   }
 
-  initFilters() {
-    this.filteredFirms = this.cuiControl.valueChanges.pipe(
-      startWith(""),
-      map((value) => this.filterFirms(value))
-    );
+  displayFn(firm: IFirm): string {
+    return firm && firm.name ? firm.name : "";
+  }
 
-    this.filteredProducts = this.productControl.valueChanges.pipe(
+  setupClientFilters() {
+    this.filteredFirms = this.invoiceForm.get("client")!.valueChanges.pipe(
       startWith(""),
-      map((value) => this.filterProducts(value))
+      map((value) => this.filterClients(value))
     );
   }
 
-  filterFirms(value: string): any[] {
-    const filterValue = value.toLowerCase();
+  setupProductFilters() {
+    const products = this.productsFormArray;
+    if (products.length === 0) return;
+
+    const nameChangeObservables: Observable<any>[] = products.controls.map(
+      (productFormGroup) => {
+        return productFormGroup.get("name")!.valueChanges.pipe(
+          startWith(""),
+          map((value) => this.filterProducts(value))
+        );
+      }
+    );
+
+    this.filteredProducts = merge(...nameChangeObservables);
+  }
+
+  filterClients(value: any): IFirm[] {
+    let filterValue = "";
+
+    if (typeof value === "string") {
+      filterValue = value.toLowerCase();
+    } else if (value && typeof value === "object" && value.name) {
+      filterValue = value.name.toLowerCase();
+    }
+
     return this.invoiceAutofillData.clients.filter(
       (firm) =>
         firm.name.toLowerCase().includes(filterValue) ||
-        firm.cui.includes(filterValue)
+        firm.cui.toLowerCase().includes(filterValue)
     );
   }
 
@@ -131,6 +152,7 @@ export class AddOrEditInvoiceComponent {
     console.log(this.productsFormArray.value);
     this.productsFormArray.push(this.createProductGroup());
     this.updateTableData();
+    this.setupProductFilters();
   }
 
   deleteProduct(index: number): void {
@@ -139,11 +161,10 @@ export class AddOrEditInvoiceComponent {
   }
 
   onSubmit(): void {
+    console.log("Form submitted", this.invoiceForm.value);
     if (this.invoiceForm.valid) {
-      // Handle form submission
       console.log("Form submitted", this.invoiceForm.value);
     } else {
-      // Handle form errors
       console.log("Form is not valid");
     }
   }

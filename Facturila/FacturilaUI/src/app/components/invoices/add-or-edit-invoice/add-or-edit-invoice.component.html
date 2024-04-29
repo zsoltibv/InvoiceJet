@@ -7,15 +7,12 @@
         <mat-label>Client Name or CUI</mat-label>
         <input
           matInput
-          [formControl]="cuiControl"
+          formControlName="client"
           required
           [matAutocomplete]="auto"
         />
-        <mat-autocomplete #auto="matAutocomplete">
-          <mat-option
-            *ngFor="let firm of filteredFirms | async"
-            [value]="firm.name"
-          >
+        <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
+          <mat-option *ngFor="let firm of filteredFirms | async" [value]="firm">
             {{ firm.name }} ({{ firm.cui }})
           </mat-option>
         </mat-autocomplete>
@@ -92,7 +89,6 @@
                 matInput
                 formControlName="name"
                 placeholder="Product Name"
-                [formControl]="productControl"
                 [matAutocomplete]="auto2"
               />
               <mat-autocomplete #auto2="matAutocomplete">
