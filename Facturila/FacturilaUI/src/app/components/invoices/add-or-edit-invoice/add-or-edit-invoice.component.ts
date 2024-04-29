@@ -15,6 +15,7 @@ import { Observable, map, merge, startWith } from "rxjs";
 import { IFirm } from "src/app/models/IFirm";
 import { IDocumentAutofill } from "src/app/models/IDocumentAutofill";
 import { IProduct } from "src/app/models/IProduct";
+import { MatAutocompleteSelectedEvent } from "@angular/material/autocomplete";
 
 @Component({
   selector: "app-add-or-edit-invoice",
@@ -24,7 +25,7 @@ import { IProduct } from "src/app/models/IProduct";
 export class AddOrEditInvoiceComponent {
   invoiceAutofillData: IDocumentAutofill = {} as IDocumentAutofill;
   filteredFirms!: Observable<IFirm[]>;
-  filteredProducts!: Observable<any[]>;
+  filteredProducts!: Observable<IProduct[]>;
   clientFirms: IFirm[] = [];
 
   dataSource = new MatTableDataSource();
@@ -158,6 +159,21 @@ export class AddOrEditInvoiceComponent {
   deleteProduct(index: number): void {
     this.productsFormArray.removeAt(index);
     this.updateTableData();
+  }
+
+  onProductSelected(event: any, index: number): void {
+    const selectedProduct = this.invoiceAutofillData.products.find(
+      (product) => product.name === event.option.value
+    );
+    if (selectedProduct) {
+      const productGroup = this.productsFormArray.at(index) as FormGroup;
+      productGroup.patchValue({
+        price: selectedProduct.price,
+        unitOfMeasurement: selectedProduct.unitOfMeasurement,
+        tvaValue: selectedProduct.tvaValue,
+        containsTVA: selectedProduct.containsTVA,
+      });
+    }
   }
 
   onSubmit(): void {

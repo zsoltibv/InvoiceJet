@@ -91,7 +91,10 @@
                 placeholder="Product Name"
                 [matAutocomplete]="auto2"
               />
-              <mat-autocomplete #auto2="matAutocomplete">
+              <mat-autocomplete
+                #auto2="matAutocomplete"
+                (optionSelected)="onProductSelected($event, i)"
+              >
                 <mat-option
                   *ngFor="let product of filteredProducts | async"
                   [value]="product.name"
