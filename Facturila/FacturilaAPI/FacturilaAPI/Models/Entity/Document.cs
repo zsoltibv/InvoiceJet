@@ -6,6 +6,8 @@ public class Document
     public string DocumentNumber { get; set; } = string.Empty;
     public DateTime IssueDate { get; set; }
     public DateTime DueDate { get; set; }
+    public decimal UnitPrice { get; set; }
+    public decimal TotalPrice { get; set; }
 
     public int? DocumentTypeId { get; set; }
     public DocumentType? DocumentType { get; set; }

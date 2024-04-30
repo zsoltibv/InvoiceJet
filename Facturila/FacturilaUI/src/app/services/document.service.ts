@@ -2,6 +2,7 @@ import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { environment } from "environment";
 import { IDocumentAutofill } from "../models/IDocumentAutofill";
+import { IDocumentRequest } from "../models/IDocumentRequest";
 
 @Injectable({
   providedIn: "root",
@@ -15,5 +16,9 @@ export class DocumentService {
     return this.http.get<IDocumentAutofill>(
       `${this.baseUrl}/Document/GetDocumentAutofillInfo/${userId}/${documentTypeId}`
     );
+  }
+
+  addOrEditDocument(documentData: IDocumentRequest) {
+    return this.http.post(`${this.baseUrl}/Document/AddOrEditDocument`, documentData);
   }
 }

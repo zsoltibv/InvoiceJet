@@ -3,10 +3,8 @@ import { AuthService } from "./../../../services/auth.service";
 import { FirmService } from "./../../../services/firm.service";
 import { Component } from "@angular/core";
 import {
-  Form,
   FormArray,
   FormBuilder,
-  FormControl,
   FormGroup,
   Validators,
 } from "@angular/forms";
@@ -16,6 +14,8 @@ import { IFirm } from "src/app/models/IFirm";
 import { IDocumentAutofill } from "src/app/models/IDocumentAutofill";
 import { IProduct } from "src/app/models/IProduct";
 import { MatAutocompleteSelectedEvent } from "@angular/material/autocomplete";
+import { IDocumentProductRequest } from "src/app/models/IDocumentProductRequest";
+import { IDocumentRequest } from "src/app/models/IDocumentRequest";
 
 @Component({
   selector: "app-add-or-edit-invoice",
@@ -32,7 +32,9 @@ export class AddOrEditInvoiceComponent {
   invoiceForm!: FormGroup;
   displayedColumns: string[] = [
     "name",
-    "price",
+    "unitPrice",
+    "totalPrice",
+    "quantity",
     "unitOfMeasurement",
     "tvaValue",
     "containsTVA",
@@ -70,7 +72,7 @@ export class AddOrEditInvoiceComponent {
       client: ["", Validators.required],
       issueDate: [new Date(), Validators.required],
       dueDate: "",
-      serieSiNumar: ["", Validators.required],
+      documentSeries: ["", Validators.required],
       products: this.fb.array([this.createProductGroup()]),
     });
     this.updateTableData();
@@ -134,7 +136,9 @@ export class AddOrEditInvoiceComponent {
   createProductGroup(): FormGroup {
     return this.fb.group({
       name: ["", Validators.required],
-      price: [0, [Validators.required, Validators.min(0)]],
+      unitPrice: ["", [Validators.required, Validators.min(0)]],
+      totalPrice: ["", [Validators.required, Validators.min(0)]],
+      quantity: [1, [Validators.required, Validators.min(1)]],
       unitOfMeasurement: ["buc", Validators.required],
       tvaValue: [19, [Validators.required, Validators.min(0)]],
       containsTVA: [false],
@@ -168,7 +172,8 @@ export class AddOrEditInvoiceComponent {
     if (selectedProduct) {
       const productGroup = this.productsFormArray.at(index) as FormGroup;
       productGroup.patchValue({
-        price: selectedProduct.price,
+        unitPrice: selectedProduct.price,
+        totalPrice: selectedProduct.price + (selectedProduct.price * selectedProduct.tvaValue / 100),
         unitOfMeasurement: selectedProduct.unitOfMeasurement,
         tvaValue: selectedProduct.tvaValue,
         containsTVA: selectedProduct.containsTVA,
@@ -178,10 +183,17 @@ export class AddOrEditInvoiceComponent {
 
   onSubmit(): void {
     console.log("Form submitted", this.invoiceForm.value);
-    if (this.invoiceForm.valid) {
-      console.log("Form submitted", this.invoiceForm.value);
-    } else {
-      console.log("Form is not valid");
-    }
+    const documentData: IDocumentRequest = this.invoiceForm.value;
+
+    this.documentService.addOrEditDocument(documentData).subscribe({
+      next: () => {
+        console.log("Invoice added successfully");
+      },
+      error: (err) => {
+        console.error("Error adding invoice", err);
+      },
+    });
+
+    console.log(documentData);
   }
 }

@@ -29,5 +29,19 @@ namespace FacturilaAPI.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
+        [HttpPost("AddOrEditDocument")]
+        public async Task<ActionResult<DocumentRequestDTO>> AddOrEditDocument(DocumentRequestDTO documentRequestDTO)
+        {
+            try
+            {
+                var documentRequest = 1;
+                return Ok(documentRequestDTO);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
     }
 }

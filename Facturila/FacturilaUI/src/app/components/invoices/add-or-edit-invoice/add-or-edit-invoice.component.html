@@ -54,7 +54,7 @@
       <!-- Serie si Numar Dropdown -->
       <mat-form-field appearance="outline" class="grid-item">
         <mat-label>Serie si Numar</mat-label>
-        <mat-select formControlName="serieSiNumar" required>
+        <mat-select formControlName="documentSeries" required>
           <mat-option
             *ngFor="let series of invoiceAutofillData.documentSeries"
             [value]="series"
@@ -63,7 +63,7 @@
           </mat-option>
         </mat-select>
         <mat-error
-          *ngIf="invoiceForm.get('serieSiNumar')?.errors?.['required']"
+          *ngIf="invoiceForm.get('documentSeries')?.errors?.['required']"
         >
           This field is required
         </mat-error>
@@ -106,29 +106,59 @@
           </td>
         </ng-container>
 
-        <!-- Price Column -->
-        <ng-container matColumnDef="price">
-          <th mat-header-cell *matHeaderCellDef>Price</th>
+        <!-- Unit Price Column -->
+        <ng-container matColumnDef="unitPrice">
+          <th mat-header-cell *matHeaderCellDef>Unit Price</th>
           <td
             mat-cell
             *matCellDef="let product; let i = index"
             [formGroupName]="i"
           >
             <mat-form-field class="full-width" subscriptSizing="dynamic">
-              <input matInput formControlName="price" placeholder="Price" />
+              <input matInput type="number" formControlName="unitPrice" placeholder="Unit Price" />
+            </mat-form-field>
+          </td>
+        </ng-container>
+
+        <!-- Total Price Column -->
+        <ng-container matColumnDef="totalPrice">
+          <th mat-header-cell *matHeaderCellDef>Total Price</th>
+          <td
+            mat-cell
+            *matCellDef="let product; let i = index"
+            [formGroupName]="i"
+          >
+            <mat-form-field class="full-width" subscriptSizing="dynamic">
+              <input matInput type="number" formControlName="totalPrice" placeholder="Total Price" readonly/>
+            </mat-form-field>
+          </td>
+        </ng-container>
+
+        <!-- Quantity Column -->
+        <ng-container matColumnDef="quantity">
+          <th mat-header-cell *matHeaderCellDef>Quantity</th>
+          <td
+            mat-cell
+            *matCellDef="let product; let i = index"
+            [formGroupName]="i"
+            class="small-cell-container"
+          >
+            <mat-form-field class="small-cell" subscriptSizing="dynamic">
+              <input matInput type="number" formControlName="quantity" placeholder="Quantity" />
             </mat-form-field>
           </td>
         </ng-container>
 
         <!-- Unit of Measurement Column -->
         <ng-container matColumnDef="unitOfMeasurement">
-          <th mat-header-cell *matHeaderCellDef>Unit of Measurement</th>
+          <th mat-header-cell *matHeaderCellDef>U.M.</th>
           <td
             mat-cell
             *matCellDef="let product; let i = index"
             [formGroupName]="i"
+            class="small-cell-container"
           >
-            <mat-form-field class="full-width" subscriptSizing="dynamic">
+            <mat-form-field class="small-cell" subscriptSizing="dynamic">
               <input
                 matInput
                 formControlName="unitOfMeasurement"
@@ -151,6 +181,7 @@
                 matInput
                 formControlName="tvaValue"
                 placeholder="TVA Value"
+                type="number"
               />
             </mat-form-field>
           </td>
