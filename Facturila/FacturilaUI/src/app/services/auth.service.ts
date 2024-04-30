@@ -2,10 +2,11 @@ import { UserService } from "./user.service";
 import { environment } from "./../../../environment";
 import { Injectable } from "@angular/core";
 import { IRegisterUser } from "../models/IRegisterUser";
-import { BehaviorSubject, Observable, map } from "rxjs";
+import { Observable } from "rxjs";
 import { ILoginUser } from "../models/ILoginUser";
 import { HttpClient, HttpEvent } from "@angular/common/http";
 import { JwtHelperService } from "@auth0/angular-jwt";
+import { MatDialog } from "@angular/material/dialog";
 
 @Injectable({
   providedIn: "root",
@@ -20,7 +21,8 @@ export class AuthService {
   constructor(
     private http: HttpClient,
     private jwtHelper: JwtHelperService,
-    public userService: UserService
+    public userService: UserService,
+    private dialog: MatDialog
   ) {}
 
   public register(user: IRegisterUser): Observable<HttpEvent<string>> {
@@ -43,7 +45,16 @@ export class AuthService {
 
   public isLoggedIn(): boolean {
     const token = this.authToken;
-    return !!token && !this.jwtHelper.isTokenExpired(token);
+    return !!token || !this.jwtHelper.isTokenExpired(token);
+  }
+
+  public isTokenExpired(): boolean {
+    const token = this.authToken;
+    console.log(token);
+    if (token != null && !this.jwtHelper.isTokenExpired(token)) {
+      return false;
+    }
+    return true;
   }
 
   get authToken(): string | null {

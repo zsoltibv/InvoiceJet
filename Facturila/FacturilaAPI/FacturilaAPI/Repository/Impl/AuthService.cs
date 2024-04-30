@@ -8,7 +8,6 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using System.IdentityModel.Tokens.Jwt;
 using BC = BCrypt.Net.BCrypt;
-using FacturilaAPI.Utils;
 
 namespace FacturilaAPI.Services.Impl
 {
@@ -25,12 +24,14 @@ namespace FacturilaAPI.Services.Impl
 
         public async Task<User> RegisterUser(UserRegisterDto userDto)
         {
-            User user = new User();
-            user.Email = userDto.Email;
-            user.PasswordHash = BC.HashPassword(userDto.Password);
-            user.FirstName = userDto.FirstName;
-            user.LastName = userDto.LastName;
-            user.Role = "User";
+            var user = new User
+            {
+                Email = userDto.Email,
+                PasswordHash = BC.HashPassword(userDto.Password),
+                FirstName = userDto.FirstName,
+                LastName = userDto.LastName,
+                Role = "User"
+            };
 
             await _dbContext.User.AddAsync(user);
             await _dbContext.SaveChangesAsync();
@@ -40,7 +41,7 @@ namespace FacturilaAPI.Services.Impl
 
         public async Task<string> LoginUser(UserLoginDto userDto)
         {
-            User user = await _dbContext.User.FirstOrDefaultAsync(u => u.Email == userDto.Email);
+            var user = await _dbContext.User.FirstOrDefaultAsync(u => u.Email == userDto.Email);
             if (user == null || user.Email != userDto.Email)
             {
                 throw new UserNotFoundException(userDto.Email);
@@ -73,7 +74,7 @@ namespace FacturilaAPI.Services.Impl
 
             var token = new JwtSecurityToken(
                     claims: claims,
-                    expires: DateTime.Now.AddMinutes(30),
+                    expires: DateTime.Now.AddSeconds(5),
                     signingCredentials: credentials
                 );
 

@@ -11,20 +11,20 @@ import { SidebarService } from "src/app/services/sidebar.service";
 export class NavbarComponent {
   constructor(
     private authService: AuthService,
-    private router: Router,
-    private sidebarService: SidebarService
+    private sidebarService: SidebarService,
+    private router: Router
   ) {}
 
   ngOnInit(): void {}
 
-  isLoggedIn(): boolean {
-    return this.authService.isLoggedIn();
+  public isLoginOrRegister(): boolean {
+    const currentUrl = this.router.url;
+    return currentUrl.includes("/login") || currentUrl.includes("/register");
   }
 
   logout(): void {
     this.authService.logout();
-    localStorage.removeItem("authToken");
-    this.router.navigateByUrl("/login");
+    this.router.navigate(["/login"]);
   }
 
   toggleSidebar(): void {

@@ -27,6 +27,7 @@ import { AddOrEditDocumentSeriesDialogComponent } from "./components/document-se
 import { InvoicesComponent } from "./components/invoices/invoices.component";
 import { AddOrEditInvoiceComponent } from "./components/invoices/add-or-edit-invoice/add-or-edit-invoice.component";
 import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from "@angular/material/form-field";
+import { TokenExpiredDialogComponent } from './components/token-expired-dialog/token-expired-dialog.component';
 
 @NgModule({
   declarations: [
@@ -47,6 +48,7 @@ import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from "@angular/material/form-field";
     AddOrEditDocumentSeriesDialogComponent,
     InvoicesComponent,
     AddOrEditInvoiceComponent,
+    TokenExpiredDialogComponent,
   ],
   imports: [
     BrowserModule,

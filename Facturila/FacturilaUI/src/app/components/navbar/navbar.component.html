@@ -1,17 +1,21 @@
 <mat-toolbar color="primary">
   <div class="left-align">
-    <button mat-icon-button (click)="toggleSidebar()">
+    <button
+      mat-icon-button
+      (click)="toggleSidebar()"
+      *ngIf="!isLoginOrRegister"
+    >
       <mat-icon>menu</mat-icon>
     </button>
   </div>
 
   <div class="right-align">
-    <ng-container *ngIf="!isLoggedIn()">
+    <ng-container *ngIf="!isLoginOrRegister">
       <button mat-button [routerLink]="'/login'">Login</button>
       <button mat-button [routerLink]="'/register'">Register</button>
     </ng-container>
 
-    <ng-container *ngIf="isLoggedIn()">
+    <ng-container *ngIf="!isLoginOrRegister">
       <button mat-button [matMenuTriggerFor]="userMenu" class="profileButton">
         <span>
           {{ userInfo.initials }}
