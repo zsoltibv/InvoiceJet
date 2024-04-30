@@ -3,7 +3,7 @@
     <button
       mat-icon-button
       (click)="toggleSidebar()"
-      *ngIf="!isLoginOrRegister"
+      *ngIf="isLoginOrRegister"
     >
       <mat-icon>menu</mat-icon>
     </button>
@@ -15,7 +15,7 @@
       <button mat-button [routerLink]="'/register'">Register</button>
     </ng-container>
 
-    <ng-container *ngIf="!isLoginOrRegister">
+    <ng-container *ngIf="isLoginOrRegister">
       <button mat-button [matMenuTriggerFor]="userMenu" class="profileButton">
         <span>
           {{ userInfo.initials }}

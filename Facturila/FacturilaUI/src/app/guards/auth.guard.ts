@@ -1,14 +1,18 @@
 import { Injectable } from "@angular/core";
+import { MatDialog } from "@angular/material/dialog";
 import { ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot, UrlTree } from "@angular/router";
 import { Observable } from "rxjs";
 import { AuthService } from "src/app/services/auth.service";
+import { TokenExpiredDialogComponent } from "../components/token-expired-dialog/token-expired-dialog.component";
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthGuard implements CanActivate {
 
-  constructor(private authService: AuthService, private router: Router) { }
+  constructor(private authService: AuthService, private router: Router,
+    private dialog: MatDialog
+  ) { }
 
   canActivate(
     route: ActivatedRouteSnapshot,
@@ -21,7 +25,12 @@ export class AuthGuard implements CanActivate {
     if (this.authService.isLoggedIn()) {
       return true;
     } else {
-      return this.router.createUrlTree(['/login']);
+      this.authService.logout();
+      this.dialog.open(TokenExpiredDialogComponent, {
+        width: '300px',
+        disableClose: true
+      });
+      return false;
     }
   }
 }

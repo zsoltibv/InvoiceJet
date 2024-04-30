@@ -45,16 +45,7 @@ export class AuthService {
 
   public isLoggedIn(): boolean {
     const token = this.authToken;
-    return !!token || !this.jwtHelper.isTokenExpired(token);
-  }
-
-  public isTokenExpired(): boolean {
-    const token = this.authToken;
-    console.log(token);
-    if (token != null && !this.jwtHelper.isTokenExpired(token)) {
-      return false;
-    }
-    return true;
+    return !!token && !this.jwtHelper.isTokenExpired(token);
   }
 
   get authToken(): string | null {
@@ -71,7 +62,11 @@ export class AuthService {
 
   get userInfo(): any {
     if (!this.decodedToken) {
-      return {};
+      return {
+        fullName: "",
+        email: "",
+        initials: "N/A",
+      };
     }
     const userInfo = {
       fullName: this.decodedToken.firstName + " " + this.decodedToken.lastName,

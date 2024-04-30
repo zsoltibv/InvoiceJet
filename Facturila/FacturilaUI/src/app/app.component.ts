@@ -1,5 +1,6 @@
 import { AuthService } from 'src/app/services/auth.service';
 import { Component } from '@angular/core';
+import { NavigationEnd, Router } from "@angular/router";
 
 @Component({
   selector: 'app-root',
@@ -8,10 +9,13 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
   title = 'FacturilaUI';
+  isLoginOrRegister = false;
 
-  constructor(private authService: AuthService) { }
-
-  isLoggedIn(): boolean {
-    return this.authService.isLoggedIn();
+  constructor(private authService: AuthService, private router: Router) {
+    this.router.events.subscribe(event => {
+      if (event instanceof NavigationEnd) {
+        this.isLoginOrRegister = !event.url.includes('login') && !event.url.includes('register');
+      }
+    });
   }
 }

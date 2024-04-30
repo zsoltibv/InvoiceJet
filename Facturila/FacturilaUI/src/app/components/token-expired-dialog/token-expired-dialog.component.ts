@@ -16,7 +16,6 @@ export class TokenExpiredDialogComponent {
   ) {}
 
   logIn(): void {
-    this.authService.logout();
     this.router.navigate(["/login"]);
     this.dialogRef.close();
   }

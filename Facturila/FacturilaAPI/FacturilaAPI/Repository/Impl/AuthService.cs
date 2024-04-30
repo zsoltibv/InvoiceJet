@@ -74,7 +74,7 @@ namespace FacturilaAPI.Services.Impl
 
             var token = new JwtSecurityToken(
                     claims: claims,
-                    expires: DateTime.Now.AddSeconds(5),
+                    expires: DateTime.Now.AddMinutes(10),
                     signingCredentials: credentials
                 );
 

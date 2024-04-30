@@ -1,5 +1,5 @@
 import { Component, ViewChild } from "@angular/core";
-import { Router } from "@angular/router";
+import { NavigationEnd, Router } from "@angular/router";
 import { AuthService } from "src/app/services/auth.service";
 import { SidebarService } from "src/app/services/sidebar.service";
 
@@ -9,17 +9,21 @@ import { SidebarService } from "src/app/services/sidebar.service";
   styleUrls: ["./navbar.component.scss"],
 })
 export class NavbarComponent {
+  isLoginOrRegister = false;
+
   constructor(
     private authService: AuthService,
     private sidebarService: SidebarService,
     private router: Router
-  ) {}
+  ) {
+    this.router.events.subscribe(event => {
+      if (event instanceof NavigationEnd) {
+        this.isLoginOrRegister = !event.url.includes('login') && !event.url.includes('register');
+      }
+    });
+  }
 
-  ngOnInit(): void {}
-
-  public isLoginOrRegister(): boolean {
-    const currentUrl = this.router.url;
-    return currentUrl.includes("/login") || currentUrl.includes("/register");
+  ngOnInit(): void {
   }
 
   logout(): void {
