@@ -11,6 +11,5 @@ namespace FacturilaAPI.Models.Dto
         public string Address { get; set; }
         public string County { get; set; }
         public string City { get; set; }
-
     }
 }

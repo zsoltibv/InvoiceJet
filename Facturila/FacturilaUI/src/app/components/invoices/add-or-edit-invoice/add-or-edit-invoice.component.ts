@@ -64,6 +64,7 @@ export class AddOrEditInvoiceComponent {
       });
 
     this.invoiceForm = this.fb.group({
+      id: 0,
       client: [null, Validators.required],
       issueDate: [new Date(), Validators.required],
       dueDate: null,
@@ -130,6 +131,7 @@ export class AddOrEditInvoiceComponent {
 
   createProductGroup(): FormGroup {
     return this.fb.group({
+      id: 0,
       name: [null, Validators.required],
       unitPrice: [null, [Validators.required, Validators.min(0)]],
       totalPrice: [null, [Validators.required, Validators.min(0)]],
@@ -167,6 +169,7 @@ export class AddOrEditInvoiceComponent {
     if (selectedProduct) {
       const productGroup = this.productsFormArray.at(index) as FormGroup;
       productGroup.patchValue({
+        id: selectedProduct.id,
         unitPrice: selectedProduct.price,
         totalPrice:
           selectedProduct.price +

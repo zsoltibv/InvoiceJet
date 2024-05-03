@@ -6,5 +6,6 @@ namespace FacturilaAPI.Services
     public interface IUserService
     {
         Task<UserRegisterDto> GetUserByEmail(string email);
+        Guid? GetUserIdFromToken();
     }
 }

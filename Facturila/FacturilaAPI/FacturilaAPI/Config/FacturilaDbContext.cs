@@ -8,14 +8,18 @@ namespace FacturilaAPI.Config
         public FacturilaDbContext(DbContextOptions<FacturilaDbContext> options) : base(options)
         {
         }
-        
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<User>()
                 .HasOne(u => u.ActiveUserFirm)
-                .WithMany() 
+                .WithMany()
                 .HasForeignKey(u => u.ActiveUserFirmId)
                 .IsRequired(false);
+
+            modelBuilder.Entity<Product>()
+                   .HasIndex(p => p.Name)
+                   .IsUnique();
         }
 
         public DbSet<User> User { get; set; }

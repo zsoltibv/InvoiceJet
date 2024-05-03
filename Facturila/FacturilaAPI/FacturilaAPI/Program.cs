@@ -18,6 +18,7 @@ builder.Services.AddDbContext<FacturilaDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("FacturilaConnectionString"));
 });
 
+builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IFirmService, FirmService>();
 builder.Services.AddScoped<IUserService, UserService>();
