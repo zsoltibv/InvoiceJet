@@ -8,7 +8,7 @@
         public decimal TotalPrice { get; set; }
         public bool ContainsTVA { get; set; }
         public string UnitOfMeasurement { get; set; } = string.Empty;
-        public string TVAValue { get; set; } = string.Empty;
+        public decimal TVAValue { get; set; }
         public int Quantity { get; set; }
     }
 }

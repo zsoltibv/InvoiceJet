@@ -1,4 +1,6 @@
-﻿namespace FacturilaAPI.Models.Dto
+﻿using FacturilaAPI.Models.Entity;
+
+namespace FacturilaAPI.Models.Dto
 {
     public class FirmDto
     {
@@ -9,5 +11,6 @@
         public string Address { get; set; }
         public string County { get; set; }
         public string City { get; set; }
+
     }
 }

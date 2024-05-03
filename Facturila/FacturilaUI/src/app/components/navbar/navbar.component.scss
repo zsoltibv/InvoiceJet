@@ -21,3 +21,8 @@ mat-toolbar {
 .fullName {
   font-weight: 600;
 }
+
+.left-align {
+  display: flex;
+  align-items: center;
+}

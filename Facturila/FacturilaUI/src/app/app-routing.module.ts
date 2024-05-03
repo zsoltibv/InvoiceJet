@@ -58,11 +58,5 @@ const routes: Routes = [
   exports: [RouterModule],
 })
 export class AppRoutingModule {
-  constructor(private router: Router, private authService: AuthService) {
-    if (this.authService.isLoggedIn()) {
-      this.router.navigate(["/dashboard"]);
-    } else {
-      this.router.navigate(["/login"]);
-    }
-  }
+  constructor(private router: Router, private authService: AuthService) {}
 }

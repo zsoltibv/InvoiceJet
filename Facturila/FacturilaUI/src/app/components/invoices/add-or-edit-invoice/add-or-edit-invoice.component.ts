@@ -2,12 +2,7 @@ import { DocumentService } from "./../../../services/document.service";
 import { AuthService } from "./../../../services/auth.service";
 import { FirmService } from "./../../../services/firm.service";
 import { Component } from "@angular/core";
-import {
-  FormArray,
-  FormBuilder,
-  FormGroup,
-  Validators,
-} from "@angular/forms";
+import { FormArray, FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { MatTableDataSource } from "@angular/material/table";
 import { Observable, map, merge, startWith } from "rxjs";
 import { IFirm } from "src/app/models/IFirm";
@@ -69,10 +64,10 @@ export class AddOrEditInvoiceComponent {
       });
 
     this.invoiceForm = this.fb.group({
-      client: ["", Validators.required],
+      client: [null, Validators.required],
       issueDate: [new Date(), Validators.required],
-      dueDate: "",
-      documentSeries: ["", Validators.required],
+      dueDate: null,
+      documentSeries: [null, Validators.required],
       products: this.fb.array([this.createProductGroup()]),
     });
     this.updateTableData();
@@ -135,9 +130,9 @@ export class AddOrEditInvoiceComponent {
 
   createProductGroup(): FormGroup {
     return this.fb.group({
-      name: ["", Validators.required],
-      unitPrice: ["", [Validators.required, Validators.min(0)]],
-      totalPrice: ["", [Validators.required, Validators.min(0)]],
+      name: [null, Validators.required],
+      unitPrice: [null, [Validators.required, Validators.min(0)]],
+      totalPrice: [null, [Validators.required, Validators.min(0)]],
       quantity: [1, [Validators.required, Validators.min(1)]],
       unitOfMeasurement: ["buc", Validators.required],
       tvaValue: [19, [Validators.required, Validators.min(0)]],
@@ -173,7 +168,9 @@ export class AddOrEditInvoiceComponent {
       const productGroup = this.productsFormArray.at(index) as FormGroup;
       productGroup.patchValue({
         unitPrice: selectedProduct.price,
-        totalPrice: selectedProduct.price + (selectedProduct.price * selectedProduct.tvaValue / 100),
+        totalPrice:
+          selectedProduct.price +
+          (selectedProduct.price * selectedProduct.tvaValue) / 100,
         unitOfMeasurement: selectedProduct.unitOfMeasurement,
         tvaValue: selectedProduct.tvaValue,
         containsTVA: selectedProduct.containsTVA,

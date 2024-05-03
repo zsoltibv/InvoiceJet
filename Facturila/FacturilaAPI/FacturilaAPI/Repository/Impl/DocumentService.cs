@@ -16,6 +16,11 @@ public class DocumentService : IDocumentService
         _mapper = mapper;
     }
 
+    public Task<DocumentRequestDTO> AddOrEditDocument(DocumentRequestDTO documentRequestDTO)
+    {
+        throw new NotImplementedException();
+    }
+
     public async Task<DocumentAutofillDto> GetDocumentAutofillInfo(Guid userId, int documentTypeId)
     {
         var userFirmId = await _dbContext.User
