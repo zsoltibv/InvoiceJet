@@ -1,4 +1,4 @@
-import { Component, Injectable, ViewChild } from "@angular/core";
+import { Component, HostListener, Injectable, ViewChild } from "@angular/core";
 import { BehaviorSubject, Observable, Subscription } from "rxjs";
 import {
   MatTreeFlatDataSource,
@@ -30,7 +30,8 @@ interface FlatNode {
   styleUrls: ["./sidebar.component.scss"],
 })
 export class SidebarComponent {
-  sidebarVisible = true;
+  public sidebarMode: any = "side";
+  sidebarVisible = false;
   private subscription: Subscription;
   searchQuery: string = "";
 
@@ -164,5 +165,9 @@ export class SidebarComponent {
   clearSearch() {
     this.searchQuery = "";
     this.filterTree({ target: { value: "" } } as any);
+  }
+
+  closeSidebar() {
+    this.sidebarService.toggleSidebar();
   }
 }

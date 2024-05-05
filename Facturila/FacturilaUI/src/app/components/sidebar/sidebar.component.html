@@ -1,5 +1,5 @@
-<mat-sidenav-container class="example-container">
-  <mat-sidenav #sidenav mode="side" opened *ngIf="sidebarVisible">
+<mat-sidenav-container class="example-container" autosize>
+  <mat-sidenav #sidenav [mode]="sidebarMode" [opened]="sidebarVisible">
     <!-- Search Box -->
     <mat-form-field appearance="outline">
       <mat-icon matPrefix>search</mat-icon>
@@ -27,6 +27,7 @@
         *matTreeNodeDef="let node"
         matTreeNodePadding
         [routerLink]="node.route"
+        (click)="closeSidebar()"
         [class.active-link]="isActiveRoute(node.route)"
       >
         <button mat-icon-button *ngIf="node.icon">

@@ -45,5 +45,15 @@ namespace FacturilaAPI.Services.Impl
             var userId = _httpContext.User.FindFirst("userId")?.Value;
             return new Guid(userId);
         }
+
+        public async Task<int> GetUserFirmIdUsingTokenAsync()
+        {
+            var userFirmId = await _dbContext.User
+             .Where(u => u.Id == GetUserIdFromToken())
+             .Select(u => u.ActiveUserFirmId)
+             .FirstOrDefaultAsync();
+
+            return (int)userFirmId;
+        }
     }
 }

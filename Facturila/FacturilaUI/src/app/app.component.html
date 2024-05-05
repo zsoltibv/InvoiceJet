@@ -1,8 +1,6 @@
 <app-navbar></app-navbar>
 <div [ngClass]="{ content: isLoginOrRegister }">
-  <div class="sidebar" *ngIf="isLoginOrRegister">
-    <app-sidebar></app-sidebar>
-  </div>
+  <app-sidebar class="sidebar" *ngIf="isLoginOrRegister"></app-sidebar>
   <div class="pages">
     <router-outlet></router-outlet>
   </div>

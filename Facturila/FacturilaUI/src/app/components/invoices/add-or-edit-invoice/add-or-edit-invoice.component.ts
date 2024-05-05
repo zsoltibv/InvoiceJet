@@ -181,6 +181,21 @@ export class AddOrEditInvoiceComponent {
     }
   }
 
+  calculateTotalPrice(index: number): void {
+    const productGroup = this.productsFormArray.at(index) as FormGroup;
+    const unitPrice = productGroup.get("unitPrice")!.value;
+    const quantity = productGroup.get("quantity")!.value;
+    const tvaValue = productGroup.get("tvaValue")!.value;
+
+    const totalPrice = unitPrice * quantity;
+    const tva = totalPrice * (tvaValue / 100);
+    const finalPrice = totalPrice + tva;
+
+    productGroup.patchValue({
+      totalPrice: finalPrice,
+    });
+  }
+
   onSubmit(): void {
     console.log("Form submitted", this.invoiceForm.value);
     const documentData: IDocumentRequest = this.invoiceForm.value;

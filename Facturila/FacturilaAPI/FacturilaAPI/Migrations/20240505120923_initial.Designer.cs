@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FacturilaAPI.Migrations
 {
     [DbContext(typeof(FacturilaDbContext))]
-    [Migration("20240503133226_initial")]
+    [Migration("20240505120923_initial")]
     partial class initial
     {
         /// <inheritdoc />
@@ -75,7 +75,7 @@ namespace FacturilaAPI.Migrations
                     b.Property<int?>("DocumentTypeId")
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("DueDate")
+                    b.Property<DateTime?>("DueDate")
                         .HasColumnType("datetime2");
 
                     b.Property<DateTime>("IssueDate")

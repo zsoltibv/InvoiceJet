@@ -120,6 +120,7 @@
                 type="number"
                 formControlName="unitPrice"
                 placeholder="Unit Price"
+                (change)="calculateTotalPrice(i)"
               />
             </mat-form-field>
           </td>
@@ -159,6 +160,7 @@
                 type="number"
                 formControlName="quantity"
                 placeholder="Quantity"
+                (change)="calculateTotalPrice(i)"
               />
             </mat-form-field>
           </td>
@@ -197,6 +199,7 @@
                 formControlName="tvaValue"
                 placeholder="TVA Value"
                 type="number"
+                (change)="calculateTotalPrice(i)"
               />
             </mat-form-field>
           </td>

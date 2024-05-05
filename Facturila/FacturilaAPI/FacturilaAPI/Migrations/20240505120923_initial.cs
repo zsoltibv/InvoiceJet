@@ -67,7 +67,7 @@ namespace FacturilaAPI.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     DocumentNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     IssueDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    DueDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    DueDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     UnitPrice = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     TotalPrice = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     DocumentTypeId = table.Column<int>(type: "int", nullable: true),

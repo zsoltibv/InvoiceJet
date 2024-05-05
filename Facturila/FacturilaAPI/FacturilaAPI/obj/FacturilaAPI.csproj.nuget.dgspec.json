@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "V:\\Facultate\\An3\\Licenta\\Facturila\\FacturilaAPI\\FacturilaAPI\\FacturilaAPI.csproj": {}
+    "C:\\Facultate\\Facturila\\Facturila\\FacturilaAPI\\FacturilaAPI\\FacturilaAPI.csproj": {}
   },
   "projects": {
-    "V:\\Facultate\\An3\\Licenta\\Facturila\\FacturilaAPI\\FacturilaAPI\\FacturilaAPI.csproj": {
+    "C:\\Facultate\\Facturila\\Facturila\\FacturilaAPI\\FacturilaAPI\\FacturilaAPI.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "V:\\Facultate\\An3\\Licenta\\Facturila\\FacturilaAPI\\FacturilaAPI\\FacturilaAPI.csproj",
+        "projectUniqueName": "C:\\Facultate\\Facturila\\Facturila\\FacturilaAPI\\FacturilaAPI\\FacturilaAPI.csproj",
         "projectName": "FacturilaAPI",
-        "projectPath": "V:\\Facultate\\An3\\Licenta\\Facturila\\FacturilaAPI\\FacturilaAPI\\FacturilaAPI.csproj",
+        "projectPath": "C:\\Facultate\\Facturila\\Facturila\\FacturilaAPI\\FacturilaAPI\\FacturilaAPI.csproj",
         "packagesPath": "C:\\Users\\zsolti\\.nuget\\packages\\",
-        "outputPath": "V:\\Facultate\\An3\\Licenta\\Facturila\\FacturilaAPI\\FacturilaAPI\\obj\\",
+        "outputPath": "C:\\Facultate\\Facturila\\Facturila\\FacturilaAPI\\FacturilaAPI\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\zsolti\\AppData\\Roaming\\NuGet\\NuGet.Config",

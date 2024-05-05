@@ -21,22 +21,61 @@ public class DocumentService : IDocumentService
 
     public async Task<DocumentRequestDTO> AddOrEditDocument(DocumentRequestDTO documentRequestDTO)
     {
-        var userId = _userService.GetUserIdFromToken();
-        Document document = new Document();
-
+        var userFirmId = await _userService.GetUserFirmIdUsingTokenAsync();
         var documentProductsDto = documentRequestDTO.Products;
-        if (documentProductsDto != null)
+        var documentProducts = new List<DocumentProduct>();
+        decimal totalInvoicePrice = 0;
+        decimal totalInvoicePriceWithTVA = 0;
+
+        Document document = new Document
         {
-            foreach(var product in documentProductsDto)
+            Id = documentRequestDTO.Id,
+            DocumentNumber = "INV" + documentRequestDTO.DocumentSeries.SeriesName + documentRequestDTO.DocumentSeries.FirstNumber,
+            IssueDate = documentRequestDTO.IssueDate,
+            DueDate = documentRequestDTO.DueDate,
+            DocumentTypeId = documentRequestDTO.DocumentSeries.DocumentType?.Id,
+            ClientId = documentRequestDTO.Client.Id,
+            UserFirmId = userFirmId
+        };
+
+        _dbContext.Document.Add(document);
+        await _dbContext.SaveChangesAsync();
+
+        foreach (var productDto in documentProductsDto)
+        {
+            Product product;
+
+            if (productDto.Id > 0)
             {
-                if(product.Id == 0)
+                product = await _dbContext.Product.FindAsync(productDto.Id);
+                if (product == null)
                 {
-                    _dbContext.Add(_mapper.Map<Product>(product));
+                    throw new Exception("Product not found.");
                 }
             }
+            else
+            {
+                product = _mapper.Map<Product>(productDto);
+                product.UserFirmId = userFirmId;
+                _dbContext.Product.Add(product);  // This will only be actually saved later
+            }
+
+            DocumentProduct documentProduct = new DocumentProduct
+            {
+                Quantity = productDto.Quantity,
+                Product = product,
+                DocumentId = document.Id,  // Now we have DocumentId available
+                UnitPrice = productDto.UnitPrice,
+                TotalPrice = productDto.TotalPrice,
+            };
+
+            totalInvoicePrice += productDto.UnitPrice * productDto.Quantity;
+            totalInvoicePriceWithTVA += productDto.TotalPrice;
+
+            _dbContext.DocumentProduct.Add(documentProduct);  // Add to DbContext
         }
-        
-        await _dbContext.SaveChangesAsync();
+
+        await _dbContext.SaveChangesAsync();  // Save everything at once
         return documentRequestDTO;
     }
 
@@ -48,7 +87,7 @@ public class DocumentService : IDocumentService
             .FirstOrDefaultAsync();
 
         if (userFirmId == null)
-            return new DocumentAutofillDto();  
+            return new DocumentAutofillDto();
 
         var dto = new DocumentAutofillDto
         {

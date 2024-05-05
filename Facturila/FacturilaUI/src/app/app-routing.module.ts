@@ -50,7 +50,7 @@ const routes: Routes = [
     component: AddOrEditInvoiceComponent,
     canActivate: [AuthGuard],
   },
-  { path: "**", component: LoginComponent },
+  { path: "**", component: DashboardComponent, canActivate: [AuthGuard]},
 ];
 
 @NgModule({
@@ -58,5 +58,7 @@ const routes: Routes = [
   exports: [RouterModule],
 })
 export class AppRoutingModule {
-  constructor(private router: Router, private authService: AuthService) {}
+  constructor(private router: Router, private authService: AuthService) {
+
+  }
 }

@@ -12,6 +12,12 @@
   width: 100%;
 }
 
+@media (max-width: 1500px) {
+  .pages {
+    position: fixed;
+  }
+}
+
 ::ng-deep .mat-mdc-text-field-wrapper {
   margin-top: 2px;
   height: 40px !important;
