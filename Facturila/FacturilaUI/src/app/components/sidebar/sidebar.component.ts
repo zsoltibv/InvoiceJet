@@ -168,6 +168,8 @@ export class SidebarComponent {
   }
 
   closeSidebar() {
-    this.sidebarService.toggleSidebar();
+    if (window.innerWidth < 1500) {
+      this.sidebarService.toggleSidebar();
+    }
   }
 }
