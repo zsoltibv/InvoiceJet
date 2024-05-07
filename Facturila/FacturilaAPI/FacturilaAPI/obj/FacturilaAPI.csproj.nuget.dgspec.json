@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Facultate\\Facturila\\Facturila\\FacturilaAPI\\FacturilaAPI\\FacturilaAPI.csproj": {}
+    "V:\\Facultate\\An3\\Licenta\\Facturila\\FacturilaAPI\\FacturilaAPI\\FacturilaAPI.csproj": {}
   },
   "projects": {
-    "C:\\Facultate\\Facturila\\Facturila\\FacturilaAPI\\FacturilaAPI\\FacturilaAPI.csproj": {
+    "V:\\Facultate\\An3\\Licenta\\Facturila\\FacturilaAPI\\FacturilaAPI\\FacturilaAPI.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Facultate\\Facturila\\Facturila\\FacturilaAPI\\FacturilaAPI\\FacturilaAPI.csproj",
+        "projectUniqueName": "V:\\Facultate\\An3\\Licenta\\Facturila\\FacturilaAPI\\FacturilaAPI\\FacturilaAPI.csproj",
         "projectName": "FacturilaAPI",
-        "projectPath": "C:\\Facultate\\Facturila\\Facturila\\FacturilaAPI\\FacturilaAPI\\FacturilaAPI.csproj",
+        "projectPath": "V:\\Facultate\\An3\\Licenta\\Facturila\\FacturilaAPI\\FacturilaAPI\\FacturilaAPI.csproj",
         "packagesPath": "C:\\Users\\zsolti\\.nuget\\packages\\",
-        "outputPath": "C:\\Facultate\\Facturila\\Facturila\\FacturilaAPI\\FacturilaAPI\\obj\\",
+        "outputPath": "V:\\Facultate\\An3\\Licenta\\Facturila\\FacturilaAPI\\FacturilaAPI\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\zsolti\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -89,7 +89,7 @@
             },
             "QuestPDF": {
               "target": "Package",
-              "version": "[2024.3.3, )"
+              "version": "[2024.3.4, )"
             },
             "Swashbuckle.AspNetCore": {
               "target": "Package",

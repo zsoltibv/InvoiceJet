@@ -211,4 +211,17 @@ export class AddOrEditInvoiceComponent {
 
     console.log(documentData);
   }
+
+  generateInvoicePdf() {
+    const documentData: IDocumentRequest = this.invoiceForm.value;
+
+    this.documentService.generateDocumentPdf(documentData).subscribe({
+      next: () => {
+        console.log("Invoice pdf generated successfully");
+      },
+      error: (err) => {
+        console.error("Error generating invoice pdf", err);
+      },
+    });
+  }
 }

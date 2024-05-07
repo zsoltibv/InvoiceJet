@@ -1,4 +1,5 @@
 ﻿using FacturilaAPI.Models.Dto;
+using FacturilaAPI.Repository;
 using FacturilaAPI.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -11,9 +12,11 @@ namespace FacturilaAPI.Controllers
     public class DocumentController : ControllerBase
     {
         private readonly IDocumentService _documentService;
-        public DocumentController(IDocumentService documentService)
+        private readonly IQuestPDFService _questPDFService;
+        public DocumentController(IDocumentService documentService, IQuestPDFService questPDFService)
         {
             _documentService = documentService;
+            _questPDFService = questPDFService;
         }
         
         [HttpGet("GetDocumentAutofillInfo/{userId}/{documentTypeId}")]
@@ -37,6 +40,20 @@ namespace FacturilaAPI.Controllers
             {
                 await _documentService.AddOrEditDocument(documentRequestDto);
                 return Ok(documentRequestDto);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPost("GenerateDocumentPdf")]
+        public async Task<ActionResult<DocumentRequestDTO>> GenerateDocument(DocumentRequestDTO documentRequestDTO)
+        {
+            try
+            {
+                await _documentService.GeneratePdfDocument(documentRequestDTO);
+                return Ok();
             }
             catch (Exception ex)
             {

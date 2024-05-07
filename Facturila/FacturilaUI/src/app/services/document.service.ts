@@ -19,6 +19,16 @@ export class DocumentService {
   }
 
   addOrEditDocument(documentData: IDocumentRequest) {
-    return this.http.post(`${this.baseUrl}/Document/AddOrEditDocument`, documentData);
+    return this.http.post(
+      `${this.baseUrl}/Document/AddOrEditDocument`,
+      documentData
+    );
+  }
+
+  generateDocumentPdf(documentData: IDocumentRequest) {
+    return this.http.post(
+      `${this.baseUrl}/Document/GenerateDocumentPdf`,
+      documentData
+    );
   }
 }

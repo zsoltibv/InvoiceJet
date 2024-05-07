@@ -251,7 +251,12 @@
       <button mat-raised-button color="primary" type="submit">
         Issue Invoice
       </button>
-      <button mat-raised-button color="primary" type="button">
+      <button
+        mat-raised-button
+        color="primary"
+        type="button"
+        (click)="generateInvoicePdf()"
+      >
         Preview Invoice
       </button>
     </div>

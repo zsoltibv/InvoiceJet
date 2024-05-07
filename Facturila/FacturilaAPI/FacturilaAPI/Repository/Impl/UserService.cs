@@ -1,11 +1,10 @@
-﻿using FacturilaAPI.Config;
+﻿using AutoMapper;
+using FacturilaAPI.Config;
 using FacturilaAPI.Exceptions;
 using FacturilaAPI.Models.Dto;
 using FacturilaAPI.Models.Entity;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System.Security.Claims;
 
 namespace FacturilaAPI.Services.Impl
 {
@@ -13,13 +12,13 @@ namespace FacturilaAPI.Services.Impl
     {
         private readonly FacturilaDbContext _dbContext;
         private readonly IHttpContextAccessor _httpContextAccessor;
-        private readonly HttpContext _httpContext;
+        private readonly IMapper _mapper;
 
-        public UserService(FacturilaDbContext dbContext, IHttpContextAccessor httpContextAccessor)
+        public UserService(FacturilaDbContext dbContext, IMapper mapper, IHttpContextAccessor httpContextAccessor)
         {
             _dbContext = dbContext;
             _httpContextAccessor = httpContextAccessor;
-            _httpContext = _httpContextAccessor.HttpContext;
+            _mapper = mapper;
         }
 
         public async Task<UserRegisterDto> GetUserByEmail([FromQuery] string email)
@@ -42,8 +41,15 @@ namespace FacturilaAPI.Services.Impl
         }
         public Guid? GetUserIdFromToken()
         {
-            var userId = _httpContext.User.FindFirst("userId")?.Value;
-            return new Guid(userId);
+            var userIdValue = _httpContextAccessor.HttpContext?.User.FindFirst("userId")?.Value;
+
+            if (string.IsNullOrEmpty(userIdValue))
+                return null;
+
+            if (Guid.TryParse(userIdValue, out Guid userId))
+                return userId;
+
+            return null;
         }
 
         public async Task<int> GetUserFirmIdUsingTokenAsync()

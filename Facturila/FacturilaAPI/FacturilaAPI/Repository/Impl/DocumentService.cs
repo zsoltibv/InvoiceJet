@@ -2,6 +2,7 @@
 using FacturilaAPI.Config;
 using FacturilaAPI.Models.Dto;
 using FacturilaAPI.Models.Entity;
+using FacturilaAPI.Repository;
 using Microsoft.EntityFrameworkCore;
 
 namespace FacturilaAPI.Services.Impl;
@@ -11,19 +12,20 @@ public class DocumentService : IDocumentService
     private readonly FacturilaDbContext _dbContext;
     private readonly IMapper _mapper;
     private readonly IUserService _userService;
+    private readonly IQuestPDFService _questPDFService;
 
-    public DocumentService(FacturilaDbContext dbContext, IMapper mapper, IUserService userService)
+    public DocumentService(FacturilaDbContext dbContext, IMapper mapper, IUserService userService, IQuestPDFService questPDFService)
     {
         _dbContext = dbContext;
         _mapper = mapper;
         _userService = userService;
+        _questPDFService = questPDFService;
     }
 
     public async Task<DocumentRequestDTO> AddOrEditDocument(DocumentRequestDTO documentRequestDTO)
     {
         var userFirmId = await _userService.GetUserFirmIdUsingTokenAsync();
         var documentProductsDto = documentRequestDTO.Products;
-        var documentProducts = new List<DocumentProduct>();
         decimal totalInvoicePrice = 0;
         decimal totalInvoicePriceWithTVA = 0;
 
@@ -76,6 +78,20 @@ public class DocumentService : IDocumentService
         }
 
         await _dbContext.SaveChangesAsync();  // Save everything at once
+        return documentRequestDTO;
+    }
+
+    public async Task<DocumentRequestDTO> GeneratePdfDocument(DocumentRequestDTO documentRequestDTO)
+    {
+        var activeUserFirmId = await _userService.GetUserFirmIdUsingTokenAsync();
+        var activeUserFirm = await _dbContext.UserFirm
+            .Where(uf => uf.UserFirmId == activeUserFirmId)
+            .Include(uf => uf.Firm)
+            .FirstOrDefaultAsync();
+
+        documentRequestDTO.Seller = _mapper.Map<FirmDto>(activeUserFirm?.Firm);
+        _questPDFService.GenerateDocument(documentRequestDTO);
+
         return documentRequestDTO;
     }
 

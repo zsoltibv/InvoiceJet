@@ -754,7 +754,7 @@
           }
         }
       },
-      "QuestPDF/2024.3.3": {
+      "QuestPDF/2024.3.4": {
         "type": "package",
         "compile": {
           "lib/net8.0/QuestPDF.dll": {
@@ -2612,10 +2612,10 @@
         "packageIcon.png"
       ]
     },
-    "QuestPDF/2024.3.3": {
-      "sha512": "S2T+iE8RGw3OCBZ6bZmPhw6oIbXa92MuewcvwzJgeNKGIoc6t1lHnCWwH+UTGVFV9eGUCEjkxQCC6xooDYOUGw==",
+    "QuestPDF/2024.3.4": {
+      "sha512": "QZ4hljnQ9r0VNjo6K93RCl4iysW9rYCVLFDfyYi+Ij7lvLisB25ro/YAVRVgoAKjGGGLRGj5xZ7rxroJaEUI1w==",
       "type": "package",
-      "path": "questpdf/2024.3.3",
+      "path": "questpdf/2024.3.4",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
@@ -2667,7 +2667,7 @@
         "lib/net8.0/QuestPDF.xml",
         "lib/netstandard2.0/QuestPDF.dll",
         "lib/netstandard2.0/QuestPDF.xml",
-        "questpdf.2024.3.3.nupkg.sha512",
+        "questpdf.2024.3.4.nupkg.sha512",
         "questpdf.nuspec",
         "runtimes/linux-arm64/native/libQuestPdfSkia.so",
         "runtimes/linux-musl-x64/native/libQuestPdfSkia.so",
@@ -3710,7 +3710,7 @@
       "Microsoft.EntityFrameworkCore.SqlServer >= 7.0.13",
       "Microsoft.EntityFrameworkCore.Tools >= 7.0.13",
       "Newtonsoft.Json >= 13.0.3",
-      "QuestPDF >= 2024.3.3",
+      "QuestPDF >= 2024.3.4",
       "Swashbuckle.AspNetCore >= 6.4.0",
       "Swashbuckle.AspNetCore.Filters >= 7.0.12"
     ]
@@ -3721,11 +3721,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Facultate\\Facturila\\Facturila\\FacturilaAPI\\FacturilaAPI\\FacturilaAPI.csproj",
+      "projectUniqueName": "V:\\Facultate\\An3\\Licenta\\Facturila\\FacturilaAPI\\FacturilaAPI\\FacturilaAPI.csproj",
       "projectName": "FacturilaAPI",
-      "projectPath": "C:\\Facultate\\Facturila\\Facturila\\FacturilaAPI\\FacturilaAPI\\FacturilaAPI.csproj",
+      "projectPath": "V:\\Facultate\\An3\\Licenta\\Facturila\\FacturilaAPI\\FacturilaAPI\\FacturilaAPI.csproj",
       "packagesPath": "C:\\Users\\zsolti\\.nuget\\packages\\",
-      "outputPath": "C:\\Facultate\\Facturila\\Facturila\\FacturilaAPI\\FacturilaAPI\\obj\\",
+      "outputPath": "V:\\Facultate\\An3\\Licenta\\Facturila\\FacturilaAPI\\FacturilaAPI\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\zsolti\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -3803,7 +3803,7 @@
           },
           "QuestPDF": {
             "target": "Package",
-            "version": "[2024.3.3, )"
+            "version": "[2024.3.4, )"
           },
           "Swashbuckle.AspNetCore": {
             "target": "Package",
