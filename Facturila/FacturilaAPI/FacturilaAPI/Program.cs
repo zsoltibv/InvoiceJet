@@ -30,7 +30,7 @@ builder.Services.AddScoped<IBankAccountService, BankAccountService>();
 builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<IDocumentSeriesService, DocumentSeriesService>();
 builder.Services.AddScoped<IDocumentService, DocumentService>();
-builder.Services.AddScoped<IQuestPDFService, QuestPDFService>();
+builder.Services.AddScoped<IPdfGenerationService, PdfGenerationService>();
 
 builder.Services.AddAutoMapper(typeof(Program));
 builder.Services.AddControllers();

@@ -12,11 +12,9 @@ namespace FacturilaAPI.Controllers
     public class DocumentController : ControllerBase
     {
         private readonly IDocumentService _documentService;
-        private readonly IQuestPDFService _questPDFService;
-        public DocumentController(IDocumentService documentService, IQuestPDFService questPDFService)
+        public DocumentController(IDocumentService documentService)
         {
             _documentService = documentService;
-            _questPDFService = questPDFService;
         }
         
         [HttpGet("GetDocumentAutofillInfo/{userId}/{documentTypeId}")]

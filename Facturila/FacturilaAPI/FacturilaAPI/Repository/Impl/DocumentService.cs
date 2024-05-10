@@ -3,6 +3,7 @@ using FacturilaAPI.Config;
 using FacturilaAPI.Models.Dto;
 using FacturilaAPI.Models.Entity;
 using FacturilaAPI.Repository;
+using FacturilaAPI.Repository.Impl;
 using Microsoft.EntityFrameworkCore;
 
 namespace FacturilaAPI.Services.Impl;
@@ -12,14 +13,14 @@ public class DocumentService : IDocumentService
     private readonly FacturilaDbContext _dbContext;
     private readonly IMapper _mapper;
     private readonly IUserService _userService;
-    private readonly IQuestPDFService _questPDFService;
+    private readonly IPdfGenerationService _pdfGenerationService;
 
-    public DocumentService(FacturilaDbContext dbContext, IMapper mapper, IUserService userService, IQuestPDFService questPDFService)
+    public DocumentService(FacturilaDbContext dbContext, IMapper mapper, IUserService userService, IPdfGenerationService pdfGenerationService)
     {
         _dbContext = dbContext;
         _mapper = mapper;
         _userService = userService;
-        _questPDFService = questPDFService;
+        _pdfGenerationService = pdfGenerationService;
     }
 
     public async Task<DocumentRequestDTO> AddOrEditDocument(DocumentRequestDTO documentRequestDTO)
@@ -90,7 +91,9 @@ public class DocumentService : IDocumentService
             .FirstOrDefaultAsync();
 
         documentRequestDTO.Seller = _mapper.Map<FirmDto>(activeUserFirm?.Firm);
-        _questPDFService.GenerateDocument(documentRequestDTO);
+
+        //include invoice document class and generate pdf
+        _pdfGenerationService.GenerateInvoicePdf(documentRequestDTO);
 
         return documentRequestDTO;
     }
