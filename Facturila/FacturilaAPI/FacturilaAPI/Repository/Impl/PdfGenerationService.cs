@@ -24,6 +24,25 @@ namespace FacturilaAPI.Repository.Impl
             }
         }
 
+        public byte[] GetInvoicePdfStream(DocumentRequestDTO invoiceData)
+        {
+            try
+            {
+                using (var memoryStream = new MemoryStream())
+                {
+                    InvoiceDocument document = new InvoiceDocument(invoiceData);
+                    document.GeneratePdf(memoryStream);
+
+                    return memoryStream.ToArray();
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error generating PDF: " + ex.Message);
+                return null;
+            }
+        }
+
         private string GetInvoicePdfPath(int invoiceNumber)
         {
             string basePath = AppDomain.CurrentDomain.BaseDirectory;

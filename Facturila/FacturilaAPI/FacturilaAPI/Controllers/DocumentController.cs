@@ -58,5 +58,24 @@ namespace FacturilaAPI.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
+        [HttpPost("GetInvoicePdfStream")]
+        public async Task<IActionResult> GetInvoicePdfStream(DocumentRequestDTO documentRequestDTO)
+        {
+            try
+            {
+                byte[] pdfContent = await _documentService.GetInvoicePdfStream(documentRequestDTO);
+                if (pdfContent == null)
+                {
+                    return BadRequest("Failed to generate the PDF document.");
+                }
+
+                return File(pdfContent, "application/pdf", $"Invoice_{documentRequestDTO.DocumentSeries.CurrentNumber}.pdf");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
     }
 }

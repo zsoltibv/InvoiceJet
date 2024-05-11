@@ -98,6 +98,20 @@ public class DocumentService : IDocumentService
         return documentRequestDTO;
     }
 
+    public async Task<byte[]> GetInvoicePdfStream(DocumentRequestDTO documentRequestDTO)
+    {
+        var activeUserFirmId = await _userService.GetUserFirmIdUsingTokenAsync();
+        var activeUserFirm = await _dbContext.UserFirm
+            .Where(uf => uf.UserFirmId == activeUserFirmId)
+            .Include(uf => uf.Firm)
+            .FirstOrDefaultAsync();
+
+        documentRequestDTO.Seller = _mapper.Map<FirmDto>(activeUserFirm?.Firm);
+
+        //include invoice document class and generate pdf
+        return _pdfGenerationService.GetInvoicePdfStream(documentRequestDTO);
+    }
+
     public async Task<DocumentAutofillDto> GetDocumentAutofillInfo(Guid userId, int documentTypeId)
     {
         var userFirmId = await _dbContext.User

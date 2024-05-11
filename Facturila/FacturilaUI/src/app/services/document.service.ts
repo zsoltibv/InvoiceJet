@@ -31,4 +31,14 @@ export class DocumentService {
       documentData
     );
   }
+
+  getGeneratedDocumentPdf(documentData: IDocumentRequest) {
+    return this.http.post(
+      `${this.baseUrl}/Document/GetInvoicePdfStream/`,
+      documentData,
+      {
+        responseType: "blob",
+      }
+    );
+  }
 }

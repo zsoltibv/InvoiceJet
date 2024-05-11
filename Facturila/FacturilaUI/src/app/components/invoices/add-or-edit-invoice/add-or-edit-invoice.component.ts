@@ -11,6 +11,8 @@ import { IProduct } from "src/app/models/IProduct";
 import { MatAutocompleteSelectedEvent } from "@angular/material/autocomplete";
 import { IDocumentProductRequest } from "src/app/models/IDocumentProductRequest";
 import { IDocumentRequest } from "src/app/models/IDocumentRequest";
+import { MatDialog } from "@angular/material/dialog";
+import { PdfViewerComponent } from "../../pdf-viewer/pdf-viewer.component";
 
 @Component({
   selector: "app-add-or-edit-invoice",
@@ -46,7 +48,8 @@ export class AddOrEditInvoiceComponent {
     private fb: FormBuilder,
     private firmService: FirmService,
     private authService: AuthService,
-    private documentService: DocumentService
+    private documentService: DocumentService,
+    private dialog: MatDialog
   ) {}
 
   ngOnInit(): void {
@@ -221,6 +224,26 @@ export class AddOrEditInvoiceComponent {
       },
       error: (err) => {
         console.error("Error generating invoice pdf", err);
+      },
+    });
+  }
+
+  getInvoicePdfStream() {
+    const documentData: IDocumentRequest = this.invoiceForm.value;
+
+    this.documentService.getGeneratedDocumentPdf(documentData).subscribe({
+      next: (data) => {
+        const blob = new Blob([data], { type: "application/pdf" });
+        const url = window.URL.createObjectURL(blob);
+
+        this.dialog.open(PdfViewerComponent, {
+          data: { pdfUrl: url },
+          width: "100vw",
+          height: "90vh",
+        });
+      },
+      error: (err) => {
+        console.error("Error getting invoice pdf stream", err);
       },
     });
   }
