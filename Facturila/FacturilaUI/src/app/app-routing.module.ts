@@ -11,6 +11,7 @@ import { BankAccountsComponent } from "./components/firm/bank-accounts/bank-acco
 import { ProductsComponent } from "./components/products/products.component";
 import { DocumentSeriesComponent } from "./components/document-series/document-series.component";
 import { AddOrEditInvoiceComponent } from "./components/invoices/add-or-edit-invoice/add-or-edit-invoice.component";
+import { InvoicesComponent } from "./components/invoices/invoices.component";
 
 const routes: Routes = [
   { path: "login", component: LoginComponent },
@@ -46,11 +47,16 @@ const routes: Routes = [
     canActivate: [AuthGuard],
   },
   {
+    path: "dashboard/invoices",
+    component: InvoicesComponent,
+    canActivate: [AuthGuard],
+  },
+  {
     path: "dashboard/add-or-edit-invoice",
     component: AddOrEditInvoiceComponent,
     canActivate: [AuthGuard],
   },
-  { path: "**", component: DashboardComponent, canActivate: [AuthGuard]},
+  { path: "**", component: DashboardComponent, canActivate: [AuthGuard] },
 ];
 
 @NgModule({
@@ -58,7 +64,5 @@ const routes: Routes = [
   exports: [RouterModule],
 })
 export class AppRoutingModule {
-  constructor(private router: Router, private authService: AuthService) {
-
-  }
+  constructor(private router: Router, private authService: AuthService) {}
 }

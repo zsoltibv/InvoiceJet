@@ -3,6 +3,7 @@ import { Injectable } from "@angular/core";
 import { environment } from "environment";
 import { IDocumentAutofill } from "../models/IDocumentAutofill";
 import { IDocumentRequest } from "../models/IDocumentRequest";
+import { IDocumentTableRecord } from "../models/IDocumentTableRecord";
 
 @Injectable({
   providedIn: "root",
@@ -39,6 +40,12 @@ export class DocumentService {
       {
         responseType: "blob",
       }
+    );
+  }
+
+  getDocuments(documentTypeId: number) {
+    return this.http.get<IDocumentTableRecord[]>(
+      `${this.baseUrl}/Document/GetDocumentTableRecords/${documentTypeId}`
     );
   }
 }

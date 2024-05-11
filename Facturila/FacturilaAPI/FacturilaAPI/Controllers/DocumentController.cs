@@ -77,5 +77,19 @@ namespace FacturilaAPI.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
+        [HttpGet("GetDocumentTableRecords/{documentTypeId}")]
+        public async Task<IActionResult> GetDocumentTableRecords(int documentTypeId)
+        {
+            try
+            {
+                var documents = await _documentService.GetDocumentTableRecords(documentTypeId);
+                return Ok(documents);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
     }
 }

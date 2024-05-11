@@ -1,5 +1,10 @@
 <div class="inner-container">
-  <h1>Invoice Details</h1>
+  <div class="title-container">
+    <button mat-icon-button (click)="goBack()" aria-label="Go back">
+      <mat-icon>arrow_back</mat-icon>
+    </button>
+    <h1>Invoice Details</h1>
+  </div>
   <form [formGroup]="invoiceForm" (ngSubmit)="onSubmit()">
     <div class="grid-container">
       <!-- CUI Value Field -->

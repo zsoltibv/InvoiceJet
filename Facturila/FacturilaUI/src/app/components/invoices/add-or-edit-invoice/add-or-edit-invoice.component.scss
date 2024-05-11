@@ -60,3 +60,15 @@ td {
 .small-cell {
   max-width: 80px;
 }
+
+.title-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+h1 {
+  padding: 0;
+  margin: 0;
+}

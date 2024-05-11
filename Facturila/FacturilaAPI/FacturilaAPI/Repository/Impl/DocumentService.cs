@@ -94,7 +94,7 @@ public class DocumentService : IDocumentService
 
         //include invoice document class and generate pdf
         _pdfGenerationService.GenerateInvoicePdf(documentRequestDTO);
-        
+
 
         return documentRequestDTO;
     }
@@ -138,5 +138,23 @@ public class DocumentService : IDocumentService
         };
 
         return dto;
+    }
+
+    public async Task<List<DocumentTableRecordDTO>> GetDocumentTableRecords(int documentTypeId)
+    {
+        var activeUserFirmId = await _userService.GetUserFirmIdUsingTokenAsync();
+        var activeUserFirm = await _dbContext.UserFirm
+            .Where(uf => uf.UserFirmId == activeUserFirmId)
+            .Include(uf => uf.Firm)
+            .FirstOrDefaultAsync();
+
+        if (activeUserFirm == null) return new List<DocumentTableRecordDTO>();
+
+        var documents = await _dbContext.Document
+            .Where(document => document.UserFirmId == activeUserFirmId && document.DocumentTypeId == documentTypeId)
+                .Include(document => document.Client)
+            .ToListAsync();
+
+        return _mapper.Map<List<DocumentTableRecordDTO>>(documents);
     }
 }

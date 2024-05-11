@@ -13,6 +13,7 @@ import { IDocumentProductRequest } from "src/app/models/IDocumentProductRequest"
 import { IDocumentRequest } from "src/app/models/IDocumentRequest";
 import { MatDialog } from "@angular/material/dialog";
 import { PdfViewerComponent } from "../../pdf-viewer/pdf-viewer.component";
+import { Router } from "@angular/router";
 
 @Component({
   selector: "app-add-or-edit-invoice",
@@ -49,7 +50,8 @@ export class AddOrEditInvoiceComponent {
     private firmService: FirmService,
     private authService: AuthService,
     private documentService: DocumentService,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -248,5 +250,9 @@ export class AddOrEditInvoiceComponent {
         console.error("Error getting invoice pdf stream", err);
       },
     });
+  }
+
+  goBack(): void {
+    this.router.navigateByUrl("/dashboard/invoices");
   }
 }
