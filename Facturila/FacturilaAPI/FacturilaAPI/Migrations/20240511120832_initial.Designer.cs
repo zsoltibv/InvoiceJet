@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FacturilaAPI.Migrations
 {
     [DbContext(typeof(FacturilaDbContext))]
-    [Migration("20240505120923_initial")]
+    [Migration("20240511120832_initial")]
     partial class initial
     {
         /// <inheritdoc />

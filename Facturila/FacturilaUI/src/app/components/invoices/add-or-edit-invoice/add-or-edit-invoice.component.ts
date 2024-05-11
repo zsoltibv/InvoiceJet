@@ -229,6 +229,8 @@ export class AddOrEditInvoiceComponent {
   }
 
   getInvoicePdfStream() {
+    if (this.invoiceForm.invalid) return;
+
     const documentData: IDocumentRequest = this.invoiceForm.value;
 
     this.documentService.getGeneratedDocumentPdf(documentData).subscribe({

@@ -94,6 +94,7 @@ public class DocumentService : IDocumentService
 
         //include invoice document class and generate pdf
         _pdfGenerationService.GenerateInvoicePdf(documentRequestDTO);
+        
 
         return documentRequestDTO;
     }
