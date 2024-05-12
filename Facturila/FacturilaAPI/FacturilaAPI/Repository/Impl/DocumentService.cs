@@ -157,4 +157,16 @@ public class DocumentService : IDocumentService
 
         return _mapper.Map<List<DocumentTableRecordDTO>>(documents);
     }
+
+    public async Task<DocumentRequestDTO> GetDocumentById(int documentId)
+    {
+        var document = await _dbContext.Document
+            .Where(d => d.Id == documentId)
+                .Include(d => d.DocumentProducts)
+                    .ThenInclude(dp => dp.Product)
+                .Include(d => d.Client)
+            .FirstOrDefaultAsync();
+
+        return _mapper.Map<DocumentRequestDTO>(document);
+    }
 }

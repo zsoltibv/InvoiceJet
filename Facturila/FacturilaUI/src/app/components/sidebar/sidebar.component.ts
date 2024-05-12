@@ -110,6 +110,7 @@ export class SidebarComponent {
     ];
 
     this.dataSource.data = this.TREE_DATA;
+    this.treeControl.expandAll();
   }
 
   // Implement a search/filter function
@@ -163,6 +164,7 @@ export class SidebarComponent {
   clearSearch() {
     this.searchQuery = "";
     this.filterTree({ target: { value: "" } } as any);
+    this.treeControl.expandAll();
   }
 
   closeSidebar() {

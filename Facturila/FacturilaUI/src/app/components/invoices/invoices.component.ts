@@ -36,19 +36,6 @@ export class InvoicesComponent {
       console.log(invoices);
       this.dataSource.data = invoices;
     });
-    // This should call your service to load invoices
-    // Placeholder for actual data fetching
-    // this.dataSource.data = [
-    //   {
-    //     id: 1,
-    //     documentNumber: "INV001",
-    //     clientName: "Client A",
-    //     issueDate: new Date(),
-    //     dueDate: new Date(),
-    //     totalValue: 1000,
-    //   },
-    //   // Add more invoices as needed
-    // ];
   }
 
   isAllSelected() {
@@ -66,11 +53,11 @@ export class InvoicesComponent {
   }
 
   openNewInvoiceDialog(): void {
-    this.router.navigate(["/dashboard/add-or-edit-invoice"]);
+    this.router.navigate(["dashboard/add-invoice"]);
   }
 
   openEditInvoiceDialog(row: IDocumentTableRecord): void {
-    // Open a dialog for editing an existing invoice
+    this.router.navigate(["/dashboard/edit-invoice", row.id]);
   }
 
   deleteSelected(): void {}

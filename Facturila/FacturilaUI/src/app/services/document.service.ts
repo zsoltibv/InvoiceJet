@@ -48,4 +48,10 @@ export class DocumentService {
       `${this.baseUrl}/Document/GetDocumentTableRecords/${documentTypeId}`
     );
   }
+
+  getDocumentById(documentId: number) {
+    return this.http.get<IDocumentRequest>(
+      `${this.baseUrl}/Document/GetDocumentById/${documentId}`
+    );
+  }
 }

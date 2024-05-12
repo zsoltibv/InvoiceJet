@@ -7,10 +7,23 @@ namespace FacturilaAPI.MappingProfiles
     public class DocumentProfile : Profile
     {
         public DocumentProfile() {
-            CreateMap<DocumentRequestDTO, Document>()
-                .ForMember(dest => dest.DocumentType, opt => opt.MapFrom(src => src.DocumentSeries.DocumentType))
-                .ForMember(dest => dest.DocumentProducts, opt => opt.MapFrom(src => src.Products))
-                .ForMember(dest => dest.DocumentNumber, opt => opt.MapFrom(src => "INV" + src.DocumentSeries.SeriesName + src.DocumentSeries.FirstNumber.ToString()));
+            CreateMap<Document, DocumentRequestDTO>()
+            .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
+            .ForMember(dest => dest.Seller, opt => opt.MapFrom(src => src.UserFirm))
+            .ForMember(dest => dest.Client, opt => opt.MapFrom(src => src.Client))
+            .ForMember(dest => dest.IssueDate, opt => opt.MapFrom(src => src.IssueDate))
+            .ForMember(dest => dest.DueDate, opt => opt.MapFrom(src => src.DueDate))
+            .ForMember(dest => dest.Products, opt => opt.MapFrom(src => src.DocumentProducts.Select(dp => new DocumentProductRequestDTO
+            {
+                Id = dp.Id,
+                Name = dp.Product.Name,
+                UnitPrice = dp.UnitPrice,
+                TotalPrice = dp.TotalPrice,
+                ContainsTVA = dp.Product.ContainsTVA,
+                UnitOfMeasurement =dp.Product.UnitOfMeasurement,
+                TVAValue = dp.Product != null ? dp.Product.TVAValue : 0,
+                Quantity = (int)dp.Quantity
+            }).ToList()));
 
             CreateMap<Document, DocumentTableRecordDTO>()
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))

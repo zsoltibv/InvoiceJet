@@ -9,4 +9,5 @@ public interface IDocumentService
     Task<DocumentRequestDTO> GeneratePdfDocument(DocumentRequestDTO documentRequestDTO);
     Task<byte[]> GetInvoicePdfStream(DocumentRequestDTO documentRequestDTO);
     Task<List<DocumentTableRecordDTO>> GetDocumentTableRecords(int documentTypeId);
+    Task<DocumentRequestDTO> GetDocumentById(int documentId);
 }

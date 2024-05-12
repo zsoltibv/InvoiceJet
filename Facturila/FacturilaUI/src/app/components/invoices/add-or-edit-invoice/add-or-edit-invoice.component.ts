@@ -8,12 +8,10 @@ import { Observable, map, merge, startWith } from "rxjs";
 import { IFirm } from "src/app/models/IFirm";
 import { IDocumentAutofill } from "src/app/models/IDocumentAutofill";
 import { IProduct } from "src/app/models/IProduct";
-import { MatAutocompleteSelectedEvent } from "@angular/material/autocomplete";
-import { IDocumentProductRequest } from "src/app/models/IDocumentProductRequest";
 import { IDocumentRequest } from "src/app/models/IDocumentRequest";
 import { MatDialog } from "@angular/material/dialog";
 import { PdfViewerComponent } from "../../pdf-viewer/pdf-viewer.component";
-import { Router } from "@angular/router";
+import { ActivatedRoute, Router } from "@angular/router";
 
 @Component({
   selector: "app-add-or-edit-invoice",
@@ -51,10 +49,35 @@ export class AddOrEditInvoiceComponent {
     private authService: AuthService,
     private documentService: DocumentService,
     private dialog: MatDialog,
-    private router: Router
+    private router: Router,
+    private route: ActivatedRoute
   ) {}
 
   ngOnInit(): void {
+    this.route.params.subscribe((params) => {
+      const invoiceId = +params["id"]; // '+' converts string to number
+      if (invoiceId) {
+        // this.loadInvoice(invoiceId);
+
+        this.documentService.getDocumentById(invoiceId).subscribe({
+          next: (data) => {
+            console.log("Loaded invoice", data);
+            this.invoiceForm.patchValue(data);
+            this.invoiceForm.setControl(
+              "products",
+              this.fb.array(
+                data.products.map((product) => this.fb.group(product))
+              )
+            );
+            this.updateTableData();
+          },
+          error: (err) => {
+            console.error("Error loading invoice", err);
+          },
+        });
+      }
+    });
+
     this.documentService
       .getDocumentSeriesForUserId(this.authService.userId, 1)
       .subscribe({

@@ -52,9 +52,13 @@ const routes: Routes = [
     canActivate: [AuthGuard],
   },
   {
-    path: "dashboard/add-or-edit-invoice",
+    path: "dashboard/add-invoice",
     component: AddOrEditInvoiceComponent,
     canActivate: [AuthGuard],
+  },
+  {
+    path: "dashboard/edit-invoice/:id",
+    component: AddOrEditInvoiceComponent,
   },
   { path: "**", component: DashboardComponent, canActivate: [AuthGuard] },
 ];
