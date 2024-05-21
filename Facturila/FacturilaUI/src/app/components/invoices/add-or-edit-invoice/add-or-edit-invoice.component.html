@@ -141,25 +141,6 @@
           </td>
         </ng-container>
 
-        <!-- Total Price Column -->
-        <ng-container matColumnDef="totalPrice">
-          <th mat-header-cell *matHeaderCellDef>Total Price</th>
-          <td
-            mat-cell
-            *matCellDef="let product; let i = index"
-            [formGroupName]="i"
-          >
-            <mat-form-field class="full-width" subscriptSizing="dynamic">
-              <input
-                matInput
-                type="number"
-                formControlName="totalPrice"
-                placeholder="Total Price"
-              />
-            </mat-form-field>
-          </td>
-        </ng-container>
-
         <!-- Quantity Column -->
         <ng-container matColumnDef="quantity">
           <th mat-header-cell *matHeaderCellDef>Quantity</th>
@@ -229,6 +210,30 @@
             [formGroupName]="i"
           >
             <mat-checkbox formControlName="containsTVA">Yes</mat-checkbox>
+          </td>
+        </ng-container>
+
+        <!-- Total Price Column -->
+        <ng-container matColumnDef="totalPrice">
+          <th mat-header-cell *matHeaderCellDef>Total Price</th>
+          <td
+            mat-cell
+            *matCellDef="let product; let i = index"
+            [formGroupName]="i"
+          >
+            <mat-form-field
+              class="full-width"
+              subscriptSizing="dynamic"
+              class="no-outline"
+            >
+              <input
+                matInput
+                type="number"
+                formControlName="totalPrice"
+                placeholder="Total Price"
+                [readonly]="true"
+              />
+            </mat-form-field>
           </td>
         </ng-container>
 

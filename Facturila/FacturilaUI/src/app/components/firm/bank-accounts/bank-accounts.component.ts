@@ -82,6 +82,7 @@ export class BankAccountsComponent {
 
   openEditBankAccountDialog(bankAccount: IBankAccount) {
     const dialogRef = this.dialog.open(AddOrEditBankAccountDialogComponent, {
+      panelClass: "custom-dialog-panel",
       data: bankAccount,
     });
 

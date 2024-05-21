@@ -24,6 +24,11 @@
           <p>{{ userInfo.email }}</p>
         </div>
         <mat-divider></mat-divider>
+        <button mat-menu-item (click)="toggleTheme()">
+          <mat-icon>brightness_6</mat-icon>
+          <span>Toggle Dark Mode</span>
+        </button>
+        <mat-divider></mat-divider>
         <button mat-menu-item (click)="logout()">
           <mat-icon>logout</mat-icon>
           <span>Logout</span>

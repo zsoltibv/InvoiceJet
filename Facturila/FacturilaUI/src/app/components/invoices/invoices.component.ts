@@ -60,5 +60,7 @@ export class InvoicesComponent {
     this.router.navigate(["/dashboard/edit-invoice", row.id]);
   }
 
-  deleteSelected(): void {}
+  deleteSelected(): void {
+    console.log(this.selection.selected);
+  }
 }

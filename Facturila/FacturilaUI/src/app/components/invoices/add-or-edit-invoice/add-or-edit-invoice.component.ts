@@ -30,11 +30,11 @@ export class AddOrEditInvoiceComponent {
   displayedColumns: string[] = [
     "name",
     "unitPrice",
-    "totalPrice",
     "quantity",
     "unitOfMeasurement",
     "tvaValue",
     "containsTVA",
+    "totalPrice",
     "actions",
   ];
 
@@ -212,16 +212,18 @@ export class AddOrEditInvoiceComponent {
 
   calculateTotalPrice(index: number): void {
     const productGroup = this.productsFormArray.at(index) as FormGroup;
-    const unitPrice = productGroup.get("unitPrice")!.value;
-    const quantity = productGroup.get("quantity")!.value;
-    const tvaValue = productGroup.get("tvaValue")!.value;
+    const unitPrice = parseFloat(productGroup.get("unitPrice")!.value);
+    const quantity = parseFloat(productGroup.get("quantity")!.value);
+    const tvaValue = parseFloat(productGroup.get("tvaValue")!.value);
 
     const totalPrice = unitPrice * quantity;
     const tva = totalPrice * (tvaValue / 100);
     const finalPrice = totalPrice + tva;
 
+    const finalPriceRounded = parseFloat(finalPrice.toFixed(2));
+
     productGroup.patchValue({
-      totalPrice: finalPrice,
+      totalPrice: finalPriceRounded,
     });
   }
 
@@ -247,6 +249,7 @@ export class AddOrEditInvoiceComponent {
     this.documentService.generateDocumentPdf(documentData).subscribe({
       next: () => {
         console.log("Invoice pdf generated successfully");
+        this.router.navigateByUrl("/dashboard/invoices");
       },
       error: (err) => {
         console.error("Error generating invoice pdf", err);
