@@ -231,9 +231,10 @@ export class AddOrEditInvoiceComponent {
     console.log("Form submitted", this.invoiceForm.value);
     const documentData: IDocumentRequest = this.invoiceForm.value;
 
-    this.documentService.addOrEditDocument(documentData).subscribe({
+    this.documentService.addDocument(documentData).subscribe({
       next: () => {
         console.log("Invoice added successfully");
+        this.router.navigateByUrl("/dashboard/invoices");
       },
       error: (err) => {
         console.error("Error adding invoice", err);
@@ -249,7 +250,6 @@ export class AddOrEditInvoiceComponent {
     this.documentService.generateDocumentPdf(documentData).subscribe({
       next: () => {
         console.log("Invoice pdf generated successfully");
-        this.router.navigateByUrl("/dashboard/invoices");
       },
       error: (err) => {
         console.error("Error generating invoice pdf", err);

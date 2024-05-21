@@ -25,7 +25,7 @@ span {
 
 html,
 body {
-  height: 100%;
+  height: calc(100vh - 64px);
   background-color: #f8fafc;
 }
 
@@ -150,4 +150,8 @@ body.dark-mode .dialog-card {
 
 body.dark-mode mat-datepicker-toggle {
   color: white !important;
+}
+
+body.dark-mode .pages {
+  background-color: #0f172a;
 }

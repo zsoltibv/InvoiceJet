@@ -19,11 +19,12 @@ export class DocumentService {
     );
   }
 
-  addOrEditDocument(documentData: IDocumentRequest) {
-    return this.http.post(
-      `${this.baseUrl}/Document/AddOrEditDocument`,
-      documentData
-    );
+  addDocument(documentData: IDocumentRequest) {
+    return this.http.post(`${this.baseUrl}/Document/AddDocument`, documentData);
+  }
+
+  editDocument(documentData: IDocumentRequest) {
+    return this.http.put(`${this.baseUrl}/Document/EditDocument`, documentData);
   }
 
   generateDocumentPdf(documentData: IDocumentRequest) {

@@ -10,11 +10,13 @@
 
 .pages {
   width: 100%;
+  height: calc(100vh - 64px);
 }
 
 @media (max-width: 1500px) {
   .pages {
     position: fixed;
+    height: calc(100vh - 64px);
   }
 }
 

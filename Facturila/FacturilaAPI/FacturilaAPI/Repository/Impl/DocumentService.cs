@@ -23,27 +23,16 @@ public class DocumentService : IDocumentService
         _pdfGenerationService = pdfGenerationService;
     }
 
-    public async Task<DocumentRequestDTO> AddOrEditDocument(DocumentRequestDTO documentRequestDTO)
+    private async Task UpdateDocumentProducts(int documentId, List<DocumentProductRequestDTO> documentProductsDto, int userFirmId)
     {
-        var userFirmId = await _userService.GetUserFirmIdUsingTokenAsync();
-        var documentProductsDto = documentRequestDTO.Products;
         decimal totalInvoicePrice = 0;
         decimal totalInvoicePriceWithTVA = 0;
 
-        Document document = new Document
-        {
-            Id = documentRequestDTO.Id,
-            DocumentNumber = "INV" + documentRequestDTO.DocumentSeries.SeriesName + documentRequestDTO.DocumentSeries.CurrentNumber.ToString("D4"),
-            IssueDate = documentRequestDTO.IssueDate,
-            DueDate = documentRequestDTO.DueDate,
-            DocumentTypeId = documentRequestDTO.DocumentSeries.DocumentType?.Id,
-            ClientId = documentRequestDTO.Client.Id,
-            UserFirmId = userFirmId
-        };
+        // Remove existing DocumentProducts if it's an edit operation
+        var existingDocumentProducts = _dbContext.DocumentProduct.Where(dp => dp.DocumentId == documentId);
+        _dbContext.DocumentProduct.RemoveRange(existingDocumentProducts);
 
-        _dbContext.Document.Add(document);
-        await _dbContext.SaveChangesAsync();
-
+        // Add new DocumentProducts
         foreach (var productDto in documentProductsDto)
         {
             Product product;
@@ -67,7 +56,7 @@ public class DocumentService : IDocumentService
             {
                 Quantity = productDto.Quantity,
                 Product = product,
-                DocumentId = document.Id,  // Now we have DocumentId available
+                DocumentId = documentId,  // Now we have DocumentId available
                 UnitPrice = productDto.UnitPrice,
                 TotalPrice = productDto.TotalPrice,
             };
@@ -78,8 +67,35 @@ public class DocumentService : IDocumentService
             _dbContext.DocumentProduct.Add(documentProduct);  // Add to DbContext
         }
 
-        document.UnitPrice = totalInvoicePrice;
-        document.TotalPrice = totalInvoicePriceWithTVA;
+        // Update the total prices for the document
+        var document = await _dbContext.Document.FindAsync(documentId);
+        if (document != null)
+        {
+            document.UnitPrice = totalInvoicePrice;
+            document.TotalPrice = totalInvoicePriceWithTVA;
+            _dbContext.Document.Update(document);
+        }
+    }
+
+    public async Task<DocumentRequestDTO> AddDocument(DocumentRequestDTO documentRequestDTO)
+    {
+        var userFirmId = await _userService.GetUserFirmIdUsingTokenAsync();
+
+        Document document = new Document
+        {
+            Id = documentRequestDTO.Id,
+            DocumentNumber = "INV" + documentRequestDTO.DocumentSeries.SeriesName + documentRequestDTO.DocumentSeries.CurrentNumber.ToString("D4"),
+            IssueDate = documentRequestDTO.IssueDate,
+            DueDate = documentRequestDTO.DueDate,
+            DocumentTypeId = documentRequestDTO.DocumentSeries.DocumentType?.Id,
+            ClientId = documentRequestDTO.Client.Id,
+            UserFirmId = userFirmId
+        };
+
+        _dbContext.Document.Add(document);
+        await _dbContext.SaveChangesAsync();
+
+        await UpdateDocumentProducts(document.Id, documentRequestDTO.Products, userFirmId);
 
         DocumentSeries docSeries = await _dbContext.DocumentSeries
             .Where(ds => ds.Id == documentRequestDTO.DocumentSeries.Id)
@@ -89,6 +105,32 @@ public class DocumentService : IDocumentService
         _dbContext.DocumentSeries.Update(docSeries);
 
         await _dbContext.SaveChangesAsync();  // Save everything at once
+        return documentRequestDTO;
+    }
+
+    public async Task<DocumentRequestDTO> EditDocument(DocumentRequestDTO documentRequestDTO)
+    {
+        var userFirmId = await _userService.GetUserFirmIdUsingTokenAsync();
+
+        var document = await _dbContext.Document
+            .FirstOrDefaultAsync(d => d.Id == documentRequestDTO.Id);
+
+        if (document == null)
+        {
+            throw new Exception("Document not found.");
+        }
+
+        document.IssueDate = documentRequestDTO.IssueDate;
+        document.DueDate = documentRequestDTO.DueDate;
+        document.DocumentTypeId = documentRequestDTO.DocumentSeries.DocumentType?.Id;
+        document.ClientId = documentRequestDTO.Client.Id;
+        document.UserFirmId = userFirmId;
+
+        _dbContext.Document.Update(document);
+
+        await UpdateDocumentProducts(document.Id, documentRequestDTO.Products, userFirmId);
+
+        await _dbContext.SaveChangesAsync();  
         return documentRequestDTO;
     }
 

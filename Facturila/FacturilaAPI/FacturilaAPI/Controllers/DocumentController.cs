@@ -31,12 +31,26 @@ namespace FacturilaAPI.Controllers
             }
         }
 
-        [HttpPost("AddOrEditDocument")]
-        public async Task<ActionResult<DocumentRequestDTO>> AddOrEditDocument(DocumentRequestDTO documentRequestDto)
+        [HttpPost("AddDocument")]
+        public async Task<ActionResult<DocumentRequestDTO>> AddDocument(DocumentRequestDTO documentRequestDto)
         {
             try
             {
-                await _documentService.AddOrEditDocument(documentRequestDto);
+                await _documentService.AddDocument(documentRequestDto);
+                return Ok(documentRequestDto);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPut("EditDocument")]
+        public async Task<ActionResult<DocumentRequestDTO>> EditDocument(DocumentRequestDTO documentRequestDto)
+        {
+            try
+            {
+                await _documentService.EditDocument(documentRequestDto);
                 return Ok(documentRequestDto);
             }
             catch (Exception ex)
