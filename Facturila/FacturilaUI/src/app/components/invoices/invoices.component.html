@@ -81,6 +81,7 @@
     <!-- Table Rows -->
     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
     <tr
+      class="clickable"
       mat-row
       *matRowDef="let row; columns: displayedColumns"
       (click)="openEditInvoiceDialog(row)"

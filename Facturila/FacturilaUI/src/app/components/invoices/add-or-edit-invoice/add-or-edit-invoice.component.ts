@@ -23,6 +23,7 @@ export class AddOrEditInvoiceComponent {
   filteredFirms!: Observable<IFirm[]>;
   filteredProducts!: Observable<IProduct[]>;
   clientFirms: IFirm[] = [];
+  currentDocument: IDocumentRequest;
 
   dataSource = new MatTableDataSource();
   invoiceForm!: FormGroup;
@@ -61,7 +62,7 @@ export class AddOrEditInvoiceComponent {
 
         this.documentService.getDocumentById(invoiceId).subscribe({
           next: (data) => {
-            console.log("Loaded invoice", data);
+            this.currentDocument = data;
             this.invoiceForm.patchValue(data);
             this.invoiceForm.setControl(
               "products",
@@ -96,7 +97,7 @@ export class AddOrEditInvoiceComponent {
       client: [null, Validators.required],
       issueDate: [new Date(), Validators.required],
       dueDate: null,
-      documentSeries: [null, Validators.required],
+      documentSeries: [null],
       products: this.fb.array([this.createProductGroup()]),
     });
     this.updateTableData();
@@ -254,9 +255,10 @@ export class AddOrEditInvoiceComponent {
   }
 
   getInvoicePdfStream() {
-    if (this.invoiceForm.invalid) return;
+    // if (this.invoiceForm.invalid) return;
 
     const documentData: IDocumentRequest = this.invoiceForm.value;
+    documentData.documentNumber = this.currentDocument.documentNumber;
 
     this.documentService.getGeneratedDocumentPdf(documentData).subscribe({
       next: (data) => {
@@ -277,5 +279,13 @@ export class AddOrEditInvoiceComponent {
 
   goBack(): void {
     this.router.navigateByUrl("/dashboard/invoices");
+  }
+
+  get isEditMode(): boolean {
+    return this.currentDocument == undefined;
+  }
+
+  get documentNumber(): string {
+    return this.currentDocument?.documentNumber || "";
   }
 }

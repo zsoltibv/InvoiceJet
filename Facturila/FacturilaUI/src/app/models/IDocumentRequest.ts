@@ -4,6 +4,7 @@ import { IFirm } from "./IFirm";
 
 export interface IDocumentRequest {
   client: IFirm;
+  documentNumber?: string;
   documentSeries: IDocumentSeries;
   dueDate: Date;
   issueDate: Date;

@@ -3,10 +3,20 @@
     <button mat-icon-button (click)="goBack()" aria-label="Go back">
       <mat-icon>arrow_back</mat-icon>
     </button>
-    <h1>Invoice Details</h1>
+    <div class="document-header-container">
+      <h1>
+        Invoice Details
+        <span *ngIf="!isEditMode"> - {{ documentNumber }} </span>
+      </h1>
+    </div>
   </div>
   <form [formGroup]="invoiceForm" (ngSubmit)="onSubmit()">
-    <div class="grid-container">
+    <div
+      [ngClass]="{
+        'grid-container': true,
+        'grid-3-columns': !isEditMode
+      }"
+    >
       <!-- CUI Value Field -->
       <mat-form-field appearance="outline" class="grid-item">
         <mat-label>Client Name or CUI</mat-label>
@@ -57,7 +67,7 @@
       </mat-form-field>
 
       <!-- Serie si Numar Dropdown -->
-      <mat-form-field appearance="outline" class="grid-item">
+      <mat-form-field appearance="outline" class="grid-item" *ngIf="isEditMode">
         <mat-label>Serie si Numar</mat-label>
         <mat-select formControlName="documentSeries" required>
           <mat-option

@@ -27,8 +27,8 @@ import { AddOrEditDocumentSeriesDialogComponent } from "./components/document-se
 import { InvoicesComponent } from "./components/invoices/invoices.component";
 import { AddOrEditInvoiceComponent } from "./components/invoices/add-or-edit-invoice/add-or-edit-invoice.component";
 import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from "@angular/material/form-field";
-import { TokenExpiredDialogComponent } from './components/token-expired-dialog/token-expired-dialog.component';
-import { PdfViewerComponent } from './components/pdf-viewer/pdf-viewer.component';
+import { TokenExpiredDialogComponent } from "./components/token-expired-dialog/token-expired-dialog.component";
+import { PdfViewerComponent } from "./components/pdf-viewer/pdf-viewer.component";
 
 @NgModule({
   declarations: [

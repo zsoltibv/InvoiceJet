@@ -21,6 +21,7 @@ import { MatDividerModule } from "@angular/material/divider";
 import { MatDatepickerModule } from "@angular/material/datepicker";
 import { MatNativeDateModule } from "@angular/material/core";
 import { MatAutocompleteModule } from "@angular/material/autocomplete";
+import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
 
 @NgModule({
   imports: [
@@ -45,6 +46,7 @@ import { MatAutocompleteModule } from "@angular/material/autocomplete";
     MatDatepickerModule,
     MatNativeDateModule,
     MatAutocompleteModule,
+    MatProgressSpinnerModule,
   ],
   exports: [
     MatButtonModule,
@@ -67,6 +69,7 @@ import { MatAutocompleteModule } from "@angular/material/autocomplete";
     MatDatepickerModule,
     MatNativeDateModule,
     MatAutocompleteModule,
+    MatProgressSpinnerModule,
   ],
 })
 export class MaterialModule {}

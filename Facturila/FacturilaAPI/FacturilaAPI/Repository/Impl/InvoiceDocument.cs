@@ -1,4 +1,5 @@
 ﻿using FacturilaAPI.Models.Dto;
+using FacturilaAPI.Models.Entity;
 using QuestPDF.Fluent;
 using QuestPDF.Helpers;
 using QuestPDF.Infrastructure;
@@ -8,6 +9,22 @@ namespace FacturilaAPI.Repository.Impl
     public class InvoiceDocument : IDocument
     {
         public DocumentRequestDTO Model { get; }
+        public string FullDocumentNumber
+        {
+            get
+            {
+                if (Model.DocumentSeries != null)
+                {
+                    string seriesName = Model.DocumentSeries.SeriesName;
+                    string formattedNumber = Model.DocumentSeries.CurrentNumber.ToString("D4");
+                    return "INV" + seriesName + formattedNumber;
+                }
+                else
+                {
+                    return Model.DocumentNumber;
+                }
+            }
+        }
 
         public InvoiceDocument(DocumentRequestDTO model)
         {
@@ -42,7 +59,7 @@ namespace FacturilaAPI.Repository.Impl
                 row.RelativeItem().Column(column =>
                 {
                     column
-                        .Item().Text($"Invoice #{Model.DocumentSeries.CurrentNumber}")
+                        .Item().Text($"Invoice #{FullDocumentNumber}")
                         .FontSize(20).SemiBold().FontColor(Colors.Blue.Medium);
 
                     column.Item().Text(text =>

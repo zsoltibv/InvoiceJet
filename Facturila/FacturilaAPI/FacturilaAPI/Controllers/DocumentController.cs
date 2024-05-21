@@ -64,13 +64,13 @@ namespace FacturilaAPI.Controllers
         {
             try
             {
-                byte[] pdfContent = await _documentService.GetInvoicePdfStream(documentRequestDTO);
-                if (pdfContent == null)
+                DocumentStreamDto documentStreamDto = await _documentService.GetInvoicePdfStream(documentRequestDTO);
+                if (documentStreamDto.PdfContent == null)
                 {
                     return BadRequest("Failed to generate the PDF document.");
                 }
 
-                return File(pdfContent, "application/pdf", $"Invoice_{documentRequestDTO.DocumentSeries.CurrentNumber}.pdf");
+                return File(documentStreamDto.PdfContent, "application/pdf", $"Invoice_{documentStreamDto.DocumentNumber}.pdf");
             }
             catch (Exception ex)
             {

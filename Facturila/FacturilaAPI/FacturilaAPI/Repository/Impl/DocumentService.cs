@@ -33,7 +33,7 @@ public class DocumentService : IDocumentService
         Document document = new Document
         {
             Id = documentRequestDTO.Id,
-            DocumentNumber = "INV" + documentRequestDTO.DocumentSeries.SeriesName + documentRequestDTO.DocumentSeries.FirstNumber,
+            DocumentNumber = "INV" + documentRequestDTO.DocumentSeries.SeriesName + documentRequestDTO.DocumentSeries.CurrentNumber.ToString("D4"),
             IssueDate = documentRequestDTO.IssueDate,
             DueDate = documentRequestDTO.DueDate,
             DocumentTypeId = documentRequestDTO.DocumentSeries.DocumentType?.Id,
@@ -78,6 +78,16 @@ public class DocumentService : IDocumentService
             _dbContext.DocumentProduct.Add(documentProduct);  // Add to DbContext
         }
 
+        document.UnitPrice = totalInvoicePrice;
+        document.TotalPrice = totalInvoicePriceWithTVA;
+
+        DocumentSeries docSeries = await _dbContext.DocumentSeries
+            .Where(ds => ds.Id == documentRequestDTO.DocumentSeries.Id)
+            .FirstOrDefaultAsync();
+
+        docSeries.CurrentNumber++;
+        _dbContext.DocumentSeries.Update(docSeries);
+
         await _dbContext.SaveChangesAsync();  // Save everything at once
         return documentRequestDTO;
     }
@@ -95,11 +105,10 @@ public class DocumentService : IDocumentService
         //include invoice document class and generate pdf
         _pdfGenerationService.GenerateInvoicePdf(documentRequestDTO);
 
-
         return documentRequestDTO;
     }
 
-    public async Task<byte[]> GetInvoicePdfStream(DocumentRequestDTO documentRequestDTO)
+    public async Task<DocumentStreamDto> GetInvoicePdfStream(DocumentRequestDTO documentRequestDTO)
     {
         var activeUserFirmId = await _userService.GetUserFirmIdUsingTokenAsync();
         var activeUserFirm = await _dbContext.UserFirm
@@ -110,7 +119,11 @@ public class DocumentService : IDocumentService
         documentRequestDTO.Seller = _mapper.Map<FirmDto>(activeUserFirm?.Firm);
 
         //include invoice document class and generate pdf
-        return _pdfGenerationService.GetInvoicePdfStream(documentRequestDTO);
+        return new DocumentStreamDto
+        {
+            DocumentNumber = documentRequestDTO.DocumentNumber ?? documentRequestDTO.DocumentSeries.CurrentNumber.ToString(),
+            PdfContent = _pdfGenerationService.GetInvoicePdfStream(documentRequestDTO),
+        };
     }
 
     public async Task<DocumentAutofillDto> GetDocumentAutofillInfo(Guid userId, int documentTypeId)

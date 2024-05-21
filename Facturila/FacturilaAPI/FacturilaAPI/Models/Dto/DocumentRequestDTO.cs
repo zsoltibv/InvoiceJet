@@ -5,6 +5,7 @@ namespace FacturilaAPI.Models.Dto
     public class DocumentRequestDTO
     {
         public int Id { get; set; }
+        public string? DocumentNumber { get; set; }
         public FirmDto? Seller { get; set; }
         public FirmDto Client { get; set; }
         public DateTime IssueDate { get; set; }
