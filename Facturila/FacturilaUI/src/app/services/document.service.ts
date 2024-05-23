@@ -23,7 +23,7 @@ export class DocumentService {
     return this.http.post(`${this.baseUrl}/Document/AddDocument`, documentData);
   }
 
-  editDocument(documentData: IDocumentRequest) {
+  updateDocument(documentData: IDocumentRequest) {
     return this.http.put(`${this.baseUrl}/Document/EditDocument`, documentData);
   }
 

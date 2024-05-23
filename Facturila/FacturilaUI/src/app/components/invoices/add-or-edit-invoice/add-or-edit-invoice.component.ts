@@ -1,3 +1,4 @@
+import { DocumentSeriesComponent } from "./../../document-series/document-series.component";
 import { DocumentService } from "./../../../services/document.service";
 import { AuthService } from "./../../../services/auth.service";
 import { FirmService } from "./../../../services/firm.service";
@@ -23,7 +24,7 @@ export class AddOrEditInvoiceComponent {
   filteredFirms!: Observable<IFirm[]>;
   filteredProducts!: Observable<IProduct[]>;
   clientFirms: IFirm[] = [];
-  currentDocument: IDocumentRequest;
+  currentDocument!: IDocumentRequest;
 
   dataSource = new MatTableDataSource();
   invoiceForm!: FormGroup;
@@ -58,8 +59,6 @@ export class AddOrEditInvoiceComponent {
     this.route.params.subscribe((params) => {
       const invoiceId = +params["id"]; // '+' converts string to number
       if (invoiceId) {
-        // this.loadInvoice(invoiceId);
-
         this.documentService.getDocumentById(invoiceId).subscribe({
           next: (data) => {
             this.currentDocument = data;
@@ -230,7 +229,30 @@ export class AddOrEditInvoiceComponent {
   onSubmit(): void {
     console.log("Form submitted", this.invoiceForm.value);
     const documentData: IDocumentRequest = this.invoiceForm.value;
+    documentData.documentType = { id: 1, name: "" };
 
+    if (!this.isEditMode) {
+      console.log("Updating invoice");
+      this.updateDocument(documentData);
+    } else {
+      console.log("Adding invoice");
+      this.addDocument(documentData);
+    }
+  }
+
+  updateDocument(documentData: IDocumentRequest) {
+    this.documentService.updateDocument(documentData).subscribe({
+      next: () => {
+        console.log("Invoice updated successfully");
+        this.router.navigateByUrl("/dashboard/invoices");
+      },
+      error: (err) => {
+        console.error("Error updating invoice", err);
+      },
+    });
+  }
+
+  addDocument(documentData: IDocumentRequest) {
     this.documentService.addDocument(documentData).subscribe({
       next: () => {
         console.log("Invoice added successfully");
@@ -240,8 +262,6 @@ export class AddOrEditInvoiceComponent {
         console.error("Error adding invoice", err);
       },
     });
-
-    console.log(documentData);
   }
 
   generateInvoicePdf() {

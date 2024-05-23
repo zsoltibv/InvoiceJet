@@ -1,4 +1,5 @@
-﻿using Microsoft.VisualBasic;
+﻿using FacturilaAPI.Models.Entity;
+using Microsoft.VisualBasic;
 
 namespace FacturilaAPI.Models.Dto
 {
@@ -11,6 +12,7 @@ namespace FacturilaAPI.Models.Dto
         public DateTime IssueDate { get; set; }
         public DateTime? DueDate { get; set; }
         public DocumentSeriesDto? DocumentSeries { get; set; }
+        public DocumentType? DocumentType { get; set; }
         public List<DocumentProductRequestDTO> Products { get; set; }
     } 
 }

@@ -33,13 +33,13 @@ public class DocumentService : IDocumentService
         _dbContext.DocumentProduct.RemoveRange(existingDocumentProducts);
 
         // Add new DocumentProducts
-        foreach (var productDto in documentProductsDto)
+        foreach (var documentProductDto in documentProductsDto)
         {
             Product product;
 
-            if (productDto.Id > 0)
+            if (documentProductDto.Id > 0)
             {
-                product = await _dbContext.Product.FindAsync(productDto.Id);
+                product = await _dbContext.Product.FirstOrDefaultAsync(product => product.Name == documentProductDto.Name);
                 if (product == null)
                 {
                     throw new Exception("Product not found.");
@@ -47,22 +47,22 @@ public class DocumentService : IDocumentService
             }
             else
             {
-                product = _mapper.Map<Product>(productDto);
+                product = _mapper.Map<Product>(documentProductDto);
                 product.UserFirmId = userFirmId;
                 _dbContext.Product.Add(product);  // This will only be actually saved later
             }
 
             DocumentProduct documentProduct = new DocumentProduct
             {
-                Quantity = productDto.Quantity,
+                Quantity = documentProductDto.Quantity,
                 Product = product,
                 DocumentId = documentId,  // Now we have DocumentId available
-                UnitPrice = productDto.UnitPrice,
-                TotalPrice = productDto.TotalPrice,
+                UnitPrice = documentProductDto.UnitPrice,
+                TotalPrice = documentProductDto.TotalPrice,
             };
 
-            totalInvoicePrice += productDto.UnitPrice * productDto.Quantity;
-            totalInvoicePriceWithTVA += productDto.TotalPrice;
+            totalInvoicePrice += documentProductDto.UnitPrice * documentProductDto.Quantity;
+            totalInvoicePriceWithTVA += documentProductDto.TotalPrice;
 
             _dbContext.DocumentProduct.Add(documentProduct);  // Add to DbContext
         }
@@ -122,7 +122,7 @@ public class DocumentService : IDocumentService
 
         document.IssueDate = documentRequestDTO.IssueDate;
         document.DueDate = documentRequestDTO.DueDate;
-        document.DocumentTypeId = documentRequestDTO.DocumentSeries.DocumentType?.Id;
+        document.DocumentTypeId = documentRequestDTO.DocumentType?.Id;
         document.ClientId = documentRequestDTO.Client.Id;
         document.UserFirmId = userFirmId;
 
