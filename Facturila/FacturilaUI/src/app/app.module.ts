@@ -29,6 +29,7 @@ import { AddOrEditInvoiceComponent } from "./components/invoices/add-or-edit-inv
 import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from "@angular/material/form-field";
 import { TokenExpiredDialogComponent } from "./components/token-expired-dialog/token-expired-dialog.component";
 import { PdfViewerComponent } from "./components/pdf-viewer/pdf-viewer.component";
+import { NgChartsModule } from "ng2-charts";
 
 @NgModule({
   declarations: [
@@ -60,6 +61,7 @@ import { PdfViewerComponent } from "./components/pdf-viewer/pdf-viewer.component
     ReactiveFormsModule,
     MaterialModule,
     HttpClientModule,
+    NgChartsModule,
   ],
   providers: [
     { provide: JWT_OPTIONS, useValue: JWT_OPTIONS },

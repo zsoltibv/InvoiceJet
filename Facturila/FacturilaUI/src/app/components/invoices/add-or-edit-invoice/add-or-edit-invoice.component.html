@@ -269,7 +269,7 @@
     </div>
     <div class="controls">
       <button mat-raised-button color="primary" type="submit">
-        Issue Invoice
+        {{ !isEditMode ? "Update" : "Issue" }}
       </button>
       <button
         mat-raised-button
@@ -277,7 +277,7 @@
         type="button"
         (click)="getInvoicePdfStream()"
       >
-        Preview Invoice
+        Preview
       </button>
     </div>
   </form>

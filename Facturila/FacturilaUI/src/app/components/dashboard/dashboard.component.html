@@ -1,1 +1,59 @@
-<p>dashboard works!</p>
+<div class="stats-container" [@fade]="true">
+  <h1>Dashboard</h1>
+  <div class="grid-container">
+    <mat-card>
+      <mat-card-header>
+        <mat-icon>person</mat-icon>
+        <mat-card-title>
+          <h1>Clients</h1>
+        </mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <p>1</p>
+      </mat-card-content>
+    </mat-card>
+    <mat-card>
+      <mat-card-header>
+        <mat-icon>account_balance</mat-icon>
+        <mat-card-title><h1>Bank Accounts</h1></mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <p>1</p>
+      </mat-card-content>
+    </mat-card>
+    <mat-card>
+      <mat-card-header>
+        <mat-icon>description</mat-icon>
+        <mat-card-title><h1>Documents</h1></mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <p>1</p>
+      </mat-card-content>
+    </mat-card>
+    <mat-card>
+      <mat-card-header>
+        <mat-icon>inventory</mat-icon>
+        <mat-card-title><h1>Products</h1></mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <p>1</p>
+      </mat-card-content>
+    </mat-card>
+  </div>
+  <div class="graph-container">
+    <mat-card>
+      <mat-card-header>Current Year Overview</mat-card-header>
+      <mat-card-content class="chart-data">
+        <canvas
+          baseChart
+          [datasets]="barChartData"
+          [labels]="barChartLabels"
+          [options]="barChartOptions"
+          [legend]="barChartLegend"
+          [type]="'bar'"
+        >
+        </canvas>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>
