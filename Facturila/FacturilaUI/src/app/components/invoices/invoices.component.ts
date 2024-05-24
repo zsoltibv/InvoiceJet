@@ -62,5 +62,16 @@ export class InvoicesComponent {
 
   deleteSelected(): void {
     console.log(this.selection.selected);
+
+    const documentIds: number[] = this.selection.selected.map((doc) => doc.id);
+    console.log(documentIds);
+    this.documentService.deleteDocuments(documentIds).subscribe({
+      next: () => {
+        this.loadInvoices();
+      },
+      error: (err) => {
+        console.error("Error deleting documents", err);
+      },
+    });
   }
 }

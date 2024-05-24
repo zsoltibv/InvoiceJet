@@ -55,4 +55,11 @@ export class DocumentService {
       `${this.baseUrl}/Document/GetDocumentById/${documentId}`
     );
   }
+
+  deleteDocuments(documentIds: number[]) {
+    return this.http.put(
+      `${this.baseUrl}/Document/DeleteDocuments`,
+      documentIds
+    );
+  }
 }

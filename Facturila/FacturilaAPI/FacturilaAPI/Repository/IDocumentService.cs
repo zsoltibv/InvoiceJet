@@ -11,4 +11,5 @@ public interface IDocumentService
     Task<DocumentStreamDto> GetInvoicePdfStream(DocumentRequestDTO documentRequestDTO);
     Task<List<DocumentTableRecordDTO>> GetDocumentTableRecords(int documentTypeId);
     Task<DocumentRequestDTO> GetDocumentById(int documentId);
+    Task DeleteDocuments(int[] documentIds);
 }

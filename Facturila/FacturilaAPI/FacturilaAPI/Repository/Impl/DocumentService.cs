@@ -224,4 +224,17 @@ public class DocumentService : IDocumentService
 
         return _mapper.Map<DocumentRequestDTO>(document);
     }
+    
+    public async Task DeleteDocuments(int[] documentIds)
+    {
+        var documents = await _dbContext.Document
+                .Include(dp => dp.DocumentProducts)
+            .Where(d => documentIds.Contains(d.Id))
+            .ToListAsync();
+        
+        _dbContext.DocumentProduct.RemoveRange(documents.SelectMany(d => d.DocumentProducts));
+        _dbContext.Document.RemoveRange(documents);
+        
+        await _dbContext.SaveChangesAsync();
+    }
 }

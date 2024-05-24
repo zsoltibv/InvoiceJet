@@ -119,5 +119,19 @@ namespace FacturilaAPI.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
+        [HttpPut("DeleteDocuments")]
+        public async Task<IActionResult> DeleteDocuments([FromBody] int[] documentIds)
+        {
+            try
+            {
+                await _documentService.DeleteDocuments(documentIds);
+                return Ok(new { Message = "Documents deleted successfully." });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
     }
 }
