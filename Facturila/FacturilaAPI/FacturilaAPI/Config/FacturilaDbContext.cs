@@ -31,5 +31,6 @@ namespace FacturilaAPI.Config
         public DbSet<DocumentSeries> DocumentSeries { get; set; }
         public DbSet<Document> Document { get; set; }
         public DbSet<DocumentProduct> DocumentProduct { get; set; }
+        public DbSet<DocumentStatus> DocumentStatus { get; set; }
     }
 }

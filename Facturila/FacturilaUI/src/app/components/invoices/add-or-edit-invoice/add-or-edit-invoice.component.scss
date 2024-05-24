@@ -8,17 +8,11 @@
   .grid-container {
     grid-template-columns: repeat(4, 1fr);
   }
-  .grid-3-columns {
-    grid-template-columns: repeat(3, 1fr);
-  }
 }
 
 /* Medium screens, 3 columns */
 @media (min-width: 900px) and (max-width: 1199px) {
   .grid-container {
-    grid-template-columns: repeat(3, 1fr);
-  }
-  .grid-3-columns {
     grid-template-columns: repeat(3, 1fr);
   }
 }
@@ -28,17 +22,11 @@
   .grid-container {
     grid-template-columns: repeat(2, 1fr);
   }
-  .grid-3-columns {
-    grid-template-columns: repeat(2, 1fr);
-  }
 }
 
 /* Extra small screens, 1 column */
 @media (max-width: 599px) {
   .grid-container {
-    grid-template-columns: 1fr;
-  }
-  .grid-3-columns {
     grid-template-columns: 1fr;
   }
 }
@@ -85,7 +73,7 @@ h1 {
 
 .document-header-container {
   display: flex;
-  flex-direction: column;
+  gap: 10px;
 }
 
 :host ::ng-deep .no-outline .mdc-notched-outline__leading {

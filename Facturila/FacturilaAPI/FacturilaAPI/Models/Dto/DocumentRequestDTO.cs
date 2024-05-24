@@ -13,6 +13,7 @@ namespace FacturilaAPI.Models.Dto
         public DateTime? DueDate { get; set; }
         public DocumentSeriesDto? DocumentSeries { get; set; }
         public DocumentType? DocumentType { get; set; }
+        public DocumentStatus? DocumentStatus { get; set; }
         public List<DocumentProductRequestDTO> Products { get; set; }
     } 
 }

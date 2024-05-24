@@ -69,6 +69,9 @@ namespace FacturilaAPI.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("DocumentStatusId")
+                        .HasColumnType("int");
+
                     b.Property<int?>("DocumentTypeId")
                         .HasColumnType("int");
 
@@ -90,6 +93,8 @@ namespace FacturilaAPI.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("ClientId");
+
+                    b.HasIndex("DocumentStatusId");
 
                     b.HasIndex("DocumentTypeId");
 
@@ -164,6 +169,23 @@ namespace FacturilaAPI.Migrations
                     b.HasIndex("UserFirmId");
 
                     b.ToTable("DocumentSeries");
+                });
+
+            modelBuilder.Entity("FacturilaAPI.Models.Entity.DocumentStatus", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("DocumentStatus");
                 });
 
             modelBuilder.Entity("FacturilaAPI.Models.Entity.DocumentType", b =>
@@ -334,6 +356,10 @@ namespace FacturilaAPI.Migrations
                         .WithMany()
                         .HasForeignKey("ClientId");
 
+                    b.HasOne("FacturilaAPI.Models.Entity.DocumentStatus", "DocumentStatus")
+                        .WithMany()
+                        .HasForeignKey("DocumentStatusId");
+
                     b.HasOne("FacturilaAPI.Models.Entity.DocumentType", "DocumentType")
                         .WithMany()
                         .HasForeignKey("DocumentTypeId");
@@ -343,6 +369,8 @@ namespace FacturilaAPI.Migrations
                         .HasForeignKey("UserFirmId");
 
                     b.Navigation("Client");
+
+                    b.Navigation("DocumentStatus");
 
                     b.Navigation("DocumentType");
 

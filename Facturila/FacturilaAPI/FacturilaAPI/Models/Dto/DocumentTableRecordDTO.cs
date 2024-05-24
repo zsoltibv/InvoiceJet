@@ -1,4 +1,6 @@
-﻿namespace FacturilaAPI.Models.Dto
+﻿using FacturilaAPI.Models.Entity;
+
+namespace FacturilaAPI.Models.Dto
 {
     public class DocumentTableRecordDTO
     {
@@ -8,5 +10,6 @@
         public DateTime IssueDate { get; set; }
         public DateTime? DueDate { get; set; }
         public decimal TotalValue { get; set; }
+        public DocumentStatus? DocumentStatus { get; set; }
     }
 }

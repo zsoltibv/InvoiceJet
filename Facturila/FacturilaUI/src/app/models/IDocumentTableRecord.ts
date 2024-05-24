@@ -1,3 +1,5 @@
+import { IDocumentStatus } from "./IDocumentStatus";
+
 export interface IDocumentTableRecord {
   id: number;
   documentNumber: string;
@@ -5,4 +7,5 @@ export interface IDocumentTableRecord {
   issueDate: Date;
   dueDate: Date;
   totalValue: number;
+  documentStatus: IDocumentStatus;
 }

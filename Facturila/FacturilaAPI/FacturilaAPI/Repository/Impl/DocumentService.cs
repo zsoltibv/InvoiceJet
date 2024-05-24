@@ -88,6 +88,7 @@ public class DocumentService : IDocumentService
             IssueDate = documentRequestDTO.IssueDate,
             DueDate = documentRequestDTO.DueDate,
             DocumentTypeId = documentRequestDTO.DocumentSeries.DocumentType?.Id,
+            DocumentStatusId = 1, 
             ClientId = documentRequestDTO.Client.Id,
             UserFirmId = userFirmId
         };
@@ -123,6 +124,7 @@ public class DocumentService : IDocumentService
         document.IssueDate = documentRequestDTO.IssueDate;
         document.DueDate = documentRequestDTO.DueDate;
         document.DocumentTypeId = documentRequestDTO.DocumentType?.Id;
+        document.DocumentStatusId = documentRequestDTO.DocumentStatus?.Id;
         document.ClientId = documentRequestDTO.Client.Id;
         document.UserFirmId = userFirmId;
 
@@ -187,6 +189,7 @@ public class DocumentService : IDocumentService
                 .Where(ds => ds.UserFirmId == userFirmId && ds.DocumentTypeId == documentTypeId)
                     .Include(ds => ds.DocumentType)
                 .ToListAsync(),
+            DocumentStatuses = await _dbContext.DocumentStatus.ToListAsync(),
             Products = await _dbContext.Product
                 .Where(p => p.UserFirmId == userFirmId)
                 .ToListAsync()
@@ -208,6 +211,7 @@ public class DocumentService : IDocumentService
         var documents = await _dbContext.Document
             .Where(document => document.UserFirmId == activeUserFirmId && document.DocumentTypeId == documentTypeId)
                 .Include(document => document.Client)
+                .Include(document => document.DocumentStatus)
             .ToListAsync();
 
         return _mapper.Map<List<DocumentTableRecordDTO>>(documents);
@@ -217,6 +221,7 @@ public class DocumentService : IDocumentService
     {
         var document = await _dbContext.Document
             .Where(d => d.Id == documentId)
+                .Include(d => d.DocumentStatus)
                 .Include(d => d.DocumentProducts)
                     .ThenInclude(dp => dp.Product)
                 .Include(d => d.Client)

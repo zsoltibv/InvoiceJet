@@ -18,9 +18,11 @@ export class InvoicesComponent {
     "issueDate",
     "dueDate",
     "totalValue",
+    "documentStatus",
   ];
   dataSource = new MatTableDataSource<IDocumentTableRecord>([]);
   selection = new SelectionModel<IDocumentTableRecord>(true, []);
+  invoices: IDocumentTableRecord[] = [];
 
   constructor(
     private router: Router,
@@ -33,8 +35,9 @@ export class InvoicesComponent {
 
   loadInvoices(): void {
     this.documentService.getDocuments(1).subscribe((invoices) => {
-      console.log(invoices);
       this.dataSource.data = invoices;
+      this.invoices = invoices;
+      console.log(this.invoices);
     });
   }
 

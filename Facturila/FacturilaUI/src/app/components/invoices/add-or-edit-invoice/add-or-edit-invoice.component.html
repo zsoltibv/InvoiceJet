@@ -4,19 +4,19 @@
       <mat-icon>arrow_back</mat-icon>
     </button>
     <div class="document-header-container">
-      <h1>
-        Invoice Details
-        <span *ngIf="!isEditMode"> - {{ documentNumber }} </span>
-      </h1>
+      <div>
+        <h1>
+          Invoice Details
+          <span *ngIf="!isEditMode"> - {{ documentNumber }} </span>
+        </h1>
+      </div>
+      <div>
+        <mat-chip> {{ documentStatus }}</mat-chip>
+      </div>
     </div>
   </div>
   <form [formGroup]="invoiceForm" (ngSubmit)="onSubmit()">
-    <div
-      [ngClass]="{
-        'grid-container': true,
-        'grid-3-columns': !isEditMode
-      }"
-    >
+    <div class="grid-container">
       <!-- CUI Value Field -->
       <mat-form-field appearance="outline" class="grid-item">
         <mat-label>Client Name or CUI</mat-label>
@@ -68,7 +68,7 @@
 
       <!-- Serie si Numar Dropdown -->
       <mat-form-field appearance="outline" class="grid-item" *ngIf="isEditMode">
-        <mat-label>Serie si Numar</mat-label>
+        <mat-label>Document Series</mat-label>
         <mat-select formControlName="documentSeries" required>
           <mat-option
             *ngFor="let series of invoiceAutofillData.documentSeries"
@@ -79,6 +79,31 @@
         </mat-select>
         <mat-error
           *ngIf="invoiceForm.get('documentSeries')?.errors?.['required']"
+        >
+          This field is required
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field
+        appearance="outline"
+        class="grid-item"
+        *ngIf="!isEditMode"
+      >
+        <mat-label>Status</mat-label>
+        <mat-select
+          formControlName="documentStatus"
+          required
+          [(value)]="currentStatus"
+        >
+          <mat-option
+            *ngFor="let status of invoiceAutofillData.documentStatuses"
+            [value]="status"
+          >
+            {{ status.status }}
+          </mat-option>
+        </mat-select>
+        <mat-error
+          *ngIf="invoiceForm.get('documentStatus')?.errors?.['required']"
         >
           This field is required
         </mat-error>

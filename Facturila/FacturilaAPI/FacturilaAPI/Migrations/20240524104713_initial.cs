@@ -12,6 +12,19 @@ namespace FacturilaAPI.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
+                name: "DocumentStatus",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Status = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_DocumentStatus", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "DocumentType",
                 columns: table => new
                 {
@@ -71,12 +84,18 @@ namespace FacturilaAPI.Migrations
                     UnitPrice = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     TotalPrice = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     DocumentTypeId = table.Column<int>(type: "int", nullable: true),
+                    DocumentStatusId = table.Column<int>(type: "int", nullable: true),
                     ClientId = table.Column<int>(type: "int", nullable: true),
                     UserFirmId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Document", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Document_DocumentStatus_DocumentStatusId",
+                        column: x => x.DocumentStatusId,
+                        principalTable: "DocumentStatus",
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_Document_DocumentType_DocumentTypeId",
                         column: x => x.DocumentTypeId,
@@ -207,6 +226,11 @@ namespace FacturilaAPI.Migrations
                 column: "ClientId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Document_DocumentStatusId",
+                table: "Document",
+                column: "DocumentStatusId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Document_DocumentTypeId",
                 table: "Document",
                 column: "DocumentTypeId");
@@ -326,6 +350,9 @@ namespace FacturilaAPI.Migrations
 
             migrationBuilder.DropTable(
                 name: "Product");
+
+            migrationBuilder.DropTable(
+                name: "DocumentStatus");
 
             migrationBuilder.DropTable(
                 name: "DocumentType");

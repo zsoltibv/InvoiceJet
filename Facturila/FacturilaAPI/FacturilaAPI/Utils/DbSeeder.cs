@@ -27,6 +27,17 @@ namespace FacturilaAPI.Utils
                     context.DocumentType.AddRange(documentTypes);
                     await context.SaveChangesAsync();
                 }
+
+                if (!context.DocumentStatus.Any())
+                {
+                    var documentStatuses = new List<DocumentStatus> {
+                        new DocumentStatus { Status = "Unpaid" },
+                        new DocumentStatus { Status = "Paid" },
+                    };
+
+                    context.DocumentStatus.AddRange(documentStatuses);
+                    await context.SaveChangesAsync();
+                }
             }
         }
 

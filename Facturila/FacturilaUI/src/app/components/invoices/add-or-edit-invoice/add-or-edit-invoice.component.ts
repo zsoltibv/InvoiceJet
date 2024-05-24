@@ -5,7 +5,7 @@ import { FirmService } from "./../../../services/firm.service";
 import { Component } from "@angular/core";
 import { FormArray, FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { MatTableDataSource } from "@angular/material/table";
-import { Observable, map, merge, startWith } from "rxjs";
+import { Observable, map, merge, of, startWith } from "rxjs";
 import { IFirm } from "src/app/models/IFirm";
 import { IDocumentAutofill } from "src/app/models/IDocumentAutofill";
 import { IProduct } from "src/app/models/IProduct";
@@ -13,6 +13,7 @@ import { IDocumentRequest } from "src/app/models/IDocumentRequest";
 import { MatDialog } from "@angular/material/dialog";
 import { PdfViewerComponent } from "../../pdf-viewer/pdf-viewer.component";
 import { ActivatedRoute, Router } from "@angular/router";
+import { IDocumentStatus } from "src/app/models/IDocumentStatus";
 
 @Component({
   selector: "app-add-or-edit-invoice",
@@ -25,6 +26,7 @@ export class AddOrEditInvoiceComponent {
   filteredProducts!: Observable<IProduct[]>;
   clientFirms: IFirm[] = [];
   currentDocument!: IDocumentRequest;
+  currentStatus!: IDocumentStatus;
 
   dataSource = new MatTableDataSource();
   invoiceForm!: FormGroup;
@@ -62,6 +64,7 @@ export class AddOrEditInvoiceComponent {
         this.documentService.getDocumentById(invoiceId).subscribe({
           next: (data) => {
             this.currentDocument = data;
+            console.log("Current document", this.currentDocument);
             this.invoiceForm.patchValue(data);
             this.invoiceForm.setControl(
               "products",
@@ -83,6 +86,10 @@ export class AddOrEditInvoiceComponent {
       .subscribe({
         next: (data) => {
           this.invoiceAutofillData = data;
+          console.log("Autofill data", this.invoiceAutofillData);
+          this.currentStatus = this.invoiceAutofillData.documentStatuses.find(
+            (x) => x.id === this.currentDocument?.documentStatus?.id
+          );
           this.setupClientFilters();
           this.setupProductFilters();
         },
@@ -97,6 +104,7 @@ export class AddOrEditInvoiceComponent {
       issueDate: [new Date(), Validators.required],
       dueDate: null,
       documentSeries: [null],
+      documentStatus: [null],
       products: this.fb.array([this.createProductGroup()]),
     });
     this.updateTableData();
@@ -310,5 +318,9 @@ export class AddOrEditInvoiceComponent {
 
   get documentNumber(): string {
     return this.currentDocument?.documentNumber || "";
+  }
+
+  get documentStatus(): string {
+    return this.currentDocument?.documentStatus?.status || "";
   }
 }

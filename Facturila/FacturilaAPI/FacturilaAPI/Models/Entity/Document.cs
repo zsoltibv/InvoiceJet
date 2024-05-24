@@ -12,6 +12,9 @@ public class Document
     public int? DocumentTypeId { get; set; }
     public DocumentType? DocumentType { get; set; }
 
+    public int? DocumentStatusId { get; set; }
+    public virtual DocumentStatus? DocumentStatus { get; set; }
+
     public int? ClientId { get; set; }
     public virtual Firm? Client { get; set; }
     
