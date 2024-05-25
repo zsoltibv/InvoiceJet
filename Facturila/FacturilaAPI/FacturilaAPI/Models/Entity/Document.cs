@@ -9,6 +9,9 @@ public class Document
     public decimal UnitPrice { get; set; }
     public decimal TotalPrice { get; set; }
 
+    public int BankAccountId { get; set; }
+    public virtual BankAccount? BankAccount { get; set; }
+    
     public int? DocumentTypeId { get; set; }
     public DocumentType? DocumentType { get; set; }
 

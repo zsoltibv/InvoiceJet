@@ -2,9 +2,9 @@
 
 public class DashboardStatsDto
 {
-    public int TotalDocuments { get; set; }
-    public int TotalClients { get; set; }
-    public int TotalProducts { get; set; }
-    public int TotalBankAccounts { get; set; }
-    public List<MonthlyTotalDto> MonthlyTotals { get; set; }
+    public int TotalDocuments { get; set; } = 0;
+    public int TotalClients { get; set; } = 0;
+    public int TotalProducts { get; set; } = 0;
+    public int TotalBankAccounts { get; set; } = 0;
+    public List<MonthlyTotalDto>? MonthlyTotals { get; set; } = new List<MonthlyTotalDto>();
 }

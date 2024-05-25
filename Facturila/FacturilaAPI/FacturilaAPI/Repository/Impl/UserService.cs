@@ -52,14 +52,20 @@ namespace FacturilaAPI.Services.Impl
             return null;
         }
 
-        public async Task<int> GetUserFirmIdUsingTokenAsync()
+        public async Task<int?> GetUserFirmIdUsingTokenAsync()
         {
-            var userFirmId = await _dbContext.User
-             .Where(u => u.Id == GetUserIdFromToken())
-             .Select(u => u.ActiveUserFirmId)
-             .FirstOrDefaultAsync();
+            var userId = GetUserIdFromToken();
+            if (userId == null)
+            {
+                return null;
+            }
 
-            return (int)userFirmId;
+            var userFirmId = await _dbContext.User
+                .Where(u => u.Id == userId)
+                .Select(u => u.ActiveUserFirmId)
+                .FirstOrDefaultAsync(); 
+
+            return userFirmId; 
         }
     }
 }

@@ -91,7 +91,7 @@ namespace FacturilaAPI.Repository.Impl
 
                 column.Item().Row(row =>
                 {
-                    row.RelativeItem().Component(new AddressComponent("From", Model.Seller));
+                    row.RelativeItem().Component(new AddressComponent("From", Model.Seller, Model.BankAccount));
                     row.ConstantItem(50);
                     row.RelativeItem().Component(new AddressComponent("For", Model.Client));
                 });
@@ -146,12 +146,14 @@ namespace FacturilaAPI.Repository.Impl
     public class AddressComponent : IComponent
     {
         private string Title { get; }
-        private FirmDto Address { get; }
+        private FirmDto Address { get; set; }
+        private BankAccountDto BankAccount { get; }
 
-        public AddressComponent(string title, FirmDto address)
+        public AddressComponent(string title, FirmDto address, BankAccountDto bankAccount = null)
         {
             Title = title;
             Address = address;
+            BankAccount = bankAccount;
         }
 
         public void Compose(IContainer container)
@@ -174,7 +176,17 @@ namespace FacturilaAPI.Repository.Impl
                 {
                     column.Item().Text($"Reg. Com: {Address.RegCom}");
                 }
-                // Optionally add more details like Email and Phone if available and needed
+                if (BankAccount != null)
+                {
+                    if (!string.IsNullOrEmpty(BankAccount.BankName))
+                    {
+                        column.Item().Text($"Bank: {BankAccount.BankName}");
+                    }
+                    if (!string.IsNullOrEmpty(BankAccount.Iban))
+                    {
+                        column.Item().Text($"IBAN: {BankAccount.Iban}");
+                    }
+                }
             });
         }
     }

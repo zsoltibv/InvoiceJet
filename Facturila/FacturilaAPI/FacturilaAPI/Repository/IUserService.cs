@@ -7,6 +7,6 @@ namespace FacturilaAPI.Services
     {
         Task<UserRegisterDto> GetUserByEmail(string email);
         Guid? GetUserIdFromToken();
-        Task<int> GetUserFirmIdUsingTokenAsync();
+        Task<int?> GetUserFirmIdUsingTokenAsync();
     }
 }

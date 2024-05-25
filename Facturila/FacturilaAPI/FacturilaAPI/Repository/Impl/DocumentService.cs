@@ -81,8 +81,7 @@ public class DocumentService : IDocumentService
 
     public async Task<DocumentRequestDTO> AddDocument(DocumentRequestDTO documentRequestDTO)
     {
-        var userFirmId = await _userService.GetUserFirmIdUsingTokenAsync();
-
+        var userFirmId = await _userService.GetUserFirmIdUsingTokenAsync() ?? throw new Exception("User firm not found.");
         Document document = new Document
         {
             Id = documentRequestDTO.Id,
@@ -91,6 +90,9 @@ public class DocumentService : IDocumentService
             DueDate = documentRequestDTO.DueDate,
             DocumentTypeId = documentRequestDTO.DocumentSeries.DocumentType?.Id,
             DocumentStatusId = 1, 
+            BankAccount = await _dbContext.BankAccount
+                .Where(ba => ba.UserFirmId == userFirmId && ba.IsActive)
+                .FirstOrDefaultAsync(),
             ClientId = documentRequestDTO.Client.Id,
             UserFirmId = userFirmId
         };
@@ -113,8 +115,7 @@ public class DocumentService : IDocumentService
 
     public async Task<DocumentRequestDTO> EditDocument(DocumentRequestDTO documentRequestDTO)
     {
-        var userFirmId = await _userService.GetUserFirmIdUsingTokenAsync();
-
+        var userFirmId = await _userService.GetUserFirmIdUsingTokenAsync() ?? throw new Exception("User firm not found.");
         var document = await _dbContext.Document
             .FirstOrDefaultAsync(d => d.Id == documentRequestDTO.Id);
 
@@ -162,7 +163,12 @@ public class DocumentService : IDocumentService
             .Include(uf => uf.Firm)
             .FirstOrDefaultAsync();
 
+        var activeBankAccount = await _dbContext.BankAccount
+            .Where(ba => ba.UserFirmId == activeUserFirmId && ba.IsActive)
+            .FirstOrDefaultAsync();
+
         documentRequestDTO.Seller = _mapper.Map<FirmDto>(activeUserFirm?.Firm);
+        documentRequestDTO.BankAccount = _mapper.Map<BankAccountDto>(activeBankAccount);
 
         //include invoice document class and generate pdf
         return new DocumentStreamDto
@@ -203,6 +209,8 @@ public class DocumentService : IDocumentService
     public async Task<List<DocumentTableRecordDTO>> GetDocumentTableRecords(int documentTypeId)
     {
         var activeUserFirmId = await _userService.GetUserFirmIdUsingTokenAsync();
+        if (activeUserFirmId == null) return new List<DocumentTableRecordDTO>();
+
         var activeUserFirm = await _dbContext.UserFirm
             .Where(uf => uf.UserFirmId == activeUserFirmId)
             .Include(uf => uf.Firm)
@@ -247,22 +255,19 @@ public class DocumentService : IDocumentService
 
     public async Task<DashboardStatsDto> GetDashboardStats()
     {
-        int activeUserFirmId = await _userService.GetUserFirmIdUsingTokenAsync();
+        int? activeUserFirmId = await _userService.GetUserFirmIdUsingTokenAsync();
+        if(activeUserFirmId == null) return new DashboardStatsDto();
+
         var activeUserFirm = await _dbContext.UserFirm
             .Where(uf => uf.UserFirmId == activeUserFirmId)
             .Include(uf => uf.User)
             .FirstOrDefaultAsync();
-        
-        if (activeUserFirm == null)
-        {
-            return new DashboardStatsDto(); 
-        }
 
-        var totalDocumentsTask = Task.Run(() => GetTotalDocuments(activeUserFirmId));
-        var totalClientsTask = Task.Run(() => GetTotalClients(activeUserFirm.User.Id));
-        var totalProductsTask = Task.Run(() => GetTotalProducts(activeUserFirmId));
-        var totalBankAccountsTask = Task.Run(() => GetTotalBankAccounts(activeUserFirmId));
-        var monthlyTotalsTask = Task.Run(() => GetMonthlyTotals(activeUserFirmId));
+        var totalDocumentsTask = Task.Run(() => GetTotalDocuments((int)activeUserFirmId));
+        var totalClientsTask = Task.Run(() => GetTotalClients(activeUserFirm!.User.Id));
+        var totalProductsTask = Task.Run(() => GetTotalProducts((int)activeUserFirmId));
+        var totalBankAccountsTask = Task.Run(() => GetTotalBankAccounts((int)activeUserFirmId));
+        var monthlyTotalsTask = Task.Run(() => GetMonthlyTotals((int)activeUserFirmId));
 
         await Task.WhenAll(totalDocumentsTask, totalClientsTask, totalProductsTask, totalBankAccountsTask, monthlyTotalsTask);
 

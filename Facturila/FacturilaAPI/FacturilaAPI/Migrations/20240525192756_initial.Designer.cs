@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FacturilaAPI.Migrations
 {
     [DbContext(typeof(FacturilaDbContext))]
-    [Migration("20240524104713_initial")]
+    [Migration("20240525192756_initial")]
     partial class initial
     {
         /// <inheritdoc />
@@ -65,6 +65,9 @@ namespace FacturilaAPI.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<int>("BankAccountId")
+                        .HasColumnType("int");
+
                     b.Property<int?>("ClientId")
                         .HasColumnType("int");
 
@@ -94,6 +97,8 @@ namespace FacturilaAPI.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("BankAccountId");
 
                     b.HasIndex("ClientId");
 
@@ -355,6 +360,12 @@ namespace FacturilaAPI.Migrations
 
             modelBuilder.Entity("FacturilaAPI.Models.Entity.Document", b =>
                 {
+                    b.HasOne("FacturilaAPI.Models.Entity.BankAccount", "BankAccount")
+                        .WithMany()
+                        .HasForeignKey("BankAccountId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("FacturilaAPI.Models.Entity.Firm", "Client")
                         .WithMany()
                         .HasForeignKey("ClientId");
@@ -370,6 +381,8 @@ namespace FacturilaAPI.Migrations
                     b.HasOne("FacturilaAPI.Models.Entity.UserFirm", "UserFirm")
                         .WithMany("Documents")
                         .HasForeignKey("UserFirmId");
+
+                    b.Navigation("BankAccount");
 
                     b.Navigation("Client");
 

@@ -83,6 +83,7 @@ namespace FacturilaAPI.Migrations
                     DueDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     UnitPrice = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     TotalPrice = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    BankAccountId = table.Column<int>(type: "int", nullable: false),
                     DocumentTypeId = table.Column<int>(type: "int", nullable: true),
                     DocumentStatusId = table.Column<int>(type: "int", nullable: true),
                     ClientId = table.Column<int>(type: "int", nullable: true),
@@ -91,6 +92,12 @@ namespace FacturilaAPI.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Document", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Document_BankAccount_BankAccountId",
+                        column: x => x.BankAccountId,
+                        principalTable: "BankAccount",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Document_DocumentStatus_DocumentStatusId",
                         column: x => x.DocumentStatusId,
@@ -221,6 +228,11 @@ namespace FacturilaAPI.Migrations
                 column: "UserFirmId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Document_BankAccountId",
+                table: "Document",
+                column: "BankAccountId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Document_ClientId",
                 table: "Document",
                 column: "ClientId");
@@ -337,9 +349,6 @@ namespace FacturilaAPI.Migrations
                 table: "User");
 
             migrationBuilder.DropTable(
-                name: "BankAccount");
-
-            migrationBuilder.DropTable(
                 name: "DocumentProduct");
 
             migrationBuilder.DropTable(
@@ -350,6 +359,9 @@ namespace FacturilaAPI.Migrations
 
             migrationBuilder.DropTable(
                 name: "Product");
+
+            migrationBuilder.DropTable(
+                name: "BankAccount");
 
             migrationBuilder.DropTable(
                 name: "DocumentStatus");
