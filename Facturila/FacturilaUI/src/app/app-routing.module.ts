@@ -59,6 +59,7 @@ const routes: Routes = [
   {
     path: "dashboard/edit-invoice/:id",
     component: AddOrEditInvoiceComponent,
+    canActivate: [AuthGuard],
   },
   { path: "**", component: DashboardComponent, canActivate: [AuthGuard] },
 ];
@@ -67,6 +68,4 @@ const routes: Routes = [
   imports: [RouterModule.forRoot(routes)],
   exports: [RouterModule],
 })
-export class AppRoutingModule {
-  constructor(private router: Router, private authService: AuthService) {}
-}
+export class AppRoutingModule {}

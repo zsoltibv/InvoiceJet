@@ -4,6 +4,7 @@ import { environment } from "environment";
 import { IDocumentAutofill } from "../models/IDocumentAutofill";
 import { IDocumentRequest } from "../models/IDocumentRequest";
 import { IDocumentTableRecord } from "../models/IDocumentTableRecord";
+import { IDashboardStats } from "../models/IDashboardStats";
 
 @Injectable({
   providedIn: "root",
@@ -13,7 +14,7 @@ export class DocumentService {
 
   constructor(private http: HttpClient) {}
 
-  public getDocumentSeriesForUserId(userId: string, documentTypeId: number) {
+  public getDocumentAutofillInfo(userId: string, documentTypeId: number) {
     return this.http.get<IDocumentAutofill>(
       `${this.baseUrl}/Document/GetDocumentAutofillInfo/${userId}/${documentTypeId}`
     );
@@ -60,6 +61,12 @@ export class DocumentService {
     return this.http.put(
       `${this.baseUrl}/Document/DeleteDocuments`,
       documentIds
+    );
+  }
+
+  getDashboardData() {
+    return this.http.get<IDashboardStats>(
+      `${this.baseUrl}/Document/GetDashboardStats`
     );
   }
 }

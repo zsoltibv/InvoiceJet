@@ -1,4 +1,5 @@
-<div class="inner-container">
+<mat-progress-bar mode="query" *ngIf="!contentIsLoaded"></mat-progress-bar>
+<div class="inner-container" *ngIf="contentIsLoaded">
   <div class="title-container">
     <button mat-icon-button (click)="goBack()" aria-label="Go back">
       <mat-icon>arrow_back</mat-icon>
@@ -11,7 +12,7 @@
         </h1>
       </div>
       <div>
-        <mat-chip> {{ documentStatus }}</mat-chip>
+        <mat-chip *ngIf="documentStatus"> {{ documentStatus }}</mat-chip>
       </div>
     </div>
   </div>

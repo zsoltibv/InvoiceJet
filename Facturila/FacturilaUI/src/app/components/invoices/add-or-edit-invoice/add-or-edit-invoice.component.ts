@@ -29,7 +29,7 @@ export class AddOrEditInvoiceComponent {
   currentStatus!: IDocumentStatus;
 
   dataSource = new MatTableDataSource();
-  invoiceForm!: FormGroup;
+  invoiceForm: FormGroup = {} as FormGroup;
   displayedColumns: string[] = [
     "name",
     "unitPrice",
@@ -82,14 +82,17 @@ export class AddOrEditInvoiceComponent {
     });
 
     this.documentService
-      .getDocumentSeriesForUserId(this.authService.userId, 1)
+      .getDocumentAutofillInfo(this.authService.userId, 1)
       .subscribe({
         next: (data) => {
           this.invoiceAutofillData = data;
-          console.log("Autofill data", this.invoiceAutofillData);
-          this.currentStatus = this.invoiceAutofillData.documentStatuses.find(
-            (x) => x.id === this.currentDocument?.documentStatus?.id
-          );
+          if (this.currentDocument) {
+            this.invoiceForm.patchValue({
+              documentStatus: this.invoiceAutofillData.documentStatuses.find(
+                (status) => status.id === this.currentDocument.documentStatus.id
+              ),
+            });
+          }
           this.setupClientFilters();
           this.setupProductFilters();
         },
@@ -322,5 +325,11 @@ export class AddOrEditInvoiceComponent {
 
   get documentStatus(): string {
     return this.currentDocument?.documentStatus?.status || "";
+  }
+
+  get contentIsLoaded(): boolean {
+    if (!this.invoiceAutofillData.clients) return false;
+    if (this.invoiceAutofillData.clients.length === 0) return false;
+    return true;
   }
 }

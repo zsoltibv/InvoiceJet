@@ -1,7 +1,17 @@
-import { NgModule } from "@angular/core";
+import { NgModule, importProvidersFrom } from "@angular/core";
 import { BrowserModule } from "@angular/platform-browser";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
-import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
+import {
+  BrowserAnimationsModule,
+  provideAnimations,
+} from "@angular/platform-browser/animations";
+import {
+  trigger,
+  state,
+  style,
+  transition,
+  animate,
+} from "@angular/animations";
 import { HttpClientModule } from "@angular/common/http";
 import { HTTP_INTERCEPTORS } from "@angular/common/http";
 
@@ -64,6 +74,7 @@ import { NgChartsModule } from "ng2-charts";
     NgChartsModule,
   ],
   providers: [
+    provideAnimations(),
     { provide: JWT_OPTIONS, useValue: JWT_OPTIONS },
     {
       provide: MAT_FORM_FIELD_DEFAULT_OPTIONS,

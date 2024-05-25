@@ -3,7 +3,6 @@ using FacturilaAPI.Config;
 using FacturilaAPI.Models.Dto;
 using FacturilaAPI.Models.Entity;
 using FacturilaAPI.Repository;
-using FacturilaAPI.Repository.Impl;
 using Microsoft.EntityFrameworkCore;
 
 namespace FacturilaAPI.Services.Impl;
@@ -241,5 +240,35 @@ public class DocumentService : IDocumentService
         _dbContext.Document.RemoveRange(documents);
         
         await _dbContext.SaveChangesAsync();
+    }
+
+    public async Task<DashboardStatsDto> GetDashboardStats()
+    {
+        var activeUserFirmId = await _userService.GetUserFirmIdUsingTokenAsync();
+        var activeUserFirm = await _dbContext.UserFirm
+            .Where(uf => uf.UserFirmId == activeUserFirmId)
+            .Include(uf => uf.User)
+            .FirstOrDefaultAsync();
+
+        if (activeUserFirm == null)
+            return new DashboardStatsDto();
+        
+        DashboardStatsDto dashboardStats = new DashboardStatsDto
+        {
+            TotalDocuments = await _dbContext.Document
+                .Where(d => d.UserFirmId == activeUserFirmId)
+                .CountAsync(),
+            TotalClients = await _dbContext.Firm
+                .Where(f => f.UserFirms.Any(uf => uf.UserId.Equals(activeUserFirm.User.Id) && uf.IsClient))
+                .CountAsync(),
+            TotalProducts = await _dbContext.Product
+                .Where(p => p.UserFirmId == activeUserFirmId)
+                .CountAsync(),
+            TotalBankAccounts = await _dbContext.BankAccount
+                .Where(ba => ba.UserFirmId == activeUserFirmId)
+                .CountAsync()
+        };
+
+        return dashboardStats;
     }
 }

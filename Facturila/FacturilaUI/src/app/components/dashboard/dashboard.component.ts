@@ -1,4 +1,6 @@
 import { Component } from "@angular/core";
+import { IDashboardStats } from "src/app/models/IDashboardStats";
+import { DocumentService } from "src/app/services/document.service";
 
 @Component({
   selector: "app-dashboard",
@@ -6,13 +8,23 @@ import { Component } from "@angular/core";
   styleUrls: ["./dashboard.component.scss"],
 })
 export class DashboardComponent {
-  constructor() {}
+  dashboardStats: IDashboardStats = {
+    totalDocuments: 0,
+    totalClients: 0,
+    totalProducts: 0,
+    totalBankAccounts: 0,
+  };
 
-  ngOnInit(): void {}
+  constructor(private documentService: DocumentService) {}
+
+  ngOnInit(): void {
+    this.getDashboardData();
+  }
 
   public barChartOptions = {
     scaleShowVerticalLines: false,
     responsive: true,
+    maintainAspectRatio: false,
   };
   public barChartLabels = [
     "January",
@@ -41,4 +53,11 @@ export class DashboardComponent {
       label: "Income Amount",
     },
   ];
+
+  getDashboardData() {
+    this.documentService.getDashboardData().subscribe((data) => {
+      console.log(data);
+      this.dashboardStats = data;
+    });
+  }
 }

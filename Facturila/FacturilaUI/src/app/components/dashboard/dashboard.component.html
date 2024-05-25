@@ -1,4 +1,4 @@
-<div class="stats-container" [@fade]="true">
+<div class="stats-container">
   <h1>Dashboard</h1>
   <div class="grid-container">
     <mat-card>
@@ -9,7 +9,7 @@
         </mat-card-title>
       </mat-card-header>
       <mat-card-content>
-        <p>1</p>
+        <p>{{ dashboardStats.totalClients }}</p>
       </mat-card-content>
     </mat-card>
     <mat-card>
@@ -18,7 +18,7 @@
         <mat-card-title><h1>Bank Accounts</h1></mat-card-title>
       </mat-card-header>
       <mat-card-content>
-        <p>1</p>
+        <p>{{ dashboardStats.totalBankAccounts }}</p>
       </mat-card-content>
     </mat-card>
     <mat-card>
@@ -27,7 +27,7 @@
         <mat-card-title><h1>Documents</h1></mat-card-title>
       </mat-card-header>
       <mat-card-content>
-        <p>1</p>
+        <p>{{ dashboardStats.totalDocuments }}</p>
       </mat-card-content>
     </mat-card>
     <mat-card>
@@ -36,7 +36,7 @@
         <mat-card-title><h1>Products</h1></mat-card-title>
       </mat-card-header>
       <mat-card-content>
-        <p>1</p>
+        <p>{{ dashboardStats.totalProducts }}</p>
       </mat-card-content>
     </mat-card>
   </div>

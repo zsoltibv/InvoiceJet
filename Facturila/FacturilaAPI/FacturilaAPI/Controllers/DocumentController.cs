@@ -133,5 +133,19 @@ namespace FacturilaAPI.Controllers
                 return BadRequest(ex.Message);
             }
         }
+        
+        [HttpGet("GetDashboardStats")]
+        public async Task<IActionResult> GetDashboardStats()
+        {
+            try
+            {
+                var dashboardStats = await _documentService.GetDashboardStats();
+                return Ok(dashboardStats);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
     }
 }
