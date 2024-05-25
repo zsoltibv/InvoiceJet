@@ -19,7 +19,6 @@ namespace FacturilaAPI.Services.Impl
 
         public async Task<ICollection<BankAccountDto>> GetUserFirmBankAccounts(Guid userId)
         {
-            // Find the active UserFirm for the given user that is not a client.
             var activeUserFirm = await _dbContext.User
                    .Where(u => u.Id == userId)
                    .Include(u => u.ActiveUserFirm)
@@ -61,6 +60,18 @@ namespace FacturilaAPI.Services.Impl
                 bankAccount.UserFirmId = activeUserFirm!.UserFirmId;
                 await _dbContext.BankAccount.AddAsync(bankAccount);
             }
+            if (bankAccount.IsActive)
+            {
+                var otherAccounts = await _dbContext.BankAccount
+                    .Where(ba => ba.UserFirmId == bankAccount.UserFirmId && ba.Id != bankAccount.Id)
+                    .ToListAsync();
+
+                foreach (var account in otherAccounts)
+                {
+                    account.IsActive = false;
+                }
+            }
+            
             await _dbContext.SaveChangesAsync();
             return _mapper.Map<BankAccountDto>(bankAccount);
         }
