@@ -235,7 +235,11 @@
             *matCellDef="let product; let i = index"
             [formGroupName]="i"
           >
-            <mat-checkbox formControlName="containsTVA">Yes</mat-checkbox>
+            <mat-checkbox
+              formControlName="containsTVA"
+              (change)="calculatePriceWithoutTVA(i, $event.checked)"
+              >Yes</mat-checkbox
+            >
           </td>
         </ng-container>
 

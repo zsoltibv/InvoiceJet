@@ -237,6 +237,39 @@ export class AddOrEditInvoiceComponent {
     });
   }
 
+  calculatePriceWithoutTVA(index: number, isChecked: boolean): void {
+    console.log("Checkbox checked", isChecked);
+
+    const productGroup = this.productsFormArray.at(index) as FormGroup;
+    const unitPrice = parseFloat(productGroup.get("unitPrice")!.value);
+    const quantity = parseFloat(productGroup.get("quantity")!.value);
+    const tvaValue = parseFloat(productGroup.get("tvaValue")!.value);
+
+    if (isChecked) {
+      const newTotalPrice = unitPrice * quantity;
+      const newUnitPrice = newTotalPrice / quantity / (1 + tvaValue / 100);
+
+      productGroup.patchValue({
+        unitPrice: parseFloat(newUnitPrice.toFixed(2)),
+        totalPrice: parseFloat(newTotalPrice.toFixed(2)),
+      });
+    } else {
+      const unitPrice = parseFloat(productGroup.get("unitPrice").value);
+      const quantity = parseFloat(productGroup.get("quantity").value);
+      const tvaValue = parseFloat(productGroup.get("tvaValue").value);
+
+      const originalUnitPrice = unitPrice * (1 + tvaValue / 100);
+      const originalTotalPrice =
+        originalUnitPrice * quantity +
+        (originalUnitPrice * quantity * tvaValue) / 100;
+
+      productGroup.patchValue({
+        unitPrice: parseFloat(originalUnitPrice.toFixed(2)),
+        totalPrice: parseFloat(originalTotalPrice.toFixed(2)),
+      });
+    }
+  }
+
   onSubmit(): void {
     console.log("Form submitted", this.invoiceForm.value);
     const documentData: IDocumentRequest = this.invoiceForm.value;

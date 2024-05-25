@@ -1,14 +1,15 @@
-import { Component } from "@angular/core";
+import { Component, OnInit } from "@angular/core";
 import { IDashboardStats } from "src/app/models/IDashboardStats";
 import { IMonthlyTotal } from "src/app/models/IMonthlyTotal";
 import { DocumentService } from "src/app/services/document.service";
+import { ChartOptions, ChartType } from "chart.js";
 
 @Component({
   selector: "app-dashboard",
   templateUrl: "./dashboard.component.html",
   styleUrls: ["./dashboard.component.scss"],
 })
-export class DashboardComponent {
+export class DashboardComponent implements OnInit {
   dashboardStats: IDashboardStats = {
     totalDocuments: 0,
     totalClients: 0,
@@ -17,18 +18,42 @@ export class DashboardComponent {
     monthlyTotals: [],
   };
 
-  constructor(private documentService: DocumentService) {}
-
-  ngOnInit(): void {
-    this.getDashboardData();
-  }
-
-  public barChartOptions = {
-    scaleShowVerticalLines: false,
+  public lineChartOptions: ChartOptions = {
     responsive: true,
+    interaction: {
+      mode: "index",
+      intersect: false,
+    },
     maintainAspectRatio: false,
+    scales: {
+      y: {
+        type: "linear",
+        display: true,
+        position: "left",
+        beginAtZero: true,
+      },
+      y1: {
+        type: "linear",
+        display: true,
+        position: "right",
+        grid: {
+          drawOnChartArea: false,
+        },
+      },
+    },
+    plugins: {
+      legend: {
+        display: true,
+      },
+      tooltip: {
+        enabled: true,
+        mode: "index",
+        intersect: true,
+      },
+    },
   };
-  public barChartLabels = [
+
+  public lineChartLabels: string[] = [
     "January",
     "February",
     "March",
@@ -42,19 +67,15 @@ export class DashboardComponent {
     "November",
     "December",
   ];
-  public barChartType = "bar";
-  public barChartLegend = true;
+  public lineChartType: ChartType = "line";
+  public lineChartLegend = true;
+  public lineChartData: any[] = [];
 
-  public barChartData = [
-    {
-      data: [65, 59, 80, 81, 56, 55, 40, 30, 70, 90, 100, 110],
-      label: "Invoice Amount",
-    },
-    {
-      data: [28, 48, 40, 19, 86, 27, 90, 50, 60, 80, 95, 120],
-      label: "Income Amount",
-    },
-  ];
+  constructor(private documentService: DocumentService) {}
+
+  ngOnInit(): void {
+    this.getDashboardData();
+  }
 
   getDashboardData() {
     this.documentService.getDashboardData().subscribe((data) => {
@@ -73,9 +94,12 @@ export class DashboardComponent {
       incomeAmounts[index] = total.incomeAmount;
     });
 
-    this.barChartData = [
-      { data: invoiceAmounts, label: "Invoice Amount" },
-      { data: incomeAmounts, label: "Income Amount" },
+    console.log(invoiceAmounts);
+    console.log(incomeAmounts);
+
+    this.lineChartData = [
+      { data: invoiceAmounts, label: "Invoice Amount", yAxisID: "y" },
+      { data: incomeAmounts, label: "Income Amount", yAxisID: "y1" },
     ];
   }
 }
