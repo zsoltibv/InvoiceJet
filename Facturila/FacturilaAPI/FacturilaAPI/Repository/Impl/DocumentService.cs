@@ -13,13 +13,16 @@ public class DocumentService : IDocumentService
     private readonly IMapper _mapper;
     private readonly IUserService _userService;
     private readonly IPdfGenerationService _pdfGenerationService;
+    private readonly IServiceScopeFactory _scopeFactory;
 
-    public DocumentService(FacturilaDbContext dbContext, IMapper mapper, IUserService userService, IPdfGenerationService pdfGenerationService)
+    public DocumentService(FacturilaDbContext dbContext, IMapper mapper, IUserService userService, IPdfGenerationService pdfGenerationService,
+        IServiceScopeFactory scopeFactory)
     {
         _dbContext = dbContext;
         _mapper = mapper;
         _userService = userService;
         _pdfGenerationService = pdfGenerationService;
+        _scopeFactory = scopeFactory;
     }
 
     private async Task UpdateDocumentProducts(int documentId, List<DocumentProductRequestDTO> documentProductsDto, int userFirmId)
@@ -244,31 +247,84 @@ public class DocumentService : IDocumentService
 
     public async Task<DashboardStatsDto> GetDashboardStats()
     {
-        var activeUserFirmId = await _userService.GetUserFirmIdUsingTokenAsync();
+        int activeUserFirmId = await _userService.GetUserFirmIdUsingTokenAsync();
         var activeUserFirm = await _dbContext.UserFirm
             .Where(uf => uf.UserFirmId == activeUserFirmId)
             .Include(uf => uf.User)
             .FirstOrDefaultAsync();
-
-        if (activeUserFirm == null)
-            return new DashboardStatsDto();
         
-        DashboardStatsDto dashboardStats = new DashboardStatsDto
+        if (activeUserFirm == null)
         {
-            TotalDocuments = await _dbContext.Document
-                .Where(d => d.UserFirmId == activeUserFirmId)
-                .CountAsync(),
-            TotalClients = await _dbContext.Firm
-                .Where(f => f.UserFirms.Any(uf => uf.UserId.Equals(activeUserFirm.User.Id) && uf.IsClient))
-                .CountAsync(),
-            TotalProducts = await _dbContext.Product
-                .Where(p => p.UserFirmId == activeUserFirmId)
-                .CountAsync(),
-            TotalBankAccounts = await _dbContext.BankAccount
-                .Where(ba => ba.UserFirmId == activeUserFirmId)
-                .CountAsync()
-        };
+            return new DashboardStatsDto(); 
+        }
 
-        return dashboardStats;
+        var totalDocumentsTask = Task.Run(() => GetTotalDocuments(activeUserFirmId));
+        var totalClientsTask = Task.Run(() => GetTotalClients(activeUserFirm.User.Id));
+        var totalProductsTask = Task.Run(() => GetTotalProducts(activeUserFirmId));
+        var totalBankAccountsTask = Task.Run(() => GetTotalBankAccounts(activeUserFirmId));
+        var monthlyTotalsTask = Task.Run(() => GetMonthlyTotals(activeUserFirmId));
+
+        await Task.WhenAll(totalDocumentsTask, totalClientsTask, totalProductsTask, totalBankAccountsTask, monthlyTotalsTask);
+
+        return new DashboardStatsDto
+        {
+            TotalDocuments = await totalDocumentsTask,
+            TotalClients = await totalClientsTask,
+            TotalProducts = await totalProductsTask,
+            TotalBankAccounts = await totalBankAccountsTask,
+            MonthlyTotals = await monthlyTotalsTask
+        };
+    }
+    
+    private async Task<int> GetTotalDocuments(int firmId)
+    {
+        using var scope = _scopeFactory.CreateScope();
+        var dbContext = scope.ServiceProvider.GetRequiredService<FacturilaDbContext>();
+        return await dbContext.Document
+            .Where(d => d.UserFirmId == firmId)
+            .CountAsync();
+    }
+    
+    private async Task<int> GetTotalClients(Guid userId)
+    {
+        using var scope = _scopeFactory.CreateScope();
+        var dbContext = scope.ServiceProvider.GetRequiredService<FacturilaDbContext>();
+        return await dbContext.Firm
+            .CountAsync(f => f.UserFirms.Any(uf => uf.UserId == userId && uf.IsClient));
+    }
+
+    private async Task<int> GetTotalProducts(int firmId)
+    {
+        using var scope = _scopeFactory.CreateScope();
+        var dbContext = scope.ServiceProvider.GetRequiredService<FacturilaDbContext>();
+        return await dbContext.Product
+            .Where(p => p.UserFirmId == firmId)
+            .CountAsync();
+    }
+
+    private async Task<int> GetTotalBankAccounts(int firmId)
+    {
+        using var scope = _scopeFactory.CreateScope();
+        var dbContext = scope.ServiceProvider.GetRequiredService<FacturilaDbContext>();
+        return await dbContext.BankAccount
+            .Where(ba => ba.UserFirmId == firmId)
+            .CountAsync();
+    }
+
+    private async Task<List<MonthlyTotalDto>> GetMonthlyTotals(int firmId)
+    {
+        using var scope = _scopeFactory.CreateScope();
+        var dbContext = scope.ServiceProvider.GetRequiredService<FacturilaDbContext>();
+        return await dbContext.Document
+            .Where(d => d.UserFirmId == firmId && d.IssueDate.Year == DateTime.Now.Year)
+            .GroupBy(d => new { month = d.IssueDate.Month })
+            .Select(group => new MonthlyTotalDto
+            {
+                Month = group.Key.month,
+                InvoiceAmount = group.Sum(d => d.TotalPrice),
+                IncomeAmount = group.Sum(d => d.DocumentStatusId == 2 ? d.TotalPrice : 0)
+            })
+            .OrderBy(x => x.Month)
+            .ToListAsync();
     }
 }

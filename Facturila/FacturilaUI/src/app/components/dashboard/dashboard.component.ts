@@ -1,5 +1,6 @@
 import { Component } from "@angular/core";
 import { IDashboardStats } from "src/app/models/IDashboardStats";
+import { IMonthlyTotal } from "src/app/models/IMonthlyTotal";
 import { DocumentService } from "src/app/services/document.service";
 
 @Component({
@@ -13,6 +14,7 @@ export class DashboardComponent {
     totalClients: 0,
     totalProducts: 0,
     totalBankAccounts: 0,
+    monthlyTotals: [],
   };
 
   constructor(private documentService: DocumentService) {}
@@ -56,8 +58,24 @@ export class DashboardComponent {
 
   getDashboardData() {
     this.documentService.getDashboardData().subscribe((data) => {
-      console.log(data);
       this.dashboardStats = data;
+      this.updateChartData(data.monthlyTotals);
     });
+  }
+
+  updateChartData(monthlyTotals: IMonthlyTotal[]) {
+    const invoiceAmounts = new Array(12).fill(0);
+    const incomeAmounts = new Array(12).fill(0);
+
+    monthlyTotals.forEach((total) => {
+      const index = total.month - 1;
+      invoiceAmounts[index] = total.invoiceAmount;
+      incomeAmounts[index] = total.incomeAmount;
+    });
+
+    this.barChartData = [
+      { data: invoiceAmounts, label: "Invoice Amount" },
+      { data: incomeAmounts, label: "Income Amount" },
+    ];
   }
 }
