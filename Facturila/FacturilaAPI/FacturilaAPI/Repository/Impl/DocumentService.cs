@@ -85,7 +85,7 @@ public class DocumentService : IDocumentService
         Document document = new Document
         {
             Id = documentRequestDTO.Id,
-            DocumentNumber = "INV" + documentRequestDTO.DocumentSeries.SeriesName + documentRequestDTO.DocumentSeries.CurrentNumber.ToString("D4"),
+            DocumentNumber = documentRequestDTO.DocumentSeries.SeriesName + documentRequestDTO.DocumentSeries.CurrentNumber.ToString("D4"),
             IssueDate = documentRequestDTO.IssueDate,
             DueDate = documentRequestDTO.DueDate,
             DocumentTypeId = documentRequestDTO.DocumentSeries.DocumentType?.Id,
@@ -163,12 +163,13 @@ public class DocumentService : IDocumentService
             .Include(uf => uf.Firm)
             .FirstOrDefaultAsync();
 
-        var activeBankAccount = await _dbContext.BankAccount
-            .Where(ba => ba.UserFirmId == activeUserFirmId && ba.IsActive)
+        var documentBankAccount = await _dbContext.Document
+            .Where(d => d.UserFirmId == activeUserFirmId)
+            .Select(d => d.BankAccount)
             .FirstOrDefaultAsync();
 
         documentRequestDTO.Seller = _mapper.Map<FirmDto>(activeUserFirm?.Firm);
-        documentRequestDTO.BankAccount = _mapper.Map<BankAccountDto>(activeBankAccount);
+        documentRequestDTO.BankAccount = _mapper.Map<BankAccountDto>(documentBankAccount);
 
         //include invoice document class and generate pdf
         return new DocumentStreamDto
@@ -321,7 +322,7 @@ public class DocumentService : IDocumentService
         using var scope = _scopeFactory.CreateScope();
         var dbContext = scope.ServiceProvider.GetRequiredService<FacturilaDbContext>();
         return await dbContext.Document
-            .Where(d => d.UserFirmId == firmId && d.IssueDate.Year == DateTime.Now.Year)
+            .Where(d => d.UserFirmId == firmId && d.IssueDate.Year == DateTime.Now.Year && d.DocumentType!.Id == 1)
             .GroupBy(d => new { month = d.IssueDate.Month })
             .Select(group => new MonthlyTotalDto
             {
@@ -331,5 +332,26 @@ public class DocumentService : IDocumentService
             })
             .OrderBy(x => x.Month)
             .ToListAsync();
+    }
+
+    public async Task TransformToStorno(int[] documentIds)
+    {
+        int? activeUserFirmId = await _userService.GetUserFirmIdUsingTokenAsync();
+        if (activeUserFirmId == null)
+            throw new Exception("User firm not found.");
+
+        foreach (var documentId in documentIds)
+        {
+            var document = await _dbContext.Document
+                .Where(d => d.Id == documentId && d.UserFirmId == activeUserFirmId)
+                .FirstOrDefaultAsync();
+
+            if (document == null)
+                throw new Exception("Document not found.");
+
+            document.DocumentStatusId = 3;
+            _dbContext.Document.Update(document);
+            await _dbContext.SaveChangesAsync();
+        }
     }
 }

@@ -1,5 +1,7 @@
 ﻿using FacturilaAPI.Models.Dto;
+using FacturilaAPI.Repository.Impl.IQuestPDFDocument;
 using QuestPDF.Fluent;
+using QuestPDF.Infrastructure;
 
 namespace FacturilaAPI.Repository.Impl
 {
@@ -11,7 +13,7 @@ namespace FacturilaAPI.Repository.Impl
             {
                 string filePath = GetInvoicePdfPath(invoiceData.DocumentSeries.CurrentNumber);
 
-                InvoiceDocument document = new InvoiceDocument(invoiceData);
+                IDocument document = new InvoiceDocument(invoiceData);
 
                 document.GeneratePdf(filePath);
 
@@ -30,8 +32,27 @@ namespace FacturilaAPI.Repository.Impl
             {
                 using (var memoryStream = new MemoryStream())
                 {
-                    InvoiceDocument document = new InvoiceDocument(invoiceData);
-                    document.GeneratePdf(memoryStream);
+                    switch (invoiceData.DocumentType!.Id)
+                    {
+                        case 1:
+                            if (invoiceData.DocumentStatus!.Id == 3)
+                            {
+                                IDocument stornoDocument = new InvoiceStorno(invoiceData);
+                                stornoDocument.GeneratePdf(memoryStream);
+                            }
+                            else
+                            {
+                                IDocument document = new InvoiceDocument(invoiceData);
+                                document.GeneratePdf(memoryStream);
+                            }
+                            break;
+                        case 2:
+                            IDocument proformaDocument = new InvoiceProforma(invoiceData);
+                            proformaDocument.GeneratePdf(memoryStream);
+                            break;
+                        default:
+                            throw new Exception("Invalid document type");
+                    }
 
                     return memoryStream.ToArray();
                 }

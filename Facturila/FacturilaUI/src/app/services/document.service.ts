@@ -69,4 +69,11 @@ export class DocumentService {
       `${this.baseUrl}/Document/GetDashboardStats`
     );
   }
+
+  transformToStorno(documentIds: number[]) {
+    return this.http.put(
+      `${this.baseUrl}/Document/TransformToStorno`,
+      documentIds
+    );
+  }
 }

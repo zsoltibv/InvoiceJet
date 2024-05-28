@@ -6,11 +6,11 @@ import { IDocumentTableRecord } from "src/app/models/IDocumentTableRecord";
 import { DocumentService } from "src/app/services/document.service";
 
 @Component({
-  selector: "app-invoices",
-  templateUrl: "./invoices.component.html",
-  styleUrls: ["./invoices.component.scss"],
+  selector: "app-invoice-stornos",
+  templateUrl: "./invoice-stornos.component.html",
+  styleUrls: ["./invoice-stornos.component.scss"],
 })
-export class InvoicesComponent {
+export class InvoiceStornosComponent {
   displayedColumns: string[] = [
     "select",
     "documentNumber",
@@ -34,7 +34,7 @@ export class InvoicesComponent {
   }
 
   loadInvoices(): void {
-    this.documentService.getDocuments(1).subscribe((invoices) => {
+    this.documentService.getDocuments(3).subscribe((invoices) => {
       this.dataSource.data = invoices;
       this.invoices = invoices;
       console.log(this.invoices);
@@ -55,15 +55,11 @@ export class InvoicesComponent {
     }
   }
 
-  openNewInvoiceDialog(): void {
-    this.router.navigate(["dashboard/add-invoice"]);
-  }
-
-  openEditInvoiceDialog(row: IDocumentTableRecord): void {
-    this.router.navigate(["/dashboard/edit-invoice", row.id]);
-  }
+  previewStornoInvoice(row: IDocumentTableRecord): void {}
 
   deleteSelected(): void {
+    console.log(this.selection.selected);
+
     const documentIds: number[] = this.selection.selected.map((doc) => doc.id);
     console.log(documentIds);
     this.documentService.deleteDocuments(documentIds).subscribe({
@@ -72,19 +68,6 @@ export class InvoicesComponent {
       },
       error: (err) => {
         console.error("Error deleting documents", err);
-      },
-    });
-  }
-
-  transformToStorno(): void {
-    const documentIds: number[] = this.selection.selected.map((doc) => doc.id);
-    console.log(documentIds);
-    this.documentService.transformToStorno(documentIds).subscribe({
-      next: () => {
-        this.loadInvoices();
-      },
-      error: (err) => {
-        console.error("Error transforming to storno", err);
       },
     });
   }

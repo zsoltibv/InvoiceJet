@@ -1,7 +1,3 @@
-import { DocumentSeriesComponent } from "./../../document-series/document-series.component";
-import { DocumentService } from "./../../../services/document.service";
-import { AuthService } from "./../../../services/auth.service";
-import { FirmService } from "./../../../services/firm.service";
 import { Component } from "@angular/core";
 import { FormArray, FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { MatTableDataSource } from "@angular/material/table";
@@ -11,16 +7,18 @@ import { IDocumentAutofill } from "src/app/models/IDocumentAutofill";
 import { IProduct } from "src/app/models/IProduct";
 import { IDocumentRequest } from "src/app/models/IDocumentRequest";
 import { MatDialog } from "@angular/material/dialog";
-import { PdfViewerComponent } from "../../pdf-viewer/pdf-viewer.component";
 import { ActivatedRoute, Router } from "@angular/router";
 import { IDocumentStatus } from "src/app/models/IDocumentStatus";
-
+import { FirmService } from "src/app/services/firm.service";
+import { AuthService } from "src/app/services/auth.service";
+import { DocumentService } from "src/app/services/document.service";
+import { PdfViewerComponent } from "src/app/components/pdf-viewer/pdf-viewer.component";
 @Component({
-  selector: "app-add-or-edit-invoice",
-  templateUrl: "./add-or-edit-invoice.component.html",
-  styleUrls: ["./add-or-edit-invoice.component.scss"],
+  selector: "app-add-or-edit-invoice-proforma",
+  templateUrl: "./add-or-edit-invoice-proforma.component.html",
+  styleUrls: ["./add-or-edit-invoice-proforma.component.scss"],
 })
-export class AddOrEditInvoiceComponent {
+export class AddOrEditInvoiceProformaComponent {
   invoiceAutofillData: IDocumentAutofill = {} as IDocumentAutofill;
   filteredFirms!: Observable<IFirm[]>;
   filteredProducts!: Observable<IProduct[]>;
@@ -82,7 +80,7 @@ export class AddOrEditInvoiceComponent {
     });
 
     this.documentService
-      .getDocumentAutofillInfo(this.authService.userId, 1)
+      .getDocumentAutofillInfo(this.authService.userId, 2)
       .subscribe({
         next: (data) => {
           this.invoiceAutofillData = data;
@@ -273,7 +271,7 @@ export class AddOrEditInvoiceComponent {
   onSubmit(): void {
     console.log("Form submitted", this.invoiceForm.value);
     const documentData: IDocumentRequest = this.invoiceForm.value;
-    documentData.documentType = { id: 1, name: "" };
+    documentData.documentType = { id: 2, name: "" };
 
     if (!this.isEditMode) {
       console.log("Updating invoice");
@@ -288,7 +286,7 @@ export class AddOrEditInvoiceComponent {
     this.documentService.updateDocument(documentData).subscribe({
       next: () => {
         console.log("Invoice updated successfully");
-        this.router.navigateByUrl("/dashboard/invoices");
+        this.router.navigateByUrl("/dashboard/invoice-proformas");
       },
       error: (err) => {
         console.error("Error updating invoice", err);
@@ -325,9 +323,8 @@ export class AddOrEditInvoiceComponent {
     // if (this.invoiceForm.invalid) return;
 
     const documentData: IDocumentRequest = this.invoiceForm.value;
-    documentData.documentType = { id: 1, name: "" };
+    documentData.documentType = { id: 2, name: "" };
     documentData.documentNumber = this.currentDocument.documentNumber;
-    documentData.documentStatus = this.currentDocument.documentStatus;
 
     this.documentService.getGeneratedDocumentPdf(documentData).subscribe({
       next: (data) => {
@@ -347,7 +344,7 @@ export class AddOrEditInvoiceComponent {
   }
 
   goBack(): void {
-    this.router.navigateByUrl("/dashboard/invoices");
+    this.router.navigateByUrl("/dashboard/invoice-proformas");
   }
 
   get isEditMode(): boolean {

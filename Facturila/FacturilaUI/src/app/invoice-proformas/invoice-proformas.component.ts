@@ -1,16 +1,16 @@
-import { SelectionModel } from "@angular/cdk/collections";
 import { Component } from "@angular/core";
-import { MatTableDataSource } from "@angular/material/table";
 import { Router } from "@angular/router";
-import { IDocumentTableRecord } from "src/app/models/IDocumentTableRecord";
-import { DocumentService } from "src/app/services/document.service";
+import { DocumentService } from "../services/document.service";
+import { IDocumentTableRecord } from "../models/IDocumentTableRecord";
+import { MatTableDataSource } from "@angular/material/table";
+import { SelectionModel } from "@angular/cdk/collections";
 
 @Component({
-  selector: "app-invoices",
-  templateUrl: "./invoices.component.html",
-  styleUrls: ["./invoices.component.scss"],
+  selector: "app-invoice-proformas",
+  templateUrl: "./invoice-proformas.component.html",
+  styleUrls: ["./invoice-proformas.component.scss"],
 })
-export class InvoicesComponent {
+export class InvoiceProformasComponent {
   displayedColumns: string[] = [
     "select",
     "documentNumber",
@@ -34,7 +34,7 @@ export class InvoicesComponent {
   }
 
   loadInvoices(): void {
-    this.documentService.getDocuments(1).subscribe((invoices) => {
+    this.documentService.getDocuments(2).subscribe((invoices) => {
       this.dataSource.data = invoices;
       this.invoices = invoices;
       console.log(this.invoices);
@@ -55,15 +55,17 @@ export class InvoicesComponent {
     }
   }
 
-  openNewInvoiceDialog(): void {
-    this.router.navigate(["dashboard/add-invoice"]);
+  openNewInvoiceProformaDialog(): void {
+    this.router.navigate(["dashboard/add-invoice-proforma"]);
   }
 
-  openEditInvoiceDialog(row: IDocumentTableRecord): void {
-    this.router.navigate(["/dashboard/edit-invoice", row.id]);
+  openEditInvoiceProformaDialog(row: IDocumentTableRecord): void {
+    this.router.navigate(["/dashboard/edit-invoice-proforma", row.id]);
   }
 
   deleteSelected(): void {
+    console.log(this.selection.selected);
+
     const documentIds: number[] = this.selection.selected.map((doc) => doc.id);
     console.log(documentIds);
     this.documentService.deleteDocuments(documentIds).subscribe({
@@ -72,19 +74,6 @@ export class InvoicesComponent {
       },
       error: (err) => {
         console.error("Error deleting documents", err);
-      },
-    });
-  }
-
-  transformToStorno(): void {
-    const documentIds: number[] = this.selection.selected.map((doc) => doc.id);
-    console.log(documentIds);
-    this.documentService.transformToStorno(documentIds).subscribe({
-      next: () => {
-        this.loadInvoices();
-      },
-      error: (err) => {
-        console.error("Error transforming to storno", err);
       },
     });
   }

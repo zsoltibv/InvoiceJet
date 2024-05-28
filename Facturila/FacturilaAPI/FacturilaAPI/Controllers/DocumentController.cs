@@ -147,5 +147,19 @@ namespace FacturilaAPI.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
+        [HttpPut("TransformToStorno")]
+        public async Task<IActionResult> TransformToStorno([FromBody] int[] documentIds)
+        {
+            try
+            {
+                await _documentService.TransformToStorno(documentIds);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
     }
 }

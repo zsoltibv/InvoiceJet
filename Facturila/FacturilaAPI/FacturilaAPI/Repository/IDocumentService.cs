@@ -13,4 +13,5 @@ public interface IDocumentService
     Task<DocumentRequestDTO> GetDocumentById(int documentId);
     Task DeleteDocuments(int[] documentIds);
     Task<DashboardStatsDto> GetDashboardStats();
+    Task TransformToStorno(int[] documentIds);
 }

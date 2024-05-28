@@ -87,7 +87,11 @@ export class SidebarComponent {
       },
       {
         name: "Documents",
-        children: [{ name: "Invoices", route: "/dashboard/invoices" }],
+        children: [
+          { name: "Invoices", route: "/dashboard/invoices" },
+          { name: "Invoice Proformas", route: "/dashboard/invoice-proformas" },
+          { name: "Invoice Stornos", route: "/dashboard/invoice-stornos" },
+        ],
         icon: "description",
       },
       {

@@ -1,10 +1,9 @@
 ﻿using FacturilaAPI.Models.Dto;
-using FacturilaAPI.Models.Entity;
 using QuestPDF.Fluent;
 using QuestPDF.Helpers;
 using QuestPDF.Infrastructure;
 
-namespace FacturilaAPI.Repository.Impl
+namespace FacturilaAPI.Repository.Impl.IQuestPDFDocument
 {
     public class InvoiceDocument : IDocument
     {
@@ -17,7 +16,7 @@ namespace FacturilaAPI.Repository.Impl
                 {
                     string seriesName = Model.DocumentSeries.SeriesName;
                     string formattedNumber = Model.DocumentSeries.CurrentNumber.ToString("D4");
-                    return "INV" + seriesName + formattedNumber;
+                    return seriesName + formattedNumber;
                 }
                 else
                 {
@@ -138,54 +137,6 @@ namespace FacturilaAPI.Repository.Impl
                     table.Cell().Element(cell => cell.BorderBottom(1).BorderColor(Colors.Grey.Lighten2).PaddingVertical(5)).AlignRight().Text($"{item.UnitPrice:C}");
                     table.Cell().Element(cell => cell.BorderBottom(1).BorderColor(Colors.Grey.Lighten2).PaddingVertical(5)).AlignRight().Text($"{item.Quantity}");
                     table.Cell().Element(cell => cell.BorderBottom(1).BorderColor(Colors.Grey.Lighten2).PaddingVertical(5)).AlignRight().Text($"{item.TotalPrice:C}");
-                }
-            });
-        }
-    }
-
-    public class AddressComponent : IComponent
-    {
-        private string Title { get; }
-        private FirmDto Address { get; set; }
-        private BankAccountDto BankAccount { get; }
-
-        public AddressComponent(string title, FirmDto address, BankAccountDto bankAccount = null)
-        {
-            Title = title;
-            Address = address;
-            BankAccount = bankAccount;
-        }
-
-        public void Compose(IContainer container)
-        {
-            container.ShowEntire().Column(column =>
-            {
-                column.Spacing(2);
-
-                column.Item().Text(Title).SemiBold();
-                column.Item().PaddingBottom(5).LineHorizontal(1);
-
-                column.Item().Text(Address.Name);
-                column.Item().Text(Address.Address);
-                column.Item().Text($"{Address.City}, {Address.County}");
-                if (!string.IsNullOrEmpty(Address.CUI))
-                {
-                    column.Item().Text($"CUI: {Address.CUI}");
-                }
-                if (!string.IsNullOrEmpty(Address.RegCom))
-                {
-                    column.Item().Text($"Reg. Com: {Address.RegCom}");
-                }
-                if (BankAccount != null)
-                {
-                    if (!string.IsNullOrEmpty(BankAccount.BankName))
-                    {
-                        column.Item().Text($"Bank: {BankAccount.BankName}");
-                    }
-                    if (!string.IsNullOrEmpty(BankAccount.Iban))
-                    {
-                        column.Item().Text($"IBAN: {BankAccount.Iban}");
-                    }
                 }
             });
         }

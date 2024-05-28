@@ -12,6 +12,9 @@ import { ProductsComponent } from "./components/products/products.component";
 import { DocumentSeriesComponent } from "./components/document-series/document-series.component";
 import { AddOrEditInvoiceComponent } from "./components/invoices/add-or-edit-invoice/add-or-edit-invoice.component";
 import { InvoicesComponent } from "./components/invoices/invoices.component";
+import { InvoiceProformasComponent } from "./invoice-proformas/invoice-proformas.component";
+import { AddOrEditInvoiceProformaComponent } from "./invoice-proformas/add-or-edit-invoice-proforma/add-or-edit-invoice-proforma.component";
+import { InvoiceStornosComponent } from "./components/invoice-stornos/invoice-stornos.component";
 
 const routes: Routes = [
   { path: "login", component: LoginComponent },
@@ -57,8 +60,28 @@ const routes: Routes = [
     canActivate: [AuthGuard],
   },
   {
+    path: "dashboard/invoice-proformas",
+    component: InvoiceProformasComponent,
+    canActivate: [AuthGuard],
+  },
+  {
+    path: "dashboard/invoice-stornos",
+    component: InvoiceStornosComponent,
+    canActivate: [AuthGuard],
+  },
+  {
+    path: "dashboard/add-invoice-proforma",
+    component: AddOrEditInvoiceProformaComponent,
+    canActivate: [AuthGuard],
+  },
+  {
     path: "dashboard/edit-invoice/:id",
     component: AddOrEditInvoiceComponent,
+    canActivate: [AuthGuard],
+  },
+  {
+    path: "dashboard/edit-invoice-proforma/:id",
+    component: AddOrEditInvoiceProformaComponent,
     canActivate: [AuthGuard],
   },
   { path: "**", component: DashboardComponent, canActivate: [AuthGuard] },
