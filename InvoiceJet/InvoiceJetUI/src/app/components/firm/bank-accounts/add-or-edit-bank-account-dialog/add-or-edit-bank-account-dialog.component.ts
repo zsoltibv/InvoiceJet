@@ -1,4 +1,3 @@
-import { AuthService } from "./../../../../services/auth.service";
 import { BankAccountService } from "src/app/services/bank-account.service";
 import { Component, Inject } from "@angular/core";
 import { FormControl, FormGroup, Validators } from "@angular/forms";
@@ -7,6 +6,7 @@ import { MatSnackBar } from "@angular/material/snack-bar";
 import { IBankAccount } from "src/app/models/IBankAccount";
 import { Currency } from "src/app/enums/Currency";
 import { ICurrency } from "src/app/models/ICurrency";
+import { ToastrService } from "ngx-toastr";
 
 @Component({
   selector: "app-add-or-edit-bank-account-dialog",
@@ -33,7 +33,7 @@ export class AddOrEditBankAccountDialogComponent {
     private dialogRef: MatDialogRef<AddOrEditBankAccountDialogComponent>,
     private snackBar: MatSnackBar,
     private bankAccountService: BankAccountService,
-    private authService: AuthService
+    private toastr: ToastrService
   ) {
     this.bankAccountForm = new FormGroup({
       id: new FormControl(null),
@@ -66,34 +66,21 @@ export class AddOrEditBankAccountDialogComponent {
     const bankAccountData: IBankAccount = this.bankAccountForm.value;
     bankAccountData.id = this.data?.id! ?? 0;
 
-    console.log("Submitting bank account data:", bankAccountData);
-
     if (this.isEditMode) {
-      this.bankAccountService.editBankAccount(bankAccountData).subscribe(
-        () => this.handleSuccess(),
-        (error) => {
-          this.errorMessage = error.error;
-        }
-      );
+      this.bankAccountService
+        .editBankAccount(bankAccountData)
+        .subscribe(() => this.handleSuccess());
     } else {
-      this.bankAccountService.addBankAccount(bankAccountData).subscribe(
-        () => this.handleSuccess(),
-        (error) => {
-          this.errorMessage = error.error;
-        }
-      );
+      this.bankAccountService
+        .addBankAccount(bankAccountData)
+        .subscribe(() => this.handleSuccess());
     }
   }
 
   handleSuccess(): void {
-    this.snackBar.open(
-      `${
-        this.isEditMode ? "Bank account updated" : "Bank account added"
-      } successfully`,
-      "Close",
-      {
-        duration: 2000,
-      }
+    this.toastr.success(
+      this.isEditMode ? "Bank account updated" : "Bank account added",
+      "Success"
     );
     this.dialogRef.close(true);
   }

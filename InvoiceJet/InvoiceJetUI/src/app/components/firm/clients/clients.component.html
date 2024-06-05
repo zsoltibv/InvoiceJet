@@ -6,11 +6,18 @@
     </div>
     <div class="right">
       <button mat-raised-button color="primary" (click)="openNewClientDialog()">
-        <mat-icon>add</mat-icon>
+        <mat-icon class="icon-right-margin">add</mat-icon>
         <span>New client</span>
       </button>
-      <button mat-raised-button color="warn" (click)="deleteSelected()">
-        <mat-icon>delete</mat-icon>
+      <mat-menu #menu="matMenu">
+        <button mat-menu-item (click)="deleteSelected()">
+          <mat-icon color="warn">delete</mat-icon>
+          <span>Delete selected</span>
+        </button>
+      </mat-menu>
+
+      <button mat-stroked-button [matMenuTriggerFor]="menu">
+        <mat-icon color="primary">more_vert</mat-icon>
       </button>
     </div>
   </div>

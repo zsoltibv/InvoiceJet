@@ -1,5 +1,6 @@
 /* You can add global styles to this file, and also import other style files */
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap");
+@import "ngx-toastr/toastr";
 
 .container {
   padding: 24px;
@@ -163,4 +164,34 @@ body.dark-mode .pages {
 
 tr:hover {
   cursor: pointer;
+}
+
+.toast-error-bad-request {
+  background-color: #ffa726 !important; /* orange */
+  color: white;
+}
+
+.toast-error-not-found {
+  background-color: #42a5f5 !important; /* blue */
+  color: white;
+}
+
+.toast-error-internal-server {
+  background-color: #ef5350 !important; /* red */
+  color: white;
+}
+
+.toast-error-unexpected {
+  background-color: #ab47bc !important; /* purple */
+  color: white;
+}
+
+.toast-bottom-right {
+  position: absolute !important; /* Override the default fixed position */
+  right: 10px; /* Distance from the right edge of the screen */
+  bottom: 10px; /* Distance from the bottom edge of the screen */
+}
+
+.icon-right-margin {
+  padding-right: 8px; /* Adjust this value as needed */
 }

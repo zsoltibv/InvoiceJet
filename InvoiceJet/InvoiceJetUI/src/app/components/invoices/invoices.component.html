@@ -10,21 +10,19 @@
         color="primary"
         (click)="openNewInvoiceDialog()"
       >
-        <mat-icon>add</mat-icon>
+        <mat-icon class="icon-right-margin">add</mat-icon>
         <span>New Invoice</span>
       </button>
-      <button mat-raised-button color="warn" (click)="deleteSelected()">
-        <mat-icon>delete</mat-icon>
-      </button>
-      <button mat-button [matMenuTriggerFor]="menu" class="more-button">
-        <mat-icon>more_vert</mat-icon>
-      </button>
       <mat-menu #menu="matMenu">
-        <button mat-menu-item (click)="transformToStorno()">
-          <mat-icon>undo</mat-icon>
-          <span>Transform to Storno</span>
+        <button mat-menu-item (click)="deleteSelected()">
+          <mat-icon color="warn">delete</mat-icon>
+          <span>Delete selected</span>
         </button>
       </mat-menu>
+
+      <button mat-stroked-button [matMenuTriggerFor]="menu">
+        <mat-icon color="primary">more_vert</mat-icon>
+      </button>
     </div>
   </div>
   <table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z2">

@@ -1,3 +1,4 @@
+import { ToastrModule, ToastrService } from "ngx-toastr";
 import { LiveAnnouncer } from "@angular/cdk/a11y";
 import { Component, ViewChild } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
@@ -12,7 +13,6 @@ import { Currency } from "src/app/enums/Currency";
 import { SelectionModel } from "@angular/cdk/collections";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { HttpErrorResponse } from "@angular/common/http";
-import { catchError, of } from "rxjs";
 
 @Component({
   selector: "app-bank-accounts",
@@ -45,8 +45,7 @@ export class BankAccountsComponent {
     private _liveAnnouncer: LiveAnnouncer,
     public dialog: MatDialog,
     private bankAccountService: BankAccountService,
-    private authService: AuthService,
-    private snackBar: MatSnackBar
+    private toastr: ToastrService
   ) {}
 
   @ViewChild(MatSort) sort!: MatSort;
@@ -126,32 +125,12 @@ export class BankAccountsComponent {
 
   deleteSelected() {
     const selectedIds = this.selection.selected.map((s) => s.id);
-    this.bankAccountService
-      .deleteBankAccounts(selectedIds)
-      .pipe(
-        catchError((error) => {
-          if (error.error instanceof ErrorEvent) {
-            console.error("An error occurred:", error.message);
-          } else {
-            console.error("An error occurred:", error.message);
-          }
-          return of([]);
-        })
-      )
-      .subscribe({
-        next: () => {
-          this.getUserBankAccounts();
-          this.selection.clear();
-          this.snackBar.open("Bank accounts deleted successfully.", "Close", {
-            duration: 3000,
-          });
-        },
-        error: (errorMessage: HttpErrorResponse) => {
-          console.error(errorMessage);
-          this.snackBar.open(errorMessage.message, "Close", {
-            duration: 3000,
-          });
-        },
+    if (selectedIds.length !== 0) {
+      this.bankAccountService.deleteBankAccounts(selectedIds).subscribe(() => {
+        this.getUserBankAccounts();
+        this.selection.clear();
+        this.toastr.success("Bank accounts deleted successfully.", "Success");
       });
+    }
   }
 }

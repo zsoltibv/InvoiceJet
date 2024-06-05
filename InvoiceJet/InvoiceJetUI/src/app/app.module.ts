@@ -5,13 +5,6 @@ import {
   BrowserAnimationsModule,
   provideAnimations,
 } from "@angular/platform-browser/animations";
-import {
-  trigger,
-  state,
-  style,
-  transition,
-  animate,
-} from "@angular/animations";
 import { HttpClientModule } from "@angular/common/http";
 import { HTTP_INTERCEPTORS } from "@angular/common/http";
 
@@ -40,9 +33,11 @@ import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from "@angular/material/form-field";
 import { TokenExpiredDialogComponent } from "./components/token-expired-dialog/token-expired-dialog.component";
 import { PdfViewerComponent } from "./components/pdf-viewer/pdf-viewer.component";
 import { NgChartsModule } from "ng2-charts";
-import { InvoiceProformasComponent } from './components/invoice-proformas/invoice-proformas.component';
-import { AddOrEditInvoiceProformaComponent } from './components/invoice-proformas/add-or-edit-invoice-proforma/add-or-edit-invoice-proforma.component';
-import { InvoiceStornosComponent } from './components/invoice-stornos/invoice-stornos.component';
+import { InvoiceProformasComponent } from "./components/invoice-proformas/invoice-proformas.component";
+import { AddOrEditInvoiceProformaComponent } from "./components/invoice-proformas/add-or-edit-invoice-proforma/add-or-edit-invoice-proforma.component";
+import { InvoiceStornosComponent } from "./components/invoice-stornos/invoice-stornos.component";
+import { ErrorInterceptor } from "./services/interceptor/error.interceptor";
+import { ToastrModule } from "ngx-toastr";
 
 @NgModule({
   declarations: [
@@ -78,6 +73,12 @@ import { InvoiceStornosComponent } from './components/invoice-stornos/invoice-st
     MaterialModule,
     HttpClientModule,
     NgChartsModule,
+    ToastrModule.forRoot({
+      timeOut: 4000,
+      positionClass: "toast-bottom-right",
+      preventDuplicates: true,
+      progressBar: true,
+    }),
   ],
   providers: [
     provideAnimations(),
@@ -89,6 +90,11 @@ import { InvoiceStornosComponent } from './components/invoice-stornos/invoice-st
     {
       provide: HTTP_INTERCEPTORS,
       useClass: AuthInterceptor,
+      multi: true,
+    },
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: ErrorInterceptor,
       multi: true,
     },
     JwtHelperService,

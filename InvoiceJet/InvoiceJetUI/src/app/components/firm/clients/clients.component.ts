@@ -47,7 +47,6 @@ export class ClientsComponent {
       .subscribe((firms) => {
         this.firms = firms;
         this.dataSource.data = this.firms;
-        console.log(firms);
       });
   }
 
@@ -87,7 +86,6 @@ export class ClientsComponent {
     return numSelected === numRows;
   }
 
-  /** Selects all rows if they are not all selected; otherwise clear selection. */
   masterToggle() {
     this.isAllSelected()
       ? this.selection.clear()
@@ -95,10 +93,8 @@ export class ClientsComponent {
   }
 
   deleteSelected() {
-    const selectedIds = this.selection.selected.map((s) => s.id); // Get IDs of selected items
-    console.log(selectedIds); // Implement deletion logic here
-    // After deletion, update the dataSource and clear selection
-    // this.dataSource.data = newData;
+    const selectedIds = this.selection.selected.map((s) => s.id);
+    console.log(selectedIds);
     this.selection.clear();
   }
 }

@@ -74,7 +74,7 @@ public class BankAccountService : IBankAccountService
 
             if (isAssociatedWithDocuments)
             {
-                throw new BankAccountAssociatedWithDocumentsException($"Bank account {bankAccountId} is associated with documents.");
+                throw new BankAccountAssociatedWithDocumentsException($"Can't delete. Bank account is associated with documents.");
             }
 
 
