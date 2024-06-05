@@ -1,13 +1,12 @@
 ﻿using InvoiceJet.Domain.Enums;
 
-namespace InvoiceJetAPI.Models.Dto
+namespace InvoiceJet.Application.DTOs;
+
+public abstract class BankAccountDto
 {
-    public class BankAccountDto
-    {
-        public int? Id { get; set; }
-        public string BankName { get; set; }
-        public string Iban { get; set; }
-        public CurrencyEnum Currency { get; set; }
-        public bool IsActive { get; set; }
-    }
+    public int? Id { get; set; }
+    public string BankName { get; set; } = string.Empty;
+    public string Iban { get; set; } = string.Empty;
+    public CurrencyEnum Currency { get; set; }
+    public bool IsActive { get; set; }
 }

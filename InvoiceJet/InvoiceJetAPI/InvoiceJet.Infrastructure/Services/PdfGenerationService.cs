@@ -1,9 +1,10 @@
 ﻿using InvoiceJet.Application.DTOs;
+using InvoiceJet.Application.Services;
 using InvoiceJet.Infrastructure.Services.IQuestPDFDocument;
 using QuestPDF.Fluent;
 using QuestPDF.Infrastructure;
 
-namespace InvoiceJet.Infrastructure.Services.Impl;
+namespace InvoiceJet.Infrastructure.Services;
 
 public class PdfGenerationService : IPdfGenerationService
 {

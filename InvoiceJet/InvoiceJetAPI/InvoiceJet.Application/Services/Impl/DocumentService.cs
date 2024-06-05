@@ -1,38 +1,36 @@
 ﻿using AutoMapper;
-using InvoiceJetAPI.Config;
-using InvoiceJetAPI.Models.Dto;
+using InvoiceJet.Application.DTOs;
+using InvoiceJet.Domain.Interfaces;
 using InvoiceJet.Domain.Models;
-using InvoiceJetAPI.Repository;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 
-namespace InvoiceJetAPI.Services.Impl;
+namespace InvoiceJet.Application.Services.Impl;
 
 public class DocumentService : IDocumentService
 {
-    private readonly FacturilaDbContext _dbContext;
     private readonly IMapper _mapper;
     private readonly IUserService _userService;
     private readonly IPdfGenerationService _pdfGenerationService;
-    private readonly IServiceScopeFactory _scopeFactory;
+    private readonly IUnitOfWork _unitOfWork;
 
-    public DocumentService(FacturilaDbContext dbContext, IMapper mapper, IUserService userService, IPdfGenerationService pdfGenerationService,
-        IServiceScopeFactory scopeFactory)
+    public DocumentService(IMapper mapper, IUserService userService, IPdfGenerationService pdfGenerationService,IUnitOfWork unitOfWork)
     {
-        _dbContext = dbContext;
         _mapper = mapper;
         _userService = userService;
         _pdfGenerationService = pdfGenerationService;
-        _scopeFactory = scopeFactory;
+        _unitOfWork = unitOfWork;
     }
 
-    private async Task UpdateDocumentProducts(int documentId, List<DocumentProductRequestDTO> documentProductsDto, int userFirmId)
+    private async Task UpdateDocumentProducts(int documentId, List<DocumentProductRequestDto> documentProductsDto,
+        int userFirmId)
     {
         decimal totalInvoicePrice = 0;
         decimal totalInvoicePriceWithTVA = 0;
 
         // Remove existing DocumentProducts if it's an edit operation
-        var existingDocumentProducts = _dbContext.DocumentProduct.Where(dp => dp.DocumentId == documentId);
-        _dbContext.DocumentProduct.RemoveRange(existingDocumentProducts);
+        var existingDocumentProducts = _unitOfWork.DocumentProducts.Query().Where(dp => dp.DocumentId == documentId);
+        await _unitOfWork.DocumentProducts.RemoveRangeAsync(existingDocumentProducts);
 
         // Add new DocumentProducts
         foreach (var documentProductDto in documentProductsDto)
@@ -41,7 +39,8 @@ public class DocumentService : IDocumentService
 
             if (documentProductDto.Id > 0)
             {
-                product = await _dbContext.Product.FirstOrDefaultAsync(product => product.Name == documentProductDto.Name);
+                product = await _unitOfWork.Products.Query()
+                    .FirstOrDefaultAsync(product => product.Name == documentProductDto.Name);
                 if (product == null)
                 {
                     throw new Exception("Product not found.");
@@ -51,14 +50,14 @@ public class DocumentService : IDocumentService
             {
                 product = _mapper.Map<Product>(documentProductDto);
                 product.UserFirmId = userFirmId;
-                _dbContext.Product.Add(product);  // This will only be actually saved later
+                await _unitOfWork.Products.AddAsync(product); // This will only be actually saved later
             }
 
             DocumentProduct documentProduct = new DocumentProduct
             {
                 Quantity = documentProductDto.Quantity,
                 Product = product,
-                DocumentId = documentId,  // Now we have DocumentId available
+                DocumentId = documentId, // Now we have DocumentId available
                 UnitPrice = documentProductDto.UnitPrice,
                 TotalPrice = documentProductDto.TotalPrice,
             };
@@ -66,122 +65,125 @@ public class DocumentService : IDocumentService
             totalInvoicePrice += documentProductDto.UnitPrice * documentProductDto.Quantity;
             totalInvoicePriceWithTVA += documentProductDto.TotalPrice;
 
-            _dbContext.DocumentProduct.Add(documentProduct);  // Add to DbContext
+            await _unitOfWork.DocumentProducts.AddAsync(documentProduct); // Add to DbContext
         }
 
         // Update the total prices for the document
-        var document = await _dbContext.Document.FindAsync(documentId);
+        var document = await _unitOfWork.Documents.GetByIdAsync(documentId);
         if (document != null)
         {
             document.UnitPrice = totalInvoicePrice;
             document.TotalPrice = totalInvoicePriceWithTVA;
-            _dbContext.Document.Update(document);
+            await _unitOfWork.Documents.UpdateAsync(document);
         }
     }
 
-    public async Task<DocumentRequestDTO> AddDocument(DocumentRequestDTO documentRequestDTO)
+    public async Task<DocumentRequestDto> AddDocument(DocumentRequestDto documentRequestDto)
     {
-        var userFirmId = await _userService.GetUserFirmIdUsingTokenAsync() ?? throw new Exception("User firm not found.");
+        var userFirmId = await _userService.GetUserFirmIdUsingTokenAsync() ??
+                         throw new Exception("User firm not found.");
         Document document = new Document
         {
-            Id = documentRequestDTO.Id,
-            DocumentNumber = documentRequestDTO.DocumentSeries.SeriesName + documentRequestDTO.DocumentSeries.CurrentNumber.ToString("D4"),
-            IssueDate = documentRequestDTO.IssueDate,
-            DueDate = documentRequestDTO.DueDate,
-            DocumentTypeId = documentRequestDTO.DocumentSeries.DocumentType?.Id,
-            DocumentStatusId = 1, 
-            BankAccount = await _dbContext.BankAccount
+            Id = documentRequestDto.Id,
+            DocumentNumber = documentRequestDto.DocumentSeries.SeriesName +
+                             documentRequestDto.DocumentSeries.CurrentNumber.ToString("D4"),
+            IssueDate = documentRequestDto.IssueDate,
+            DueDate = documentRequestDto.DueDate,
+            DocumentTypeId = documentRequestDto.DocumentSeries.DocumentType?.Id,
+            DocumentStatusId = 1,
+            BankAccount = await _unitOfWork.BankAccounts.Query()
                 .Where(ba => ba.UserFirmId == userFirmId && ba.IsActive)
                 .FirstOrDefaultAsync(),
-            ClientId = documentRequestDTO.Client.Id,
+            ClientId = documentRequestDto.Client.Id,
             UserFirmId = userFirmId
         };
 
-        _dbContext.Document.Add(document);
-        await _dbContext.SaveChangesAsync();
+        await _unitOfWork.Documents.AddAsync(document);
+        await _unitOfWork.CompleteAsync();
 
-        await UpdateDocumentProducts(document.Id, documentRequestDTO.Products, userFirmId);
+        await UpdateDocumentProducts(document.Id, documentRequestDto.Products, userFirmId);
 
-        DocumentSeries docSeries = await _dbContext.DocumentSeries
-            .Where(ds => ds.Id == documentRequestDTO.DocumentSeries.Id)
+        DocumentSeries docSeries = await _unitOfWork.DocumentSeries.Query()
+            .Where(ds => ds.Id == documentRequestDto.DocumentSeries.Id)
             .FirstOrDefaultAsync();
 
         docSeries.CurrentNumber++;
-        _dbContext.DocumentSeries.Update(docSeries);
+        await _unitOfWork.DocumentSeries.UpdateAsync(docSeries);
 
-        await _dbContext.SaveChangesAsync();  // Save everything at once
-        return documentRequestDTO;
+        await _unitOfWork.CompleteAsync();
+        return documentRequestDto;
     }
 
-    public async Task<DocumentRequestDTO> EditDocument(DocumentRequestDTO documentRequestDTO)
+    public async Task<DocumentRequestDto> EditDocument(DocumentRequestDto documentRequestDto)
     {
-        var userFirmId = await _userService.GetUserFirmIdUsingTokenAsync() ?? throw new Exception("User firm not found.");
-        var document = await _dbContext.Document
-            .FirstOrDefaultAsync(d => d.Id == documentRequestDTO.Id);
+        var userFirmId = await _userService.GetUserFirmIdUsingTokenAsync() ??
+                         throw new Exception("User firm not found.");
+        var document = await _unitOfWork.Documents.GetByIdAsync(documentRequestDto.Id);
 
         if (document == null)
         {
             throw new Exception("Document not found.");
         }
 
-        document.IssueDate = documentRequestDTO.IssueDate;
-        document.DueDate = documentRequestDTO.DueDate;
-        document.DocumentTypeId = documentRequestDTO.DocumentType?.Id;
-        document.DocumentStatusId = documentRequestDTO.DocumentStatus?.Id;
-        document.ClientId = documentRequestDTO.Client.Id;
+        document.IssueDate = documentRequestDto.IssueDate;
+        document.DueDate = documentRequestDto.DueDate;
+        document.DocumentTypeId = documentRequestDto.DocumentType?.Id;
+        document.DocumentStatusId = documentRequestDto.DocumentStatus?.Id;
+        document.ClientId = documentRequestDto.Client.Id;
         document.UserFirmId = userFirmId;
 
-        _dbContext.Document.Update(document);
+        await _unitOfWork.Documents.UpdateAsync(document);
 
-        await UpdateDocumentProducts(document.Id, documentRequestDTO.Products, userFirmId);
+        await UpdateDocumentProducts(document.Id, documentRequestDto.Products, userFirmId);
 
-        await _dbContext.SaveChangesAsync();  
-        return documentRequestDTO;
+        await _unitOfWork.CompleteAsync();
+        return documentRequestDto;
     }
 
-    public async Task<DocumentRequestDTO> GeneratePdfDocument(DocumentRequestDTO documentRequestDTO)
+    public async Task<DocumentRequestDto> GeneratePdfDocument(DocumentRequestDto documentRequestDto)
     {
         var activeUserFirmId = await _userService.GetUserFirmIdUsingTokenAsync();
-        var activeUserFirm = await _dbContext.UserFirm
+        var activeUserFirm = await _unitOfWork.UserFirms.Query()
             .Where(uf => uf.UserFirmId == activeUserFirmId)
             .Include(uf => uf.Firm)
             .FirstOrDefaultAsync();
 
-        documentRequestDTO.Seller = _mapper.Map<FirmDto>(activeUserFirm?.Firm);
+        documentRequestDto.Seller = _mapper.Map<FirmDto>(activeUserFirm?.Firm);
 
         //include invoice document class and generate pdf
-        _pdfGenerationService.GenerateInvoicePdf(documentRequestDTO);
+        _pdfGenerationService.GenerateInvoicePdf(documentRequestDto);
 
-        return documentRequestDTO;
+        return documentRequestDto;
     }
 
-    public async Task<DocumentStreamDto> GetInvoicePdfStream(DocumentRequestDTO documentRequestDTO)
+    public async Task<DocumentStreamDto> GetInvoicePdfStream(DocumentRequestDto documentRequestDto)
     {
         var activeUserFirmId = await _userService.GetUserFirmIdUsingTokenAsync();
-        var activeUserFirm = await _dbContext.UserFirm
+        var activeUserFirm = await _unitOfWork.UserFirms.Query()
             .Where(uf => uf.UserFirmId == activeUserFirmId)
             .Include(uf => uf.Firm)
             .FirstOrDefaultAsync();
 
-        var documentBankAccount = await _dbContext.Document
+        var documentBankAccount = await _unitOfWork.Documents.Query()
             .Where(d => d.UserFirmId == activeUserFirmId)
             .Select(d => d.BankAccount)
             .FirstOrDefaultAsync();
 
-        documentRequestDTO.Seller = _mapper.Map<FirmDto>(activeUserFirm?.Firm);
-        documentRequestDTO.BankAccount = _mapper.Map<BankAccountDto>(documentBankAccount);
+        documentRequestDto.Seller = _mapper.Map<FirmDto>(activeUserFirm?.Firm);
+        documentRequestDto.BankAccount = _mapper.Map<BankAccountDto>(documentBankAccount);
 
         //include invoice document class and generate pdf
         return new DocumentStreamDto
         {
-            DocumentNumber = documentRequestDTO.DocumentNumber ?? documentRequestDTO.DocumentSeries.CurrentNumber.ToString(),
-            PdfContent = _pdfGenerationService.GetInvoicePdfStream(documentRequestDTO),
+            DocumentNumber = documentRequestDto.DocumentNumber ??
+                             documentRequestDto.DocumentSeries.CurrentNumber.ToString(),
+            PdfContent = _pdfGenerationService.GetInvoicePdfStream(documentRequestDto),
         };
     }
 
     public async Task<DocumentAutofillDto> GetDocumentAutofillInfo(Guid userId, int documentTypeId)
     {
-        var userFirmId = await _dbContext.User
+        var userFirmId = await _unitOfWork.Users.Query()
             .Where(u => u.Id == userId)
             .Select(u => u.ActiveUserFirmId)
             .FirstOrDefaultAsync();
@@ -191,15 +193,15 @@ public class DocumentService : IDocumentService
 
         var dto = new DocumentAutofillDto
         {
-            Clients = await _dbContext.Firm
+            Clients = await _unitOfWork.Firms.Query()
                 .Where(f => f.UserFirms.Any(uf => uf.UserId == userId && uf.IsClient))
                 .ToListAsync(),
-            DocumentSeries = await _dbContext.DocumentSeries
+            DocumentSeries = await _unitOfWork.DocumentSeries.Query()
                 .Where(ds => ds.UserFirmId == userFirmId && ds.DocumentTypeId == documentTypeId)
-                    .Include(ds => ds.DocumentType)
+                .Include(ds => ds.DocumentType)
                 .ToListAsync(),
-            DocumentStatuses = await _dbContext.DocumentStatus.ToListAsync(),
-            Products = await _dbContext.Product
+            DocumentStatuses = await _unitOfWork.DocumentStatuses.Query().ToListAsync(),
+            Products = await _unitOfWork.Products.Query()
                 .Where(p => p.UserFirmId == userFirmId)
                 .ToListAsync()
         };
@@ -207,121 +209,82 @@ public class DocumentService : IDocumentService
         return dto;
     }
 
-    public async Task<List<DocumentTableRecordDTO>> GetDocumentTableRecords(int documentTypeId)
+    public async Task<List<DocumentTableRecordDto>> GetDocumentTableRecords(int documentTypeId)
     {
         var activeUserFirmId = await _userService.GetUserFirmIdUsingTokenAsync();
-        if (activeUserFirmId == null) return new List<DocumentTableRecordDTO>();
+        if (activeUserFirmId == null) return new List<DocumentTableRecordDto>();
 
-        var activeUserFirm = await _dbContext.UserFirm
+        var activeUserFirm = await _unitOfWork.UserFirms.Query()
             .Where(uf => uf.UserFirmId == activeUserFirmId)
             .Include(uf => uf.Firm)
             .FirstOrDefaultAsync();
 
-        if (activeUserFirm == null) return new List<DocumentTableRecordDTO>();
+        if (activeUserFirm == null) return new List<DocumentTableRecordDto>();
 
-        var documents = await _dbContext.Document
+        var documents = await _unitOfWork.Documents.Query()
             .Where(document => document.UserFirmId == activeUserFirmId && document.DocumentTypeId == documentTypeId)
-                .Include(document => document.Client)
-                .Include(document => document.DocumentStatus)
+            .Include(document => document.Client)
+            .Include(document => document.DocumentStatus)
             .ToListAsync();
 
-        return _mapper.Map<List<DocumentTableRecordDTO>>(documents);
+        return _mapper.Map<List<DocumentTableRecordDto>>(documents);
     }
 
-    public async Task<DocumentRequestDTO> GetDocumentById(int documentId)
+    public async Task<DocumentRequestDto> GetDocumentById(int documentId)
     {
-        var document = await _dbContext.Document
+        var document = await _unitOfWork.Documents.Query()
             .Where(d => d.Id == documentId)
-                .Include(d => d.DocumentStatus)
-                .Include(d => d.DocumentProducts)
-                    .ThenInclude(dp => dp.Product)
-                .Include(d => d.Client)
+            .Include(d => d.DocumentStatus)
+            .Include(d => d.DocumentProducts)
+            .ThenInclude(dp => dp.Product)
+            .Include(d => d.Client)
             .FirstOrDefaultAsync();
 
-        return _mapper.Map<DocumentRequestDTO>(document);
+        return _mapper.Map<DocumentRequestDto>(document);
     }
-    
+
     public async Task DeleteDocuments(int[] documentIds)
     {
-        var documents = await _dbContext.Document
-                .Include(dp => dp.DocumentProducts)
+        var documents = await _unitOfWork.Documents.Query()
+            .Include(dp => dp.DocumentProducts)
             .Where(d => documentIds.Contains(d.Id))
             .ToListAsync();
-        
-        _dbContext.DocumentProduct.RemoveRange(documents.SelectMany(d => d.DocumentProducts));
-        _dbContext.Document.RemoveRange(documents);
-        
-        await _dbContext.SaveChangesAsync();
+
+        await _unitOfWork.DocumentProducts.RemoveRangeAsync(documents.SelectMany(d => d.DocumentProducts));
+        await _unitOfWork.Documents.RemoveRangeAsync(documents);
+
+        await _unitOfWork.CompleteAsync();
     }
 
     public async Task<DashboardStatsDto> GetDashboardStats()
     {
         int? activeUserFirmId = await _userService.GetUserFirmIdUsingTokenAsync();
-        if(activeUserFirmId == null) return new DashboardStatsDto();
+        if (activeUserFirmId == null) return new DashboardStatsDto();
 
-        var activeUserFirm = await _dbContext.UserFirm
+        var activeUserFirm = await _unitOfWork.UserFirms.Query()
             .Where(uf => uf.UserFirmId == activeUserFirmId)
             .Include(uf => uf.User)
             .FirstOrDefaultAsync();
-
-        var totalDocumentsTask = Task.Run(() => GetTotalDocuments((int)activeUserFirmId));
-        var totalClientsTask = Task.Run(() => GetTotalClients(activeUserFirm!.User.Id));
-        var totalProductsTask = Task.Run(() => GetTotalProducts((int)activeUserFirmId));
-        var totalBankAccountsTask = Task.Run(() => GetTotalBankAccounts((int)activeUserFirmId));
-        var monthlyTotalsTask = Task.Run(() => GetMonthlyTotals((int)activeUserFirmId));
-
-        await Task.WhenAll(totalDocumentsTask, totalClientsTask, totalProductsTask, totalBankAccountsTask, monthlyTotalsTask);
+        
+        var totalDocumentsTask = await _unitOfWork.Documents.GetTotalDocumentsAsync((int)activeUserFirmId);
+        var totalClientsTask = await _unitOfWork.Firms.GetTotalClientsAsync(activeUserFirm!.User.Id);
+        var totalProductsTask = await _unitOfWork.Products.GetTotalProductsAsync((int)activeUserFirmId);
+        var totalBankAccountsTask = await _unitOfWork.BankAccounts.GetTotalBankAccountsAsync((int)activeUserFirmId);
+        var monthlyTotalsTask = await GetMonthlyTotalsAsync((int)activeUserFirmId);
 
         return new DashboardStatsDto
         {
-            TotalDocuments = await totalDocumentsTask,
-            TotalClients = await totalClientsTask,
-            TotalProducts = await totalProductsTask,
-            TotalBankAccounts = await totalBankAccountsTask,
-            MonthlyTotals = await monthlyTotalsTask
+            TotalDocuments = totalDocumentsTask,
+            TotalClients = totalClientsTask,
+            TotalProducts = totalProductsTask,
+            TotalBankAccounts = totalBankAccountsTask,
+            MonthlyTotals = monthlyTotalsTask
         };
     }
-    
-    private async Task<int> GetTotalDocuments(int firmId)
-    {
-        using var scope = _scopeFactory.CreateScope();
-        var dbContext = scope.ServiceProvider.GetRequiredService<FacturilaDbContext>();
-        return await dbContext.Document
-            .Where(d => d.UserFirmId == firmId)
-            .CountAsync();
-    }
-    
-    private async Task<int> GetTotalClients(Guid userId)
-    {
-        using var scope = _scopeFactory.CreateScope();
-        var dbContext = scope.ServiceProvider.GetRequiredService<FacturilaDbContext>();
-        return await dbContext.Firm
-            .CountAsync(f => f.UserFirms.Any(uf => uf.UserId == userId && uf.IsClient));
-    }
 
-    private async Task<int> GetTotalProducts(int firmId)
+    private async Task<List<MonthlyTotalDto>> GetMonthlyTotalsAsync(int firmId)
     {
-        using var scope = _scopeFactory.CreateScope();
-        var dbContext = scope.ServiceProvider.GetRequiredService<FacturilaDbContext>();
-        return await dbContext.Product
-            .Where(p => p.UserFirmId == firmId)
-            .CountAsync();
-    }
-
-    private async Task<int> GetTotalBankAccounts(int firmId)
-    {
-        using var scope = _scopeFactory.CreateScope();
-        var dbContext = scope.ServiceProvider.GetRequiredService<FacturilaDbContext>();
-        return await dbContext.BankAccount
-            .Where(ba => ba.UserFirmId == firmId)
-            .CountAsync();
-    }
-
-    private async Task<List<MonthlyTotalDto>> GetMonthlyTotals(int firmId)
-    {
-        using var scope = _scopeFactory.CreateScope();
-        var dbContext = scope.ServiceProvider.GetRequiredService<FacturilaDbContext>();
-        return await dbContext.Document
+        return await _unitOfWork.Documents.Query()
             .Where(d => d.UserFirmId == firmId && d.IssueDate.Year == DateTime.Now.Year && d.DocumentType!.Id == 1)
             .GroupBy(d => new { month = d.IssueDate.Month })
             .Select(group => new MonthlyTotalDto
@@ -342,7 +305,7 @@ public class DocumentService : IDocumentService
 
         foreach (var documentId in documentIds)
         {
-            var document = await _dbContext.Document
+            var document = await _unitOfWork.Documents.Query()
                 .Where(d => d.Id == documentId && d.UserFirmId == activeUserFirmId)
                 .FirstOrDefaultAsync();
 
@@ -350,8 +313,8 @@ public class DocumentService : IDocumentService
                 throw new Exception("Document not found.");
 
             document.DocumentStatusId = 3;
-            _dbContext.Document.Update(document);
-            await _dbContext.SaveChangesAsync();
+            await _unitOfWork.Documents.UpdateAsync(document);
+            await _unitOfWork.CompleteAsync();
         }
     }
 }

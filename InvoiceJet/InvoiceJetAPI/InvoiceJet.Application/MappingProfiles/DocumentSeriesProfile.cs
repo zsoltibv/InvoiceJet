@@ -1,14 +1,13 @@
 ﻿using AutoMapper;
-using InvoiceJetAPI.Models.Dto;
+using InvoiceJet.Application.DTOs;
 using InvoiceJet.Domain.Models;
 
-namespace InvoiceJetAPI.MappingProfiles
+namespace InvoiceJet.Application.MappingProfiles;
+
+public class DocumentSeriesProfile : Profile
 {
-    public class DocumentSeriesProfile : Profile
+    public DocumentSeriesProfile()
     {
-        public DocumentSeriesProfile()
-        {
-            CreateMap<DocumentSeries, DocumentSeriesDto>().ReverseMap();
-        }
+        CreateMap<DocumentSeries, DocumentSeriesDto>().ReverseMap();
     }
 }

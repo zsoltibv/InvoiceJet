@@ -22,7 +22,7 @@ export class ProductsComponent implements OnInit {
     "price",
     "unitOfMeasurement",
     "tvaValue",
-    "containsTVA",
+    "containsTva",
   ];
   dataSource = new MatTableDataSource<IProduct>();
   products: IProduct[] = [];

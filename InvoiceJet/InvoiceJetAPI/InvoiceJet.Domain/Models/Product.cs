@@ -1,19 +1,15 @@
-﻿using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations.Schema;
 
-namespace InvoiceJetAPI.Models.Entity
+namespace InvoiceJet.Domain.Models;
+
+public sealed class Product: BaseEntity
 {
-    public class Product
-    {
-        public int Id { get; set; }
-        public string Name { get; set; }
-        [Column(TypeName = "decimal(18,2)")]
-        public decimal Price { get; set; }
-        public bool ContainsTVA { get; set; }
-        public string? UnitOfMeasurement { get; set;}
-        public int TVAValue { get; set; }
+    public string Name { get; set; } = string.Empty;
+    [Column(TypeName = "decimal(18,2)")] public decimal Price { get; set; }
+    public bool ContainsTva { get; set; } = false;
+    public string? UnitOfMeasurement { get; set; }
+    public int TvaValue { get; set; } = 0;
 
-        public int? UserFirmId { get; set; }
-        public virtual UserFirm? UserFirm { get; set; }
-    }
+    public int? UserFirmId { get; set; }
+    public UserFirm? UserFirm { get; set; }
 }

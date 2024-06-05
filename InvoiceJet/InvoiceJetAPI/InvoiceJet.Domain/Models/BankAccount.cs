@@ -1,16 +1,14 @@
-﻿using InvoiceJetAPI.Models.Enums;
+﻿using InvoiceJet.Domain.Enums;
 
-namespace InvoiceJetAPI.Models.Entity
+namespace InvoiceJet.Domain.Models;
+
+public sealed class BankAccount : BaseEntity
 {
-    public class BankAccount
-    {
-        public int Id { get; set; }
-        public string BankName { get; set; }
-        public string Iban { get; set; }
-        public CurrencyEnum Currency { get; set; }
-        public bool IsActive { get; set; } = false;
-        
-        public int? UserFirmId {  get; set; }
-        public virtual UserFirm? UserFirm { get; set; }
-    }
+    public string BankName { get; set; } = string.Empty;
+    public string Iban { get; set; } = string.Empty;
+    public CurrencyEnum Currency { get; set; }
+    public bool IsActive { get; set; } = false;
+
+    public int? UserFirmId { get; set; }
+    public UserFirm? UserFirm { get; set; }
 }

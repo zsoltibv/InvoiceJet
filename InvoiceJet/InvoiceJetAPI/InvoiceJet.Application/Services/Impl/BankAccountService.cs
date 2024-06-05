@@ -1,79 +1,80 @@
 ﻿using AutoMapper;
-using InvoiceJetAPI.Config;
-using InvoiceJetAPI.Models.Dto;
+using InvoiceJet.Application.DTOs;
+using InvoiceJet.Domain.Interfaces;
 using InvoiceJet.Domain.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace InvoiceJetAPI.Services.Impl
+namespace InvoiceJet.Application.Services.Impl;
+
+public class BankAccountService : IBankAccountService
 {
-    public class BankAccountService : IBankAccountService
+    private readonly IUnitOfWork _unitOfWork;
+    private readonly IMapper _mapper;
+
+    public BankAccountService(IMapper mapper, IUnitOfWork unitOfWork)
     {
-        private readonly FacturilaDbContext _dbContext;
-        private readonly IMapper _mapper;
+        _mapper = mapper;
+        _unitOfWork = unitOfWork;
+    }
 
-        public BankAccountService(FacturilaDbContext dbContext, IMapper mapper)
+    public async Task<ICollection<BankAccountDto>> GetUserFirmBankAccounts(Guid userId)
+    {
+        var activeUserFirm = await _unitOfWork.Users.Query()
+            .Where(u => u.Id == userId)
+            .Include(u => u.ActiveUserFirm)
+            .ThenInclude(uf => uf.BankAccounts)
+            .Select(u => u.ActiveUserFirm)
+            .FirstOrDefaultAsync();
+
+        if (activeUserFirm == null)
         {
-            _dbContext = dbContext;
-            _mapper = mapper;
+            return new List<BankAccountDto>();
         }
 
-        public async Task<ICollection<BankAccountDto>> GetUserFirmBankAccounts(Guid userId)
-        {
-            var activeUserFirm = await _dbContext.User
-                   .Where(u => u.Id == userId)
-                   .Include(u => u.ActiveUserFirm)
-                        .ThenInclude(uf => uf.BankAccounts)
-                   .Select(u => u.ActiveUserFirm)
-                   .FirstOrDefaultAsync();
+        var bankAccountDtos = _mapper.Map<List<BankAccountDto>>(activeUserFirm.BankAccounts);
+        return bankAccountDtos;
+    }
 
-            if (activeUserFirm == null)
+    public async Task<BankAccountDto> AddOrEditBankAccount(BankAccountDto bankAccountDto, Guid userId)
+    {
+        BankAccount bankAccount;
+
+        if (bankAccountDto.Id != 0)
+        {
+            bankAccount = await _unitOfWork.BankAccounts.Query().FirstOrDefaultAsync(ba => ba.Id == bankAccountDto.Id);
+            if (bankAccount == null)
             {
-                return new List<BankAccountDto>();
+                throw new Exception("Bank account not found.");
             }
 
-            var bankAccountDtos = _mapper.Map<List<BankAccountDto>>(activeUserFirm.BankAccounts);
-            return bankAccountDtos;
+            _mapper.Map(bankAccountDto, bankAccount);
+        }
+        else
+        {
+            bankAccount = _mapper.Map<BankAccount>(bankAccountDto);
+            var activeUserFirm = await _unitOfWork.Users.Query()
+                .Where(u => u.Id == userId)
+                .Include(u => u.ActiveUserFirm)
+                .Select(u => u.ActiveUserFirm)
+                .FirstOrDefaultAsync();
+
+            bankAccount.UserFirmId = activeUserFirm!.UserFirmId;
+            await _unitOfWork.BankAccounts.AddAsync(bankAccount);
         }
 
-        public async Task<BankAccountDto> AddOrEditBankAccount(BankAccountDto bankAccountDto, Guid userId)
+        if (bankAccount.IsActive)
         {
-            BankAccount bankAccount;
+            var otherAccounts = await _unitOfWork.BankAccounts.Query()
+                .Where(ba => ba.UserFirmId == bankAccount.UserFirmId && ba.Id != bankAccount.Id)
+                .ToListAsync();
 
-            if (bankAccountDto.Id != 0)
+            foreach (var account in otherAccounts)
             {
-                bankAccount = await _dbContext.BankAccount.FirstOrDefaultAsync(ba => ba.Id == bankAccountDto.Id);
-                if (bankAccount == null)
-                {
-                    throw new Exception("Bank account not found.");
-                }
-                _mapper.Map(bankAccountDto, bankAccount);
+                account.IsActive = false;
             }
-            else
-            {
-                bankAccount = _mapper.Map<BankAccount>(bankAccountDto);
-                var activeUserFirm = await _dbContext.User
-                    .Where(u => u.Id == userId)
-                        .Include(u => u.ActiveUserFirm)
-                    .Select(u => u.ActiveUserFirm)
-                    .FirstOrDefaultAsync();
-
-                bankAccount.UserFirmId = activeUserFirm!.UserFirmId;
-                await _dbContext.BankAccount.AddAsync(bankAccount);
-            }
-            if (bankAccount.IsActive)
-            {
-                var otherAccounts = await _dbContext.BankAccount
-                    .Where(ba => ba.UserFirmId == bankAccount.UserFirmId && ba.Id != bankAccount.Id)
-                    .ToListAsync();
-
-                foreach (var account in otherAccounts)
-                {
-                    account.IsActive = false;
-                }
-            }
-            
-            await _dbContext.SaveChangesAsync();
-            return _mapper.Map<BankAccountDto>(bankAccount);
         }
+
+        await _unitOfWork.CompleteAsync();
+        return _mapper.Map<BankAccountDto>(bankAccount);
     }
 }

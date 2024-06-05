@@ -1,6 +1,8 @@
-﻿namespace InvoiceJet.Domain.Interfaces.Repositories;
+﻿using InvoiceJet.Domain.Models;
 
-public class IBankAccountRepository
+namespace InvoiceJet.Domain.Interfaces.Repositories;
+
+public interface IBankAccountRepository : IGenericRepository<BankAccount>
 {
-    â
+    Task<int> GetTotalBankAccountsAsync(int firmId);
 }

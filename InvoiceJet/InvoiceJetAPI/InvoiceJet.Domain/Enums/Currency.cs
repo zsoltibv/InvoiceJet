@@ -1,28 +1,25 @@
-﻿namespace InvoiceJetAPI.Models.Enums
+﻿namespace InvoiceJet.Domain.Enums;
+
+public enum CurrencyEnum
 {
-    public enum CurrencyEnum
+    Ron = 0,
+    Euro = 1,
+}
+
+public static class Currency
+{
+    public static int ToInt(CurrencyEnum currency)
     {
-        Ron = 0, 
-        Euro = 1,
+        return (int)currency;
     }
 
-    public static class Currency
+    public static CurrencyEnum ToCurrency(int value)
     {
-        public static int ToInt(CurrencyEnum currency)
+        if (Enum.IsDefined(typeof(CurrencyEnum), value))
         {
-            return (int)currency;
+            return (CurrencyEnum)value;
         }
-
-        public static CurrencyEnum ToCurrency(int value)
-        {
-            if (Enum.IsDefined(typeof(CurrencyEnum), value))
-            {
-                return (CurrencyEnum)value;
-            }
-            else
-            {
-                throw new ArgumentOutOfRangeException(nameof(value), "Value is not a valid currency");
-            }
-        }
+        
+        throw new ArgumentOutOfRangeException(nameof(value), "Value is not a valid currency");
     }
 }

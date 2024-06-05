@@ -1,16 +1,16 @@
-﻿using InvoiceJetAPI.Models.Dto;
+﻿using InvoiceJet.Application.DTOs;
 
-namespace InvoiceJetAPI.Services;
+namespace InvoiceJet.Application.Services;
 
 public interface IDocumentService
 {
     Task<DocumentAutofillDto> GetDocumentAutofillInfo(Guid userId, int documentTypeId);
-    Task<DocumentRequestDTO> AddDocument(DocumentRequestDTO documentRequestDTO);
-    Task<DocumentRequestDTO> EditDocument(DocumentRequestDTO documentRequestDTO);
-    Task<DocumentRequestDTO> GeneratePdfDocument(DocumentRequestDTO documentRequestDTO);
-    Task<DocumentStreamDto> GetInvoicePdfStream(DocumentRequestDTO documentRequestDTO);
-    Task<List<DocumentTableRecordDTO>> GetDocumentTableRecords(int documentTypeId);
-    Task<DocumentRequestDTO> GetDocumentById(int documentId);
+    Task<DocumentRequestDto> AddDocument(DocumentRequestDto documentRequestDto);
+    Task<DocumentRequestDto> EditDocument(DocumentRequestDto documentRequestDto);
+    Task<DocumentRequestDto> GeneratePdfDocument(DocumentRequestDto documentRequestDto);
+    Task<DocumentStreamDto> GetInvoicePdfStream(DocumentRequestDto documentRequestDto);
+    Task<List<DocumentTableRecordDto>> GetDocumentTableRecords(int documentTypeId);
+    Task<DocumentRequestDto> GetDocumentById(int documentId);
     Task DeleteDocuments(int[] documentIds);
     Task<DashboardStatsDto> GetDashboardStats();
     Task TransformToStorno(int[] documentIds);

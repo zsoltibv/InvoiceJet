@@ -5,7 +5,7 @@ export interface IDocumentProductRequest {
   name: string;
   unitPrice: number;
   totalPrice: number;
-  containsTVA: boolean;
+  containsTva: boolean;
   unitOfMeasurement: string;
   tvaValue: number;
   quantity: number;

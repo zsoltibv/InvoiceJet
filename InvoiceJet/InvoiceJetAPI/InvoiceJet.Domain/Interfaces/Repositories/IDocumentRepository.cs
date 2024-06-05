@@ -1,6 +1,8 @@
-﻿namespace InvoiceJet.Domain.Interfaces.Repositories;
+﻿using InvoiceJet.Domain.Models;
 
-public class IDocumentRepository
+namespace InvoiceJet.Domain.Interfaces.Repositories;
+
+public interface IDocumentRepository : IGenericRepository<Document>
 {
-    
+    Task<int> GetTotalDocumentsAsync(int firmId);
 }

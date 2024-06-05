@@ -1,6 +1,16 @@
-﻿namespace InvoiceJet.Infrastructure.Persistence.Repositories;
+﻿using InvoiceJet.Domain.Interfaces.Repositories;
+using InvoiceJet.Domain.Models;
 
-public class UserRepository
+namespace InvoiceJet.Infrastructure.Persistence.Repositories;
+
+public class UserRepository : GenericRepository<User>, IUserRepository
 {
-    
+    public UserRepository(InvoiceJetDbContext context) : base(context)
+    {
+    }
+
+    public Task<User?> FindByEmailAsync(string email)
+    {
+        throw new NotImplementedException();
+    }
 }

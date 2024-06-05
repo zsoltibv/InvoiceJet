@@ -1,35 +1,33 @@
-﻿using InvoiceJetAPI.Models.Dto;
-using InvoiceJetAPI.Services;
+﻿using InvoiceJet.Application.DTOs;
+using InvoiceJet.Application.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Data;
 
-namespace InvoiceJetAPI.Controllers
+namespace InvoiceJet.Presentation.Controllers;
+
+[ApiController]
+[Route("api/[controller]")]
+[Authorize(Roles = "User")]
+public class ProductController : ControllerBase
 {
-    [ApiController]
-    [Route("api/[controller]")]
-    [Authorize(Roles = "User")]
-    public class ProductController : ControllerBase
+    private readonly IProductService _productService;
+
+    public ProductController(IProductService productService)
     {
-        private readonly IProductService _productService;
+        _productService = productService;
+    }
 
-        public ProductController(IProductService productService)
-        {
-            _productService = productService;
-        }
+    [HttpGet("GetAllProductsForUserId/{userId}")]
+    public async Task<ActionResult<ICollection<ProductDto>>> GetAllProductsForUserId(Guid userId)
+    {
+        ICollection<ProductDto> productsDto = await _productService.GetAllProductsForUserId(userId);
+        return Ok(productsDto);
+    }
 
-        [HttpGet("GetAllProductsForUserId/{userId}")]
-        public async Task<ActionResult<ICollection<ProductDto>>> GetAllProductsForUserId(Guid userId)
-        {
-            ICollection<ProductDto> productsDto = await _productService.GetAllProductsForUserId(userId);
-            return Ok(productsDto);
-        }
-
-        [HttpPut("AddOrEditProduct/{userId}")]
-        public async Task<ActionResult<ProductDto>> AddOrEditProduct(ProductDto product, Guid userId)
-        {
-            ProductDto productDto = await _productService.AddOrEditProduct(product, userId);
-            return Ok(productDto);
-        }
+    [HttpPut("AddOrEditProduct/{userId}")]
+    public async Task<ActionResult<ProductDto>> AddOrEditProduct(ProductDto product, Guid userId)
+    {
+        ProductDto productDto = await _productService.AddOrEditProduct(product, userId);
+        return Ok(productDto);
     }
 }

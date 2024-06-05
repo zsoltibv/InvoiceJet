@@ -1,6 +1,8 @@
-﻿namespace InvoiceJet.Domain.Interfaces.Repositories;
+﻿using InvoiceJet.Domain.Models;
 
-public class IDocumentStatusRepository
+namespace InvoiceJet.Domain.Interfaces.Repositories;
+
+public interface IDocumentStatusRepository : IGenericRepository<DocumentStatus>
 {
     
 }

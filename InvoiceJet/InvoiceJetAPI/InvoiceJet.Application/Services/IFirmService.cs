@@ -1,12 +1,11 @@
-﻿using InvoiceJetAPI.Models.Dto;
+﻿using InvoiceJet.Application.DTOs;
 
-namespace InvoiceJetAPI.Services
+namespace InvoiceJet.Application.Services;
+
+public interface IFirmService
 {
-    public interface IFirmService
-    {
-        Task<FirmDto> GetFirmDataFromAnaf(string cui);
-        Task<FirmDto> AddOrEditFirm(FirmDto firmDto, Guid userId, bool isClient);
-        Task<FirmDto> GetUserActiveFirmById(Guid id);
-        Task<ICollection<FirmDto>> GetUserClientFirmsById(Guid userId);
-    }
+    Task<FirmDto> GetFirmDataFromAnaf(string cui);
+    Task<FirmDto> AddOrEditFirm(FirmDto firmDto, Guid userId, bool isClient);
+    Task<FirmDto> GetUserActiveFirmById(Guid id);
+    Task<ICollection<FirmDto>> GetUserClientFirmsById(Guid userId);
 }

@@ -1,6 +1,6 @@
-﻿using InvoiceJetAPI.Exceptions;
+﻿using InvoiceJet.Domain.Exceptions;
 
-namespace InvoiceJet.Domain.Exceptions.Middleware;
+namespace InvoiceJet.Presentation.Middleware;
 
 public class ExceptionMiddleware
 {

@@ -1,11 +1,10 @@
-﻿using InvoiceJet.Domain.Models;
-using InvoiceJetAPI.Models.Dto;
+﻿using InvoiceJet.Application.DTOs;
+using InvoiceJet.Domain.Models;
 
-namespace InvoiceJetAPI.Services
+namespace InvoiceJet.Application.Services;
+
+public interface IAuthService
 {
-    public interface IAuthService
-    {
-        Task<User> RegisterUser(UserRegisterDto userDto);
-        Task<string> LoginUser(UserLoginDto userDto);
-    }
+    Task<User> RegisterUser(UserRegisterDto userDto);
+    Task<string> LoginUser(UserLoginDto userDto);
 }

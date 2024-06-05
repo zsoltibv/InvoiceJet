@@ -1,11 +1,11 @@
 ﻿using InvoiceJet.Domain.Models;
 
-namespace InvoiceJetAPI.Models.Dto;
+namespace InvoiceJet.Application.DTOs;
 
 public class DocumentAutofillDto
 {
-    public List<Firm> Clients { get; set; }
-    public List<DocumentSeries> DocumentSeries { get;set; }
-    public List<DocumentStatus> DocumentStatuses { get; set; }
-    public List<Product> Products { get; set; }
+    public List<Firm> Clients { get; set; } = null!;
+    public List<DocumentSeries> DocumentSeries { get; set; } = null!;
+    public List<DocumentStatus> DocumentStatuses { get; set; } = null!;
+    public List<Product> Products { get; set; } = null!;
 }

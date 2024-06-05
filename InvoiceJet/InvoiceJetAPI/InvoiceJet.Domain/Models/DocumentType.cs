@@ -1,8 +1,6 @@
-﻿namespace InvoiceJetAPI.Models.Entity
+﻿namespace InvoiceJet.Domain.Models;
+
+public sealed class DocumentType : BaseEntity
 {
-    public class DocumentType
-    {
-        public int Id { get; set; }
-        public string Name { get; set; } = string.Empty;
-    }
+    public string Name { get; set; } = string.Empty;
 }

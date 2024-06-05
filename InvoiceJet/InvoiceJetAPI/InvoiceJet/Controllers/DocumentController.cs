@@ -1,165 +1,165 @@
-﻿using InvoiceJetAPI.Models.Dto;
-using InvoiceJetAPI.Repository;
-using InvoiceJetAPI.Services;
+﻿using InvoiceJet.Application.DTOs;
+using InvoiceJet.Application.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace InvoiceJetAPI.Controllers
+namespace InvoiceJet.Presentation.Controllers;
+
+[ApiController]
+[Route("api/[controller]")]
+[Authorize(Roles = "User")]
+public class DocumentController : ControllerBase
 {
-    [ApiController]
-    [Route("api/[controller]")]
-    [Authorize(Roles = "User")]
-    public class DocumentController : ControllerBase
+    private readonly IDocumentService _documentService;
+
+    public DocumentController(IDocumentService documentService)
     {
-        private readonly IDocumentService _documentService;
-        public DocumentController(IDocumentService documentService)
-        {
-            _documentService = documentService;
-        }
-        
-        [HttpGet("GetDocumentAutofillInfo/{userId}/{documentTypeId}")]
-        public async Task<ActionResult<DocumentAutofillDto>> GetDocumentAutofillInfo(Guid userId, int documentTypeId)
-        {
-            try
-            {
-                var documentAutofillDto = await _documentService.GetDocumentAutofillInfo(userId, documentTypeId);
-                return Ok(documentAutofillDto);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
+        _documentService = documentService;
+    }
 
-        [HttpPost("AddDocument")]
-        public async Task<ActionResult<DocumentRequestDTO>> AddDocument(DocumentRequestDTO documentRequestDto)
+    [HttpGet("GetDocumentAutofillInfo/{userId}/{documentTypeId}")]
+    public async Task<ActionResult<DocumentAutofillDto>> GetDocumentAutofillInfo(Guid userId, int documentTypeId)
+    {
+        try
         {
-            try
-            {
-                await _documentService.AddDocument(documentRequestDto);
-                return Ok(documentRequestDto);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
+            var documentAutofillDto = await _documentService.GetDocumentAutofillInfo(userId, documentTypeId);
+            return Ok(documentAutofillDto);
         }
-
-        [HttpPut("EditDocument")]
-        public async Task<ActionResult<DocumentRequestDTO>> EditDocument(DocumentRequestDTO documentRequestDto)
+        catch (Exception ex)
         {
-            try
-            {
-                await _documentService.EditDocument(documentRequestDto);
-                return Ok(documentRequestDto);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
+            return BadRequest(ex.Message);
         }
+    }
 
-        [HttpPost("GenerateDocumentPdf")]
-        public async Task<ActionResult<DocumentRequestDTO>> GenerateDocument(DocumentRequestDTO documentRequestDTO)
+    [HttpPost("AddDocument")]
+    public async Task<ActionResult<DocumentRequestDto>> AddDocument(DocumentRequestDto documentRequestDto)
+    {
+        try
         {
-            try
-            {
-                await _documentService.GeneratePdfDocument(documentRequestDTO);
-                return Ok();
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
+            await _documentService.AddDocument(documentRequestDto);
+            return Ok(documentRequestDto);
         }
-
-        [HttpPost("GetInvoicePdfStream")]
-        public async Task<IActionResult> GetInvoicePdfStream(DocumentRequestDTO documentRequestDTO)
+        catch (Exception ex)
         {
-            try
-            {
-                DocumentStreamDto documentStreamDto = await _documentService.GetInvoicePdfStream(documentRequestDTO);
-                if (documentStreamDto.PdfContent == null)
-                {
-                    return BadRequest("Failed to generate the PDF document.");
-                }
-
-                return File(documentStreamDto.PdfContent, "application/pdf", $"Invoice_{documentStreamDto.DocumentNumber}.pdf");
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
+            return BadRequest(ex.Message);
         }
+    }
 
-        [HttpGet("GetDocumentTableRecords/{documentTypeId}")]
-        public async Task<IActionResult> GetDocumentTableRecords(int documentTypeId)
+    [HttpPut("EditDocument")]
+    public async Task<ActionResult<DocumentRequestDto>> EditDocument(DocumentRequestDto documentRequestDto)
+    {
+        try
         {
-            try
-            {
-                var documents = await _documentService.GetDocumentTableRecords(documentTypeId);
-                return Ok(documents);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
+            await _documentService.EditDocument(documentRequestDto);
+            return Ok(documentRequestDto);
         }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
 
-        [HttpGet("GetDocumentById/{documentId}")]
-        public async Task<IActionResult> GetDocumentById(int documentId)
+    [HttpPost("GenerateDocumentPdf")]
+    public async Task<ActionResult<DocumentRequestDto>> GenerateDocument(DocumentRequestDto documentRequestDTO)
+    {
+        try
         {
-            try
-            {
-                var document = await _documentService.GetDocumentById(documentId);
-                return Ok(document);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
+            await _documentService.GeneratePdfDocument(documentRequestDTO);
+            return Ok();
         }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
 
-        [HttpPut("DeleteDocuments")]
-        public async Task<IActionResult> DeleteDocuments([FromBody] int[] documentIds)
+    [HttpPost("GetInvoicePdfStream")]
+    public async Task<IActionResult> GetInvoicePdfStream(DocumentRequestDto documentRequestDTO)
+    {
+        try
         {
-            try
+            DocumentStreamDto documentStreamDto = await _documentService.GetInvoicePdfStream(documentRequestDTO);
+            if (documentStreamDto.PdfContent == null)
             {
-                await _documentService.DeleteDocuments(documentIds);
-                return Ok(new { Message = "Documents deleted successfully." });
+                return BadRequest("Failed to generate the PDF document.");
             }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
-        
-        [HttpGet("GetDashboardStats")]
-        public async Task<IActionResult> GetDashboardStats()
-        {
-            try
-            {
-                var dashboardStats = await _documentService.GetDashboardStats();
-                return Ok(dashboardStats);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
 
-        [HttpPut("TransformToStorno")]
-        public async Task<IActionResult> TransformToStorno([FromBody] int[] documentIds)
+            return File(documentStreamDto.PdfContent, "application/pdf",
+                $"Invoice_{documentStreamDto.DocumentNumber}.pdf");
+        }
+        catch (Exception ex)
         {
-            try
-            {
-                await _documentService.TransformToStorno(documentIds);
-                return Ok();
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
+            return BadRequest(ex.Message);
+        }
+    }
+
+    [HttpGet("GetDocumentTableRecords/{documentTypeId}")]
+    public async Task<IActionResult> GetDocumentTableRecords(int documentTypeId)
+    {
+        try
+        {
+            var documents = await _documentService.GetDocumentTableRecords(documentTypeId);
+            return Ok(documents);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
+
+    [HttpGet("GetDocumentById/{documentId}")]
+    public async Task<IActionResult> GetDocumentById(int documentId)
+    {
+        try
+        {
+            var document = await _documentService.GetDocumentById(documentId);
+            return Ok(document);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
+
+    [HttpPut("DeleteDocuments")]
+    public async Task<IActionResult> DeleteDocuments([FromBody] int[] documentIds)
+    {
+        try
+        {
+            await _documentService.DeleteDocuments(documentIds);
+            return Ok(new { Message = "Documents deleted successfully." });
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
+
+    [HttpGet("GetDashboardStats")]
+    public async Task<IActionResult> GetDashboardStats()
+    {
+        try
+        {
+            var dashboardStats = await _documentService.GetDashboardStats();
+            return Ok(dashboardStats);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
+
+    [HttpPut("TransformToStorno")]
+    public async Task<IActionResult> TransformToStorno([FromBody] int[] documentIds)
+    {
+        try
+        {
+            await _documentService.TransformToStorno(documentIds);
+            return Ok();
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
         }
     }
 }

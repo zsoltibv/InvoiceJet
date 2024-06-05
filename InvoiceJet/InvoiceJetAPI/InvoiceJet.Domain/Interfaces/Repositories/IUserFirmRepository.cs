@@ -1,6 +1,8 @@
-﻿namespace InvoiceJet.Domain.Interfaces.Repositories;
+﻿using InvoiceJet.Domain.Models;
 
-public interface IUserFirmRepository
+namespace InvoiceJet.Domain.Interfaces.Repositories;
+
+public interface IUserFirmRepository : IGenericRepository<UserFirm>
 {
     
 }

@@ -1,0 +1,19 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.6" />
+      <PackageReference Include="QuestPDF" Version="2024.3.10" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\InvoiceJet.Application\InvoiceJet.Application.csproj" />
+      <ProjectReference Include="..\InvoiceJet.Domain\InvoiceJet.Domain.csproj" />
+    </ItemGroup>
+
+</Project>

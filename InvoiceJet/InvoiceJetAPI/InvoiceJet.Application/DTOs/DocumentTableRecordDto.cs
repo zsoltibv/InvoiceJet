@@ -1,15 +1,14 @@
 ﻿using InvoiceJet.Domain.Models;
 
-namespace InvoiceJetAPI.Models.Dto
+namespace InvoiceJet.Application.DTOs;
+
+public class DocumentTableRecordDto
 {
-    public class DocumentTableRecordDTO
-    {
-        public int Id { get; set; }
-        public string DocumentNumber { get; set; } = string.Empty;
-        public string ClientName { get; set; } = string.Empty;
-        public DateTime IssueDate { get; set; }
-        public DateTime? DueDate { get; set; }
-        public decimal TotalValue { get; set; }
-        public DocumentStatus? DocumentStatus { get; set; }
-    }
+    public int Id { get; set; }
+    public string DocumentNumber { get; set; } = string.Empty;
+    public string ClientName { get; set; } = string.Empty;
+    public DateTime IssueDate { get; set; }
+    public DateTime? DueDate { get; set; }
+    public decimal TotalValue { get; set; }
+    public DocumentStatus? DocumentStatus { get; set; }
 }

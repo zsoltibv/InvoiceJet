@@ -1,8 +1,6 @@
-﻿namespace InvoiceJetAPI.Models.Entity
+﻿namespace InvoiceJet.Domain.Models;
+
+public sealed class DocumentStatus: BaseEntity
 {
-    public class DocumentStatus
-    {
-        public int Id { get; set; }
-        public string Status { get; set; } = string.Empty;
-    }
+    public string Status { get; set; } = string.Empty;
 }

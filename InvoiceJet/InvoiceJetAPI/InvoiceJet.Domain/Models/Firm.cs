@@ -1,15 +1,13 @@
-﻿namespace InvoiceJetAPI.Models.Entity
-{
-    public class Firm
-    {
-        public int Id { get; set; }
-        public string Name { get; set; }
-        public string CUI { get; set; }
-        public string RegCom { get; set; }
-        public string Address { get; set; }
-        public string County { get; set; }
-        public string City { get; set; }
+﻿namespace InvoiceJet.Domain.Models;
 
-        public virtual ICollection<UserFirm>? UserFirms { get; set; }
-    }
+public sealed class Firm : BaseEntity
+{
+    public string Name { get; set; } = string.Empty;
+    public string Cui { get; set; } = string.Empty;
+    public string RegCom { get; set; } = string.Empty;
+    public string Address { get; set; } = string.Empty;
+    public string County { get; set; } = string.Empty;
+    public string City { get; set; } = string.Empty;
+
+    public ICollection<UserFirm>? UserFirms { get; set; }
 }

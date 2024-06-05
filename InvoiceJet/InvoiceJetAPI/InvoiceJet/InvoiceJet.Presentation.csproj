@@ -33,14 +33,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Models\Dto" />
-    <Folder Include="Models\Entity" />
-    <Folder Include="Service\Impl" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\InvoiceJet.Application\InvoiceJet.Application.csproj" />
     <ProjectReference Include="..\InvoiceJet.Domain\InvoiceJet.Domain.csproj" />
+    <ProjectReference Include="..\InvoiceJet.Infrastructure\InvoiceJet.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

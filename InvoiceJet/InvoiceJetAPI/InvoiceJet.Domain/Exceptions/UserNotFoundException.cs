@@ -1,11 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿namespace InvoiceJet.Domain.Exceptions;
 
-namespace InvoiceJetAPI.Exceptions
+public class UserNotFoundException : Exception
 {
-    public class UserNotFoundException : Exception
+    public UserNotFoundException(string email) : base($"User with email {email} not found.")
     {
-        public UserNotFoundException(string email) : base($"User with email {email} not found.")
-        {
-        }
     }
 }

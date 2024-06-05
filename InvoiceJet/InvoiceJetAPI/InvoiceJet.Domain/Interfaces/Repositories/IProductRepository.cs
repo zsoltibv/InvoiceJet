@@ -1,6 +1,8 @@
-﻿namespace InvoiceJet.Domain.Interfaces.Repositories;
+﻿using InvoiceJet.Domain.Models;
 
-public class IProductRepository
+namespace InvoiceJet.Domain.Interfaces.Repositories;
+
+public interface IProductRepository : IGenericRepository<Product>
 {
-    
+    Task<int> GetTotalProductsAsync(int firmId);
 }

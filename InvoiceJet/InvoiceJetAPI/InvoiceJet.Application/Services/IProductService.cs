@@ -1,10 +1,9 @@
-﻿using InvoiceJetAPI.Models.Dto;
-using Microsoft.AspNetCore.Mvc;
+﻿using InvoiceJet.Application.DTOs;
 
-namespace InvoiceJetAPI.Services
+namespace InvoiceJet.Application.Services;
+
+public interface IProductService
 {
-    public interface IProductService {
-        Task<ICollection<ProductDto>> GetAllProductsForUserId(Guid userId);
-        Task<ProductDto> AddOrEditProduct(ProductDto productDto, Guid userId);
-    }
+    Task<ICollection<ProductDto>> GetAllProductsForUserId(Guid userId);
+    Task<ProductDto> AddOrEditProduct(ProductDto productDto, Guid userId);
 }

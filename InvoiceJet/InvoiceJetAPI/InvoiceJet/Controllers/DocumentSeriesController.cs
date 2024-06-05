@@ -1,29 +1,26 @@
-﻿using InvoiceJetAPI.Models.Dto;
-using InvoiceJetAPI.Services;
-using InvoiceJetAPI.Utils;
+﻿using InvoiceJet.Application.DTOs;
+using InvoiceJet.Application.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Data;
 
-namespace InvoiceJetAPI.Controllers
+namespace InvoiceJet.Presentation.Controllers;
+
+[ApiController]
+[Route("api/[controller]")]
+[Authorize(Roles = "User")]
+public class DocumentSeriesController : ControllerBase
 {
-    [ApiController]
-    [Route("api/[controller]")]
-    [Authorize(Roles = "User")]
-    public class DocumentSeriesController : ControllerBase {
+    private readonly IDocumentSeriesService _documentSeriesService;
 
-        private readonly IDocumentSeriesService _documentSeriesService;
+    public DocumentSeriesController(IDocumentSeriesService documentSeriesService)
+    {
+        _documentSeriesService = documentSeriesService;
+    }
 
-        public DocumentSeriesController(IDocumentSeriesService documentSeriesService)
-        {
-            _documentSeriesService = documentSeriesService;
-        }
-
-        [HttpGet("GetAllDocumentSeriesForUserId/{userId}")]
-        public async Task<ActionResult<DocumentSeriesDto>> GetAllDocumentSeriesForUserId(Guid userId)
-        {
-            var bankAccountDto = await _documentSeriesService.GetAllDocumentSeriesForUserId(userId);
-            return Ok(bankAccountDto);
-        }
+    [HttpGet("GetAllDocumentSeriesForUserId/{userId}")]
+    public async Task<ActionResult<DocumentSeriesDto>> GetAllDocumentSeriesForUserId(Guid userId)
+    {
+        var bankAccountDto = await _documentSeriesService.GetAllDocumentSeriesForUserId(userId);
+        return Ok(bankAccountDto);
     }
 }

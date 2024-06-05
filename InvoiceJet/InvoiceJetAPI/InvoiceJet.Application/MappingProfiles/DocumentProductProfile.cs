@@ -1,16 +1,16 @@
 ﻿using AutoMapper;
-using InvoiceJetAPI.Models.Dto;
+using InvoiceJet.Application.DTOs;
 using InvoiceJet.Domain.Models;
 
-namespace InvoiceJetAPI.MappingProfiles
+namespace InvoiceJet.Application.MappingProfiles;
+
+public class DocumentProductProfile : Profile
 {
-    public class DocumentProductProfile : Profile
+    public DocumentProductProfile()
     {
-        public DocumentProductProfile() {
-            CreateMap<DocumentProductRequestDTO, Product>()
-                .ForMember(dest => dest.Price, opt => opt.MapFrom(src => src.UnitPrice))
-                .ForMember(dest => dest.UserFirm, opt => opt.Ignore())
-                .ForMember(dest => dest.UserFirmId, opt => opt.Ignore());
-        }
+        CreateMap<DocumentProductRequestDto, Product>()
+            .ForMember(dest => dest.Price, opt => opt.MapFrom(src => src.UnitPrice))
+            .ForMember(dest => dest.UserFirm, opt => opt.Ignore())
+            .ForMember(dest => dest.UserFirmId, opt => opt.Ignore());
     }
 }

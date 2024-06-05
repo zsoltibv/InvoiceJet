@@ -1,13 +1,12 @@
 ﻿using InvoiceJet.Domain.Interfaces.Repositories;
-using InvoiceJet.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 
-namespace InvoiceJet.Infrastructure.Repositories;
+namespace InvoiceJet.Infrastructure.Persistence.Repositories;
 
 public class GenericRepository<T> : IGenericRepository<T> where T : class
 {
     private readonly InvoiceJetDbContext _context;
-    private readonly DbSet<T> _dbSet;
+    protected readonly DbSet<T> _dbSet;
 
     public GenericRepository(InvoiceJetDbContext context)
     {
@@ -36,9 +35,15 @@ public class GenericRepository<T> : IGenericRepository<T> where T : class
         return Task.CompletedTask;
     }
 
-    public Task DeleteAsync(T entity)
+    public Task RemoveAsync(T entity)
     {
         _dbSet.Remove(entity);
+        return Task.CompletedTask;
+    }
+
+    public Task RemoveRangeAsync(IEnumerable<T> entities)
+    {
+        _dbSet.RemoveRange(entities);
         return Task.CompletedTask;
     }
 

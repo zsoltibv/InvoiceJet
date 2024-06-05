@@ -1,6 +1,8 @@
-﻿namespace InvoiceJet.Domain.Interfaces.Repositories;
+﻿using InvoiceJet.Domain.Models;
 
-public class IUserRepository
+namespace InvoiceJet.Domain.Interfaces.Repositories;
+
+public interface IUserRepository : IGenericRepository<User>
 {
-    
+    Task<User?> FindByEmailAsync(string email);
 }

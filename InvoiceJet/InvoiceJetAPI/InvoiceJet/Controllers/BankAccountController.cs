@@ -1,42 +1,40 @@
-﻿using InvoiceJetAPI.Models.Dto;
-using InvoiceJetAPI.Services;
+﻿using InvoiceJet.Application.DTOs;
+using InvoiceJet.Application.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Data;
 
-namespace InvoiceJetAPI.Controllers
+namespace InvoiceJet.Presentation.Controllers;
+
+[ApiController]
+[Route("api/[controller]")]
+[Authorize(Roles = "User")]
+public class BankAccountController : ControllerBase
 {
-    [ApiController]
-    [Route("api/[controller]")]
-    [Authorize(Roles = "User")]
-    public class BankAccountController : ControllerBase
+    private readonly IBankAccountService _bankAccountService;
+
+    public BankAccountController(IBankAccountService bankAccountService)
     {
-        private readonly IBankAccountService _bankAccountService;
+        _bankAccountService = bankAccountService;
+    }
 
-        public BankAccountController(IBankAccountService bankAccountService)
+    [HttpGet("GetUserFirmBankAccounts/{userId}")]
+    public async Task<ActionResult<FirmDto>> GetUserFirmBankAccounts(Guid userId)
+    {
+        var bankAccountDto = await _bankAccountService.GetUserFirmBankAccounts(userId);
+        return Ok(bankAccountDto);
+    }
+
+    [HttpPut("AddOrEditBankAccount/{userId}")]
+    public async Task<ActionResult<FirmDto>> AddOrEditBankAccount(BankAccountDto bankAccountDto, Guid userId)
+    {
+        try
         {
-            _bankAccountService = bankAccountService;
+            var updatedOrNewBankAccount = await _bankAccountService.AddOrEditBankAccount(bankAccountDto, userId);
+            return Ok(updatedOrNewBankAccount);
         }
-
-        [HttpGet("GetUserFirmBankAccounts/{userId}")]
-        public async Task<ActionResult<FirmDto>> GetUserFirmBankAccounts(Guid userId)
+        catch (Exception ex)
         {
-            var bankAccountDto = await _bankAccountService.GetUserFirmBankAccounts(userId);
-            return Ok(bankAccountDto);
-        }
-
-        [HttpPut("AddOrEditBankAccount/{userId}")]
-        public async Task<ActionResult<FirmDto>> AddOrEditBankAccount(BankAccountDto bankAccountDto, Guid userId)
-        {
-            try
-            {
-                var updatedOrNewBankAccount = await _bankAccountService.AddOrEditBankAccount(bankAccountDto, userId);
-                return Ok(updatedOrNewBankAccount);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
+            return BadRequest(ex.Message);
         }
     }
 }

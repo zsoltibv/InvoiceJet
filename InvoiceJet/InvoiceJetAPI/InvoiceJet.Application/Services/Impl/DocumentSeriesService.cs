@@ -1,37 +1,37 @@
 ﻿using AutoMapper;
-using InvoiceJetAPI.Config;
-using InvoiceJetAPI.Models.Dto;
+using InvoiceJet.Application.DTOs;
+using InvoiceJet.Domain.Interfaces;
 using InvoiceJet.Domain.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace InvoiceJetAPI.Services.Impl
+namespace InvoiceJet.Application.Services.Impl;
+
+public class DocumentSeriesService : IDocumentSeriesService
 {
-    public class DocumentSeriesService : IDocumentSeriesService
+    private readonly IUnitOfWork _unitOfWork;
+    private readonly IMapper _mapper;
+
+    public DocumentSeriesService(IMapper mapper, IUnitOfWork unitOfWork)
     {
-        private readonly FacturilaDbContext _dbContext;
-        private readonly IMapper _mapper;
+        _mapper = mapper;
+        _unitOfWork = unitOfWork;
+    }
 
-        public DocumentSeriesService(FacturilaDbContext dbContext, IMapper mapper)
+    public async Task<ICollection<DocumentSeriesDto>> GetAllDocumentSeriesForUserId(Guid userId)
+    {
+        var userWithFirm = await _unitOfWork.Users.Query()
+            .Where(u => u.Id == userId)
+            .Include(u => u.ActiveUserFirm)
+            .ThenInclude(ds => ds.DocumentSeries)!
+            .ThenInclude(dt => dt.DocumentType)
+            .FirstOrDefaultAsync();
+
+        if (userWithFirm?.ActiveUserFirm is null)
         {
-            _dbContext = dbContext;
-            _mapper = mapper;
+            return new List<DocumentSeriesDto>();
         }
 
-        public async Task<ICollection<DocumentSeriesDto>> GetAllDocumentSeriesForUserId(Guid userId)
-        {
-            var userWithFirm = await _dbContext.User
-                .Where(u => u.Id == userId)
-                .Include(u => u.ActiveUserFirm)
-                .ThenInclude(ds => ds.DocumentSeries)!
-                            .ThenInclude(dt => dt.DocumentType)
-                .FirstOrDefaultAsync();
-
-            if (userWithFirm?.ActiveUserFirm is null)
-            {
-                return new List<DocumentSeriesDto>();
-            }
-
-            return _mapper.Map<ICollection<DocumentSeries>, ICollection<DocumentSeriesDto>>(userWithFirm.ActiveUserFirm.DocumentSeries!);
-        }
+        return _mapper.Map<ICollection<DocumentSeries>, ICollection<DocumentSeriesDto>>(userWithFirm.ActiveUserFirm
+            .DocumentSeries!);
     }
 }

@@ -26,7 +26,7 @@ export class AddOrEditProductDialogComponent implements OnInit {
       id: new FormControl(null),
       name: new FormControl('', Validators.required),
       price: new FormControl('', Validators.required),
-      containsTVA: new FormControl(false),
+      containsTva: new FormControl(false),
       tvaValue: new FormControl(19, Validators.required),
       unitOfMeasurement: new FormControl('')
     });
@@ -39,7 +39,7 @@ export class AddOrEditProductDialogComponent implements OnInit {
         id: this.data?.id! ?? 0,
         name: this.data.name,
         price: this.data.price,
-        containsTVA: this.data.containsTVA,
+        containsTva: this.data.containsTva,
         tvaValue: this.data.tvaValue,
         unitOfMeasurement: this.data.unitOfMeasurement
       });

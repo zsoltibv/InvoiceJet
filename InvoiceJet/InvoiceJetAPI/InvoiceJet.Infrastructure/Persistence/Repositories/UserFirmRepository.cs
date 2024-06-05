@@ -1,6 +1,11 @@
-﻿namespace InvoiceJet.Infrastructure.Persistence.Repositories;
+﻿using InvoiceJet.Domain.Interfaces.Repositories;
+using InvoiceJet.Domain.Models;
 
-public class UserFirmRepository
+namespace InvoiceJet.Infrastructure.Persistence.Repositories;
+
+public class UserFirmRepository : GenericRepository<UserFirm>, IUserFirmRepository
 {
-    
+    public UserFirmRepository(InvoiceJetDbContext context) : base(context)
+    {
+    }
 }

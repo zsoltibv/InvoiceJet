@@ -1,9 +1,8 @@
-﻿using InvoiceJetAPI.Models.Dto;
+﻿using InvoiceJet.Application.DTOs;
 
-namespace InvoiceJetAPI.Services
+namespace InvoiceJet.Application.Services;
+
+public interface IDocumentSeriesService
 {
-    public interface IDocumentSeriesService
-    {
-        Task<ICollection<DocumentSeriesDto>> GetAllDocumentSeriesForUserId(Guid userId);
-    }
+    Task<ICollection<DocumentSeriesDto>> GetAllDocumentSeriesForUserId(Guid userId);
 }

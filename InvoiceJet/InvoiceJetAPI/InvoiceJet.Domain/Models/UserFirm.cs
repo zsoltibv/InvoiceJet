@@ -1,8 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿namespace InvoiceJet.Domain.Models;
 
-namespace InvoiceJetAPI.Models.Entity;
-
-public class UserFirm
+public sealed class UserFirm
 {
     public int UserFirmId { get; set; } 
 
@@ -11,11 +9,11 @@ public class UserFirm
 
     public bool IsClient { get; set; } = true;
 
-    public virtual User User { get; set; } = null!;
-    public virtual Firm Firm { get; set; } = null!;
+    public User User { get; set; } = null!;
+    public Firm Firm { get; set; } = null!;
 
-    public virtual ICollection<BankAccount>? BankAccounts { get; set; }
-    public virtual ICollection<Product>? Products { get; set; }
-    public virtual ICollection<DocumentSeries>? DocumentSeries { get; set; }
-    public virtual ICollection<Document>? Documents { get; set; }
+    public ICollection<BankAccount>? BankAccounts { get; set; }
+    public ICollection<Product>? Products { get; set; }
+    public ICollection<DocumentSeries>? DocumentSeries { get; set; }
+    public ICollection<Document>? Documents { get; set; }
 }

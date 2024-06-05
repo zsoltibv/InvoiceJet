@@ -1,4 +1,4 @@
-﻿namespace InvoiceJetAPI.Models.Dto;
+﻿namespace InvoiceJet.Application.DTOs;
 
 public class DashboardStatsDto
 {

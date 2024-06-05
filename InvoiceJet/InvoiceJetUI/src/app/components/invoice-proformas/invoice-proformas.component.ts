@@ -1,9 +1,9 @@
 import { Component } from "@angular/core";
 import { Router } from "@angular/router";
-import { DocumentService } from "../services/document.service";
-import { IDocumentTableRecord } from "../models/IDocumentTableRecord";
 import { MatTableDataSource } from "@angular/material/table";
 import { SelectionModel } from "@angular/cdk/collections";
+import { IDocumentTableRecord } from "src/app/models/IDocumentTableRecord";
+import { DocumentService } from "src/app/services/document.service";
 
 @Component({
   selector: "app-invoice-proformas",

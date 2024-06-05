@@ -1,7 +1,7 @@
 ﻿using InvoiceJet.Domain.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace InvoiceJet.Infrastructure.Data;
+namespace InvoiceJet.Infrastructure.Persistence;
 
 public class InvoiceJetDbContext : DbContext
 {

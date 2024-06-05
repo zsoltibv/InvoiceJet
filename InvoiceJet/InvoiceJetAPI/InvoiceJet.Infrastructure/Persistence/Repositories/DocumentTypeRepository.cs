@@ -1,6 +1,11 @@
-﻿namespace InvoiceJet.Infrastructure.Persistence.Repositories;
+﻿using InvoiceJet.Domain.Interfaces.Repositories;
+using InvoiceJet.Domain.Models;
 
-public class DocumentTypeRepository
+namespace InvoiceJet.Infrastructure.Persistence.Repositories;
+
+public class DocumentTypeRepository : GenericRepository<DocumentType>, IDocumentTypeRepository
 {
-    
+    public DocumentTypeRepository(InvoiceJetDbContext context) : base(context)
+    {
+    }
 }

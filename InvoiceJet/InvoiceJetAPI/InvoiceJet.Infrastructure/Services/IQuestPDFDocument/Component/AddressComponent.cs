@@ -2,7 +2,7 @@
 using QuestPDF.Fluent;
 using QuestPDF.Infrastructure;
 
-namespace InvoiceJet.Infrastructure.Services.IQuestPDFDocument;
+namespace InvoiceJet.Infrastructure.Services.IQuestPDFDocument.Component;
 
 public class AddressComponent : IComponent
 {

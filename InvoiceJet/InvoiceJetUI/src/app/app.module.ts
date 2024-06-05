@@ -40,8 +40,8 @@ import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from "@angular/material/form-field";
 import { TokenExpiredDialogComponent } from "./components/token-expired-dialog/token-expired-dialog.component";
 import { PdfViewerComponent } from "./components/pdf-viewer/pdf-viewer.component";
 import { NgChartsModule } from "ng2-charts";
-import { InvoiceProformasComponent } from './invoice-proformas/invoice-proformas.component';
-import { AddOrEditInvoiceProformaComponent } from './invoice-proformas/add-or-edit-invoice-proforma/add-or-edit-invoice-proforma.component';
+import { InvoiceProformasComponent } from './components/invoice-proformas/invoice-proformas.component';
+import { AddOrEditInvoiceProformaComponent } from './components/invoice-proformas/add-or-edit-invoice-proforma/add-or-edit-invoice-proforma.component';
 import { InvoiceStornosComponent } from './components/invoice-stornos/invoice-stornos.component';
 
 @NgModule({

@@ -1,19 +1,17 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 
-namespace InvoiceJetAPI.Models.Entity;
+namespace InvoiceJet.Domain.Models;
 
-public class DocumentProduct
+public sealed class DocumentProduct : BaseEntity
 {
-    public int Id { get; set; }
-
     [Column(TypeName = "decimal(18,2)")]
     public decimal Quantity { get; set; }
     public decimal UnitPrice { get; set; }
     public decimal TotalPrice { get; set; }
 
     public int? DocumentId { get; set; }
-    public virtual Document? Document { get; set; }
+    public Document? Document { get; set; }
 
     public int? ProductId { get; set; }
-    public virtual Product? Product { get; set; }
+    public Product? Product { get; set; }
 }

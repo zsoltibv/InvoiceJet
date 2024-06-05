@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using InvoiceJetAPI.Models.Dto;
+using InvoiceJet.Application.DTOs;
 using InvoiceJet.Domain.Models;
 
 public class ProductProfile : Profile

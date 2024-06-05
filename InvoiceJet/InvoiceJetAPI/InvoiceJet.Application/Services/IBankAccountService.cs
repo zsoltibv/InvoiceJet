@@ -1,10 +1,9 @@
-﻿using InvoiceJetAPI.Models.Dto;
+﻿using InvoiceJet.Application.DTOs;
 
-namespace InvoiceJetAPI.Services
+namespace InvoiceJet.Application.Services;
+
+public interface IBankAccountService
 {
-    public interface IBankAccountService
-    {
-        Task<ICollection<BankAccountDto>> GetUserFirmBankAccounts(Guid userId);
-        Task<BankAccountDto> AddOrEditBankAccount(BankAccountDto bankAccountDto, Guid userId);
-    }
+    Task<ICollection<BankAccountDto>> GetUserFirmBankAccounts(Guid userId);
+    Task<BankAccountDto> AddOrEditBankAccount(BankAccountDto bankAccountDto, Guid userId);
 }

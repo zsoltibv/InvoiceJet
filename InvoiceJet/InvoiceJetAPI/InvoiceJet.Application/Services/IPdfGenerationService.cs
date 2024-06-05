@@ -1,6 +1,6 @@
 ﻿using InvoiceJet.Application.DTOs;
 
-namespace InvoiceJet.Infrastructure.Services;
+namespace InvoiceJet.Application.Services;
 
 public interface IPdfGenerationService
 {

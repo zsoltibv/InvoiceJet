@@ -36,7 +36,7 @@ export class AddOrEditInvoiceComponent {
     "quantity",
     "unitOfMeasurement",
     "tvaValue",
-    "containsTVA",
+    "containsTva",
     "totalPrice",
     "actions",
   ];
@@ -177,7 +177,7 @@ export class AddOrEditInvoiceComponent {
       quantity: [1, [Validators.required, Validators.min(1)]],
       unitOfMeasurement: ["buc", Validators.required],
       tvaValue: [19, [Validators.required, Validators.min(0)]],
-      containsTVA: [false],
+      containsTva: [false],
     });
   }
 
@@ -215,7 +215,7 @@ export class AddOrEditInvoiceComponent {
           (selectedProduct.price * selectedProduct.tvaValue) / 100,
         unitOfMeasurement: selectedProduct.unitOfMeasurement,
         tvaValue: selectedProduct.tvaValue,
-        containsTVA: selectedProduct.containsTVA,
+        containsTva: selectedProduct.containsTva,
       });
     }
   }

@@ -1,87 +1,87 @@
-﻿using InvoiceJetAPI.Config;
-using InvoiceJetAPI.Models.Dto;
-using Microsoft.EntityFrameworkCore;
-using InvoiceJetAPI.Exceptions;
+﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using Microsoft.IdentityModel.Tokens;
 using System.Text;
-using System.IdentityModel.Tokens.Jwt;
+using InvoiceJet.Application.DTOs;
 using InvoiceJet.Domain.Exceptions;
+using InvoiceJet.Domain.Interfaces;
 using InvoiceJet.Domain.Models;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
 using BC = BCrypt.Net.BCrypt;
 
-namespace InvoiceJetAPI.Services.Impl
+namespace InvoiceJet.Application.Services.Impl;
+
+public class AuthService : IAuthService
 {
-    public class AuthService : IAuthService
+    private readonly IConfiguration _configuration;
+    private readonly IUnitOfWork _unitOfWork;
+
+    public AuthService(IUnitOfWork unitOfWork, IConfiguration configuration)
     {
-        private readonly FacturilaDbContext _dbContext;
-        private readonly IConfiguration _configuration;
+        _unitOfWork = unitOfWork;
+        _configuration = configuration;
+    }
 
-        public AuthService(FacturilaDbContext dbContext, IConfiguration configuration)
+    public async Task<User> RegisterUser(UserRegisterDto userDto)
+    {
+        var user = new User
         {
-            _dbContext = dbContext;
-            _configuration = configuration;
+            Email = userDto.Email,
+            PasswordHash = BC.HashPassword(userDto.Password),
+            FirstName = userDto.FirstName,
+            LastName = userDto.LastName,
+            Role = "User"
+        };
+
+        await _unitOfWork.Users.AddAsync(user);
+        await _unitOfWork.CompleteAsync();
+
+        return user;
+    }
+
+    public async Task<string> LoginUser(UserLoginDto userDto)
+    {
+        var user = await _unitOfWork.Users.Query()
+            .FirstOrDefaultAsync(u => u.Email == userDto.Email);
+        if (user == null || user.Email != userDto.Email)
+        {
+            throw new UserNotFoundException(userDto.Email);
         }
 
-        public async Task<User> RegisterUser(UserRegisterDto userDto)
+        if (!BC.Verify(userDto.Password, user.PasswordHash))
         {
-            var user = new User
-            {
-                Email = userDto.Email,
-                PasswordHash = BC.HashPassword(userDto.Password),
-                FirstName = userDto.FirstName,
-                LastName = userDto.LastName,
-                Role = "User"
-            };
-
-            await _dbContext.User.AddAsync(user);
-            await _dbContext.SaveChangesAsync();
-
-            return user;
+            throw new Exception("Password is incorrect.");
         }
 
-        public async Task<string> LoginUser(UserLoginDto userDto)
+        string token = CreateToken(user);
+        return token;
+    }
+
+    private string CreateToken(User user)
+    {
+        List<Claim> claims = new List<Claim>
         {
-            var user = await _dbContext.User.FirstOrDefaultAsync(u => u.Email == userDto.Email);
-            if (user == null || user.Email != userDto.Email)
-            {
-                throw new UserNotFoundException(userDto.Email);
-            }
+            new Claim("userId", user.Id.ToString()),
+            new Claim("firstName", user.FirstName),
+            new Claim("lastName", user.LastName),
+            new Claim("email", user.Email),
+            new Claim(ClaimTypes.Role, "User")
+        };
 
-            if (!BC.Verify(userDto.Password, user.PasswordHash))
-            {
-                throw new Exception("Password is incorrect.");
-            }
+        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(
+            _configuration.GetSection("AppSettings:Token").Value!));
 
-            string token = CreateToken(user);
-            return token;
-        }
+        var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
 
-        private string CreateToken(User user)
-        {
-            List<Claim> claims = new List<Claim>
-            {
-                new Claim("userId", user.Id.ToString()),
-                new Claim("firstName", user.FirstName),
-                new Claim("lastName", user.LastName),
-                new Claim("email", user.Email),
-                new Claim(ClaimTypes.Role, "User")
-            };
+        var token = new JwtSecurityToken(
+            claims: claims,
+            expires: DateTime.UtcNow.AddMinutes(10),
+            signingCredentials: credentials
+        );
 
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(
-                _configuration.GetSection("AppSettings:Token").Value!));
+        var jwt = new JwtSecurityTokenHandler().WriteToken(token);
 
-            var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
-
-            var token = new JwtSecurityToken(
-                    claims: claims,
-                    expires: DateTime.UtcNow.AddMinutes(10),
-                    signingCredentials: credentials
-                );
-
-            var jwt = new JwtSecurityTokenHandler().WriteToken(token);
-
-            return jwt;
-        }
+        return jwt;
     }
 }

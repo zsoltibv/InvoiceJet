@@ -1,11 +1,9 @@
-﻿using InvoiceJetAPI.Models.Dto;
+﻿using InvoiceJet.Application.DTOs;
 
-namespace InvoiceJetAPI.Services
+namespace InvoiceJet.Application.Services;
+
+public interface IUserService
 {
-    public interface IUserService
-    {
-        Task<UserRegisterDto> GetUserByEmail(string email);
-        Guid? GetUserIdFromToken();
-        Task<int?> GetUserFirmIdUsingTokenAsync();
-    }
+    Guid? GetUserIdFromToken();
+    Task<int?> GetUserFirmIdUsingTokenAsync();
 }

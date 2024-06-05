@@ -228,7 +228,7 @@
         </ng-container>
 
         <!-- Contains TVA Checkbox Column -->
-        <ng-container matColumnDef="containsTVA">
+        <ng-container matColumnDef="containsTva">
           <th mat-header-cell *matHeaderCellDef>Contains TVA</th>
           <td
             mat-cell
@@ -236,7 +236,7 @@
             [formGroupName]="i"
           >
             <mat-checkbox
-              formControlName="containsTVA"
+              formControlName="containsTva"
               (change)="calculatePriceWithoutTVA(i, $event.checked)"
               >Yes</mat-checkbox
             >

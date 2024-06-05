@@ -1,8 +1,7 @@
-﻿namespace InvoiceJetAPI.Models.Dto
+﻿namespace InvoiceJet.Application.DTOs;
+
+public class DocumentStreamDto
 {
-    public class DocumentStreamDto
-    {
-        public string DocumentNumber { get; set; }
-        public byte[] PdfContent { get; set; }
-    }
+    public string DocumentNumber { get; set; } = string.Empty;
+    public byte[] PdfContent { get; set; } = Array.Empty<byte>();
 }
