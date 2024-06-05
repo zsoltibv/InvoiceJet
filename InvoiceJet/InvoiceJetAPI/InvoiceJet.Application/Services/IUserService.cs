@@ -1,9 +1,6 @@
-﻿using InvoiceJet.Application.DTOs;
+﻿namespace InvoiceJet.Application.Services;
 
-namespace InvoiceJet.Application.Services;
-
-public interface IUserService
+public class IUserService
 {
-    Guid? GetUserIdFromToken();
-    Task<int?> GetUserFirmIdUsingTokenAsync();
+    
 }
