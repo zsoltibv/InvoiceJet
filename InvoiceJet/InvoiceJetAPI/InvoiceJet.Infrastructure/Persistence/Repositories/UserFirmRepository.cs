@@ -1,5 +1,6 @@
 ﻿using InvoiceJet.Domain.Interfaces.Repositories;
 using InvoiceJet.Domain.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace InvoiceJet.Infrastructure.Persistence.Repositories;
 

@@ -17,24 +17,31 @@ public class BankAccountController : ControllerBase
         _bankAccountService = bankAccountService;
     }
 
-    [HttpGet("GetUserFirmBankAccounts/{userId}")]
-    public async Task<ActionResult<FirmDto>> GetUserFirmBankAccounts(Guid userId)
+    [HttpGet("GetUserFirmBankAccounts")]
+    public async Task<ActionResult<BankAccountDto>> GetUserFirmBankAccounts()
     {
-        var bankAccountDto = await _bankAccountService.GetUserFirmBankAccounts(userId);
+        var bankAccountDto = await _bankAccountService.GetUserFirmBankAccounts();
         return Ok(bankAccountDto);
     }
 
-    [HttpPut("AddOrEditBankAccount/{userId}")]
-    public async Task<ActionResult<FirmDto>> AddOrEditBankAccount(BankAccountDto bankAccountDto, Guid userId)
+    [HttpPost("AddUserFirmBankAccount")]
+    public async Task<ActionResult<BankAccountDto>> AddUserFirmBankAccount([FromBody] BankAccountDto bankAccountDto)
     {
-        try
-        {
-            var updatedOrNewBankAccount = await _bankAccountService.AddOrEditBankAccount(bankAccountDto, userId);
-            return Ok(updatedOrNewBankAccount);
-        }
-        catch (Exception ex)
-        {
-            return BadRequest(ex.Message);
-        }
+        var bankAccount = await _bankAccountService.AddUserFirmBankAccount(bankAccountDto);
+        return Ok(bankAccount);
+    }
+
+    [HttpPut("EditUserFirmBankAccount")]
+    public async Task<ActionResult<BankAccountDto>> EditUserFirmBankAccount([FromBody] BankAccountDto bankAccountDto)
+    {
+        var bankAccount = await _bankAccountService.EditUserFirmBankAccount(bankAccountDto);
+        return Ok(bankAccount);
+    }
+
+    [HttpPut("DeleteUserFirmBankAccounts")]
+    public async Task<ActionResult<BankAccountDto>> DeleteUserFirmBankAccounts([FromBody] int[] bankAccountIds)
+    {
+        await _bankAccountService.DeleteUserFirmBankAccounts(bankAccountIds);
+        return Ok();
     }
 }

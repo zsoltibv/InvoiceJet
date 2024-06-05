@@ -74,11 +74,11 @@ public class DocumentController : ControllerBase
     }
 
     [HttpPost("GetInvoicePdfStream")]
-    public async Task<IActionResult> GetInvoicePdfStream(DocumentRequestDto documentRequestDTO)
+    public async Task<IActionResult> GetInvoicePdfStream(DocumentRequestDto documentRequestDto)
     {
         try
         {
-            DocumentStreamDto documentStreamDto = await _documentService.GetInvoicePdfStream(documentRequestDTO);
+            var documentStreamDto = await _documentService.GetInvoicePdfStream(documentRequestDto);
             if (documentStreamDto.PdfContent == null)
             {
                 return BadRequest("Failed to generate the PDF document.");

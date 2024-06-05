@@ -1,6 +1,8 @@
 <mat-progress-bar mode="query" *ngIf="!currentUserFirm"></mat-progress-bar>
 <div class="inner-container">
-  <h1>Firm Details</h1>
+  <div class="app-header">
+    <h1>Firm Details</h1>
+  </div>
   <form
     [formGroup]="firmDetailsForm"
     (ngSubmit)="onSubmit()"

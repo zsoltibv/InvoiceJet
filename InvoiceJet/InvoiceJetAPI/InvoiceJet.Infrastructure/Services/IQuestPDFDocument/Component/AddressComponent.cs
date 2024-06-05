@@ -39,14 +39,16 @@ public class AddressComponent : IComponent
                 column.Item().Text($"Reg. Com: {Address.RegCom}");
             }
 
-            if (!string.IsNullOrEmpty(BankAccount.BankName))
+            if (BankAccount != null)
             {
-                column.Item().Text($"Bank: {BankAccount.BankName}");
-            }
-
-            if (!string.IsNullOrEmpty(BankAccount.Iban))
-            {
-                column.Item().Text($"IBAN: {BankAccount.Iban}");
+                if (!string.IsNullOrEmpty(BankAccount.BankName))
+                {
+                    column.Item().Text($"Bank: {BankAccount.BankName}");
+                }
+                if (!string.IsNullOrEmpty(BankAccount.Iban))
+                {
+                    column.Item().Text($"IBAN: {BankAccount.Iban}");
+                }
             }
         });
     }

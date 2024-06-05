@@ -21,7 +21,7 @@
 
       <!-- IBAN Field -->
       <div class="row">
-        <mat-form-field >
+        <mat-form-field>
           <mat-label>IBAN</mat-label>
           <input matInput formControlName="iban" required />
           <mat-error *ngIf="bankAccountForm.get('iban')?.errors?.['required']">
@@ -32,7 +32,7 @@
 
       <!-- Currency Field -->
       <div class="row">
-        <mat-form-field >
+        <mat-form-field>
           <mat-label>Currency</mat-label>
           <mat-select formControlName="currency" required>
             <mat-option
@@ -62,6 +62,15 @@
 
       <!-- Submit Button -->
       <div class="controls">
+        <button
+          mat-stroked-button
+          color="primary"
+          type="button"
+          (click)="closeDialog()"
+          *ngIf="isEditMode"
+        >
+          {{ "Cancel" }}
+        </button>
         <button mat-raised-button color="primary" type="submit">
           {{ isEditMode ? "Update" : "Submit" }}
         </button>

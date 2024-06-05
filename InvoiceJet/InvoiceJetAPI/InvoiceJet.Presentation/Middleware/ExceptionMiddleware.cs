@@ -1,33 +1,47 @@
 ﻿using InvoiceJet.Domain.Exceptions;
+using System.Net;
+using System.Text.Json;
 
-namespace InvoiceJet.Presentation.Middleware;
-
-public class ExceptionMiddleware
+namespace InvoiceJet.Presentation.Middleware
 {
-    private readonly RequestDelegate _next;
-
-    public ExceptionMiddleware(RequestDelegate next)
+    public class ExceptionMiddleware
     {
-        _next = next;
-    }
+        private readonly RequestDelegate _next;
 
-    public async Task Invoke(HttpContext context)
-    {
-        try
+        public ExceptionMiddleware(RequestDelegate next)
         {
-            await _next(context);
+            _next = next;
         }
-        catch (AnafFirmNotFoundException ex)
+
+        public async Task Invoke(HttpContext context)
         {
-            context.Response.StatusCode = 404;
-            context.Response.ContentType = "application/json";
-            await context.Response.WriteAsync($"{ex.Message}");
+            try
+            {
+                await _next(context);
+            }
+            catch (AnafFirmNotFoundException ex)
+            {
+                await HandleExceptionAsync(context, ex, HttpStatusCode.NotFound);
+            }
+            catch (BankAccountAssociatedWithDocumentsException ex)
+            {
+                await HandleExceptionAsync(context, ex, HttpStatusCode.BadRequest);
+            }
+            catch (Exception ex)
+            {
+                await HandleExceptionAsync(context, ex, HttpStatusCode.InternalServerError);
+            }
         }
-        catch (Exception ex)
+
+        private static Task HandleExceptionAsync(HttpContext context, Exception exception, HttpStatusCode statusCode)
         {
-            context.Response.StatusCode = 500;
+            var response = new { message = exception.Message };
+            var payload = JsonSerializer.Serialize(response);
+
             context.Response.ContentType = "application/json";
-            await context.Response.WriteAsync($"{ex.Message}");
+            context.Response.StatusCode = (int)statusCode;
+
+            return context.Response.WriteAsync(payload);
         }
     }
 }

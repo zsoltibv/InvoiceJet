@@ -9,6 +9,6 @@ public sealed class BankAccount : BaseEntity
     public CurrencyEnum Currency { get; set; }
     public bool IsActive { get; set; } = false;
 
-    public int? UserFirmId { get; set; }
-    public UserFirm? UserFirm { get; set; }
+    public int UserFirmId { get; set; }
+    public UserFirm UserFirm { get; set; }
 }

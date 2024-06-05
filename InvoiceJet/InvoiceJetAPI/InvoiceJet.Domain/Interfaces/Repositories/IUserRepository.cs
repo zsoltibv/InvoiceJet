@@ -4,5 +4,6 @@ namespace InvoiceJet.Domain.Interfaces.Repositories;
 
 public interface IUserRepository : IGenericRepository<User>
 {
-    Task<User?> FindByEmailAsync(string email);
+    public Task<int> GetUserFirmIdAsync(Guid userId);
+    public Task<UserFirm> GetUserFirmAsync(Guid userId);
 }

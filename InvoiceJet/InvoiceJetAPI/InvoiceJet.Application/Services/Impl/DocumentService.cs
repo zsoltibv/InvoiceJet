@@ -3,7 +3,6 @@ using InvoiceJet.Application.DTOs;
 using InvoiceJet.Domain.Interfaces;
 using InvoiceJet.Domain.Models;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace InvoiceJet.Application.Services.Impl;
 
@@ -14,12 +13,12 @@ public class DocumentService : IDocumentService
     private readonly IPdfGenerationService _pdfGenerationService;
     private readonly IUnitOfWork _unitOfWork;
 
-    public DocumentService(IMapper mapper, IUserService userService, IPdfGenerationService pdfGenerationService,IUnitOfWork unitOfWork)
+    public DocumentService(IMapper mapper, IPdfGenerationService pdfGenerationService, IUnitOfWork unitOfWork, IUserService userService)
     {
         _mapper = mapper;
-        _userService = userService;
         _pdfGenerationService = pdfGenerationService;
         _unitOfWork = unitOfWork;
+        _userService = userService;
     }
 
     private async Task UpdateDocumentProducts(int documentId, List<DocumentProductRequestDto> documentProductsDto,
@@ -80,8 +79,7 @@ public class DocumentService : IDocumentService
 
     public async Task<DocumentRequestDto> AddDocument(DocumentRequestDto documentRequestDto)
     {
-        var userFirmId = await _userService.GetUserFirmIdUsingTokenAsync() ??
-                         throw new Exception("User firm not found.");
+        var userFirmId = await _unitOfWork.Users.GetUserFirmIdAsync(_userService.GetCurrentUserId());
         Document document = new Document
         {
             Id = documentRequestDto.Id,
@@ -116,8 +114,7 @@ public class DocumentService : IDocumentService
 
     public async Task<DocumentRequestDto> EditDocument(DocumentRequestDto documentRequestDto)
     {
-        var userFirmId = await _userService.GetUserFirmIdUsingTokenAsync() ??
-                         throw new Exception("User firm not found.");
+        var userFirmId = await _unitOfWork.Users.GetUserFirmIdAsync(_userService.GetCurrentUserId());
         var document = await _unitOfWork.Documents.GetByIdAsync(documentRequestDto.Id);
 
         if (document == null)
@@ -142,13 +139,8 @@ public class DocumentService : IDocumentService
 
     public async Task<DocumentRequestDto> GeneratePdfDocument(DocumentRequestDto documentRequestDto)
     {
-        var activeUserFirmId = await _userService.GetUserFirmIdUsingTokenAsync();
-        var activeUserFirm = await _unitOfWork.UserFirms.Query()
-            .Where(uf => uf.UserFirmId == activeUserFirmId)
-            .Include(uf => uf.Firm)
-            .FirstOrDefaultAsync();
-
-        documentRequestDto.Seller = _mapper.Map<FirmDto>(activeUserFirm?.Firm);
+        var activeUserFirm = await _unitOfWork.Users.GetUserFirmAsync(_userService.GetCurrentUserId());
+        documentRequestDto.Seller = _mapper.Map<FirmDto>(activeUserFirm.Firm);
 
         //include invoice document class and generate pdf
         _pdfGenerationService.GenerateInvoicePdf(documentRequestDto);
@@ -158,7 +150,7 @@ public class DocumentService : IDocumentService
 
     public async Task<DocumentStreamDto> GetInvoicePdfStream(DocumentRequestDto documentRequestDto)
     {
-        var activeUserFirmId = await _userService.GetUserFirmIdUsingTokenAsync();
+        var activeUserFirmId = await _unitOfWork.Users.GetUserFirmIdAsync(_userService.GetCurrentUserId());
         var activeUserFirm = await _unitOfWork.UserFirms.Query()
             .Where(uf => uf.UserFirmId == activeUserFirmId)
             .Include(uf => uf.Firm)
@@ -172,12 +164,14 @@ public class DocumentService : IDocumentService
         documentRequestDto.Seller = _mapper.Map<FirmDto>(activeUserFirm?.Firm);
         documentRequestDto.BankAccount = _mapper.Map<BankAccountDto>(documentBankAccount);
 
+        var pdfContent = _pdfGenerationService.GetInvoicePdfStream(documentRequestDto);
+        
         //include invoice document class and generate pdf
         return new DocumentStreamDto
         {
             DocumentNumber = documentRequestDto.DocumentNumber ??
                              documentRequestDto.DocumentSeries.CurrentNumber.ToString(),
-            PdfContent = _pdfGenerationService.GetInvoicePdfStream(documentRequestDto),
+            PdfContent = pdfContent
         };
     }
 
@@ -211,7 +205,7 @@ public class DocumentService : IDocumentService
 
     public async Task<List<DocumentTableRecordDto>> GetDocumentTableRecords(int documentTypeId)
     {
-        var activeUserFirmId = await _userService.GetUserFirmIdUsingTokenAsync();
+        var activeUserFirmId = await _unitOfWork.Users.GetUserFirmIdAsync(_userService.GetCurrentUserId());
         if (activeUserFirmId == null) return new List<DocumentTableRecordDto>();
 
         var activeUserFirm = await _unitOfWork.UserFirms.Query()
@@ -258,14 +252,14 @@ public class DocumentService : IDocumentService
 
     public async Task<DashboardStatsDto> GetDashboardStats()
     {
-        int? activeUserFirmId = await _userService.GetUserFirmIdUsingTokenAsync();
+        var activeUserFirmId = await _unitOfWork.Users.GetUserFirmIdAsync(_userService.GetCurrentUserId());
         if (activeUserFirmId == null) return new DashboardStatsDto();
 
         var activeUserFirm = await _unitOfWork.UserFirms.Query()
             .Where(uf => uf.UserFirmId == activeUserFirmId)
             .Include(uf => uf.User)
             .FirstOrDefaultAsync();
-        
+
         var totalDocumentsTask = await _unitOfWork.Documents.GetTotalDocumentsAsync((int)activeUserFirmId);
         var totalClientsTask = await _unitOfWork.Firms.GetTotalClientsAsync(activeUserFirm!.User.Id);
         var totalProductsTask = await _unitOfWork.Products.GetTotalProductsAsync((int)activeUserFirmId);
@@ -299,7 +293,7 @@ public class DocumentService : IDocumentService
 
     public async Task TransformToStorno(int[] documentIds)
     {
-        int? activeUserFirmId = await _userService.GetUserFirmIdUsingTokenAsync();
+        var activeUserFirmId = await _unitOfWork.Users.GetUserFirmIdAsync(_userService.GetCurrentUserId());
         if (activeUserFirmId == null)
             throw new Exception("User firm not found.");
 

@@ -20,16 +20,16 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddDbContext<InvoiceJetDbContext>(options =>
 {
-    options.UseSqlServer(builder.Configuration.GetConnectionString("FacturilaConnectionString"));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("InvoiceJetConnectionString"));
 });
 
 QuestPDF.Settings.License = LicenseType.Community;
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IFirmService, FirmService>();
-builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IBankAccountService, BankAccountService>();
 builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<IDocumentSeriesService, DocumentSeriesService>();
@@ -66,6 +66,7 @@ builder.Services.AddAuthentication(
             ValidateLifetime = true,
             ClockSkew = TimeSpan.Zero
         };
+        options.MapInboundClaims = false;
     });
 
 builder.Services.AddCors(options => options.AddPolicy(name: "NgOrigins", 
@@ -75,6 +76,8 @@ builder.Services.AddCors(options => options.AddPolicy(name: "NgOrigins",
     }));
 
 var app = builder.Build();
+
+app.UseMiddleware<ExceptionMiddleware>();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -86,8 +89,6 @@ if (app.Environment.IsDevelopment())
 await DbSeeder.SeedDocumentTypes(app);
 
 app.UseCors("NgOrigins");
-
-app.UseMiddleware<ExceptionMiddleware>();
 
 app.UseHttpsRedirection();
 

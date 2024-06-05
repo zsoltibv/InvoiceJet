@@ -11,17 +11,30 @@ export class BankAccountService {
 
   constructor(private http: HttpClient) {}
 
-  getUserFirmBankAccounts(userId: string) {
+  getUserFirmBankAccounts() {
     return this.http.get<IBankAccount[]>(
-      `${this.baseUrl}/BankAccount/GetUserFirmBankAccounts/${userId}`
+      `${this.baseUrl}/BankAccount/GetUserFirmBankAccounts/`
     );
   }
 
-  addOrEditBankAccount(bankAccount: IBankAccount, userId: string) {
-    console.log("aici");
-    return this.http.put<IBankAccount>(
-      `${this.baseUrl}/BankAccount/AddOrEditBankAccount/${userId}`,
+  addBankAccount(bankAccount: IBankAccount) {
+    return this.http.post<IBankAccount>(
+      `${this.baseUrl}/BankAccount/AddUserFirmBankAccount/`,
       bankAccount
+    );
+  }
+
+  editBankAccount(bankAccount: IBankAccount) {
+    return this.http.put<IBankAccount>(
+      `${this.baseUrl}/BankAccount/EditUserFirmBankAccount/`,
+      bankAccount
+    );
+  }
+
+  deleteBankAccounts(bankAccountIds: number[]) {
+    return this.http.put<number[]>(
+      `${this.baseUrl}/BankAccount/DeleteUserFirmBankAccounts`,
+      bankAccountIds
     );
   }
 }

@@ -10,6 +10,9 @@ import { AddOrEditBankAccountDialogComponent } from "./add-or-edit-bank-account-
 import { ICurrency } from "src/app/models/ICurrency";
 import { Currency } from "src/app/enums/Currency";
 import { SelectionModel } from "@angular/cdk/collections";
+import { MatSnackBar } from "@angular/material/snack-bar";
+import { HttpErrorResponse } from "@angular/common/http";
+import { catchError, of } from "rxjs";
 
 @Component({
   selector: "app-bank-accounts",
@@ -42,7 +45,8 @@ export class BankAccountsComponent {
     private _liveAnnouncer: LiveAnnouncer,
     public dialog: MatDialog,
     private bankAccountService: BankAccountService,
-    private authService: AuthService
+    private authService: AuthService,
+    private snackBar: MatSnackBar
   ) {}
 
   @ViewChild(MatSort) sort!: MatSort;
@@ -52,12 +56,10 @@ export class BankAccountsComponent {
   }
 
   getUserBankAccounts(): void {
-    this.bankAccountService
-      .getUserFirmBankAccounts(this.authService.userId)
-      .subscribe((accounts) => {
-        this.bankAccounts = this.mapCurrencyNames(accounts);
-        this.dataSource.data = this.bankAccounts;
-      });
+    this.bankAccountService.getUserFirmBankAccounts().subscribe((accounts) => {
+      this.bankAccounts = this.mapCurrencyNames(accounts);
+      this.dataSource.data = this.bankAccounts;
+    });
   }
 
   ngAfterViewInit() {
@@ -74,20 +76,27 @@ export class BankAccountsComponent {
 
   openNewBankAccountDialog() {
     const dialogRef = this.dialog.open(AddOrEditBankAccountDialogComponent, {});
-
-    dialogRef.afterClosed().subscribe(() => {
-      this.getUserBankAccounts();
+    dialogRef.afterClosed().subscribe((changed) => {
+      if (changed) {
+        this.getUserBankAccounts();
+      }
+      this.selection.clear();
     });
   }
 
   openEditBankAccountDialog(bankAccount: IBankAccount) {
+    this.selection.clear();
     const dialogRef = this.dialog.open(AddOrEditBankAccountDialogComponent, {
+      disableClose: true,
       panelClass: "custom-dialog-panel",
       data: bankAccount,
     });
 
-    dialogRef.afterClosed().subscribe((result) => {
-      this.getUserBankAccounts();
+    dialogRef.afterClosed().subscribe((changed) => {
+      if (changed) {
+        this.getUserBankAccounts();
+      }
+      this.selection.clear();
     });
   }
 
@@ -109,7 +118,6 @@ export class BankAccountsComponent {
     return numSelected === numRows;
   }
 
-  /** Selects all rows if they are not all selected; otherwise clear selection. */
   masterToggle() {
     this.isAllSelected()
       ? this.selection.clear()
@@ -117,10 +125,33 @@ export class BankAccountsComponent {
   }
 
   deleteSelected() {
-    const selectedIds = this.selection.selected.map((s) => s.id); // Get IDs of selected items
-    console.log(selectedIds); // Implement deletion logic here
-    // After deletion, update the dataSource and clear selection
-    // this.dataSource.data = newData;
-    this.selection.clear();
+    const selectedIds = this.selection.selected.map((s) => s.id);
+    this.bankAccountService
+      .deleteBankAccounts(selectedIds)
+      .pipe(
+        catchError((error) => {
+          if (error.error instanceof ErrorEvent) {
+            console.error("An error occurred:", error.message);
+          } else {
+            console.error("An error occurred:", error.message);
+          }
+          return of([]);
+        })
+      )
+      .subscribe({
+        next: () => {
+          this.getUserBankAccounts();
+          this.selection.clear();
+          this.snackBar.open("Bank accounts deleted successfully.", "Close", {
+            duration: 3000,
+          });
+        },
+        error: (errorMessage: HttpErrorResponse) => {
+          console.error(errorMessage);
+          this.snackBar.open(errorMessage.message, "Close", {
+            duration: 3000,
+          });
+        },
+      });
   }
 }

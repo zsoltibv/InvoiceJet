@@ -13,8 +13,15 @@
         <mat-icon>add</mat-icon>
         <span>New Account</span>
       </button>
-      <button mat-raised-button color="warn" (click)="deleteSelected()">
-        <mat-icon>delete</mat-icon>
+      <mat-menu #menu="matMenu">
+        <button mat-menu-item (click)="deleteSelected()">
+          <mat-icon color="warn">delete</mat-icon>
+          <span>Delete selected</span>
+        </button>
+      </mat-menu>
+
+      <button mat-stroked-button [matMenuTriggerFor]="menu">
+        <mat-icon color="primary">more_vert</mat-icon>
       </button>
     </div>
   </div>

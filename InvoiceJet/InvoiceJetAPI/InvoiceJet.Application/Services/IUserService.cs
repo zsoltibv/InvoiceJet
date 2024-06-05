@@ -1,6 +1,6 @@
 ﻿namespace InvoiceJet.Application.Services;
 
-public class IUserService
+public interface IUserService
 {
-    
+    public Guid GetCurrentUserId();
 }

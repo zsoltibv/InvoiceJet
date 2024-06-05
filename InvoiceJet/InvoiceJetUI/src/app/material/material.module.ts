@@ -23,6 +23,7 @@ import { MatNativeDateModule } from "@angular/material/core";
 import { MatAutocompleteModule } from "@angular/material/autocomplete";
 import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
 import { MatChipsModule } from "@angular/material/chips";
+import { MatSlideToggleModule } from "@angular/material/slide-toggle";
 
 @NgModule({
   imports: [
@@ -49,6 +50,7 @@ import { MatChipsModule } from "@angular/material/chips";
     MatAutocompleteModule,
     MatProgressSpinnerModule,
     MatChipsModule,
+    MatSlideToggleModule,
   ],
   exports: [
     MatButtonModule,
@@ -73,6 +75,7 @@ import { MatChipsModule } from "@angular/material/chips";
     MatAutocompleteModule,
     MatProgressSpinnerModule,
     MatChipsModule,
+    MatSlideToggleModule,
   ],
 })
 export class MaterialModule {}
