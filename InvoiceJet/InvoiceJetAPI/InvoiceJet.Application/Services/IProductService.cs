@@ -4,6 +4,8 @@ namespace InvoiceJet.Application.Services;
 
 public interface IProductService
 {
-    Task<ICollection<ProductDto>> GetAllProductsForUserId(Guid userId);
-    Task<ProductDto> AddOrEditProduct(ProductDto productDto, Guid userId);
+    Task<ICollection<ProductDto>> GetUserFirmProducts();
+    Task<ProductDto> AddProduct(ProductDto productDto);
+    Task<ProductDto> EditProduct(ProductDto productDto);
+    Task DeleteProducts(int[] productIds);
 }

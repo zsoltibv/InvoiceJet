@@ -172,26 +172,32 @@ tr:hover {
 }
 
 .toast-error-not-found {
-  background-color: #42a5f5 !important; /* blue */
+  background-color: #42a5f5 !important;
   color: white;
 }
 
 .toast-error-internal-server {
-  background-color: #ef5350 !important; /* red */
+  background-color: #ef5350 !important;
   color: white;
 }
 
 .toast-error-unexpected {
-  background-color: #ab47bc !important; /* purple */
+  background-color: #ab47bc !important;
   color: white;
 }
 
 .toast-bottom-right {
-  position: absolute !important; /* Override the default fixed position */
-  right: 10px; /* Distance from the right edge of the screen */
-  bottom: 10px; /* Distance from the bottom edge of the screen */
+  position: absolute !important;
+  right: 10px;
+  bottom: 10px;
 }
 
 .icon-right-margin {
-  padding-right: 8px; /* Adjust this value as needed */
+  padding-right: 8px;
+}
+
+.controls {
+  margin-top: 10px;
+  display: flex;
+  gap: 10px;
 }

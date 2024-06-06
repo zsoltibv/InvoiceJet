@@ -15,15 +15,10 @@ public class UserService : IUserService
     public Guid GetCurrentUserId()
     {
         var httpContext = _httpContextAccessor.HttpContext;
-        if (httpContext.User.Identity.IsAuthenticated)
-        {
-            var userIdString = httpContext.User.FindFirst("userId")?.Value;
-            
-            if (Guid.TryParse(userIdString, out Guid userId))
-            {
-                return userId;
-            }
-        }
-        return Guid.Empty;
+        if (httpContext.User.Identity is not { IsAuthenticated: true })
+            return Guid.Empty;
+
+        var userIdString = httpContext.User.FindFirst("userId")?.Value;
+        return Guid.TryParse(userIdString, out var userId) ? userId : Guid.Empty;
     }
 }

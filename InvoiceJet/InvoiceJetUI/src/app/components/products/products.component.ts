@@ -1,4 +1,3 @@
-import { AuthService } from "./../../services/auth.service";
 import { Component, OnInit, ViewChild } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
 import { MatSort } from "@angular/material/sort";
@@ -8,6 +7,7 @@ import { ProductService } from "src/app/services/product.service";
 import { AddOrEditProductDialogComponent } from "./add-or-edit-product-dialog/add-or-edit-product-dialog.component";
 import { LiveAnnouncer } from "@angular/cdk/a11y";
 import { SelectionModel } from "@angular/cdk/collections";
+import { ToastrService } from "ngx-toastr";
 
 @Component({
   selector: "app-products",
@@ -30,8 +30,8 @@ export class ProductsComponent implements OnInit {
   constructor(
     public dialog: MatDialog,
     private productService: ProductService,
-    private authService: AuthService,
-    private _liveAnnouncer: LiveAnnouncer
+    private _liveAnnouncer: LiveAnnouncer,
+    private toastr: ToastrService
   ) {}
 
   @ViewChild(MatSort) sort!: MatSort;
@@ -41,13 +41,10 @@ export class ProductsComponent implements OnInit {
   }
 
   getProducts(): void {
-    this.productService
-      .getProductsForUserId(this.authService.userId)
-      .subscribe((products) => {
-        this.products = products;
-        this.dataSource.data = this.products;
-        console.log(products);
-      });
+    this.productService.getProductsForUserId().subscribe((products) => {
+      this.products = products;
+      this.dataSource.data = this.products;
+    });
   }
 
   ngAfterViewInit() {
@@ -56,20 +53,22 @@ export class ProductsComponent implements OnInit {
 
   openNewProductDialog(): void {
     const dialogRef = this.dialog.open(AddOrEditProductDialogComponent, {});
+    this.selection.clear();
 
     dialogRef.afterClosed().subscribe((result) => {
-      this.getProducts();
+      if (result) this.getProducts();
     });
   }
 
   openEditProductDialog(product: IProduct): void {
-    console.log(product);
     const dialogRef = this.dialog.open(AddOrEditProductDialogComponent, {
       data: product,
+      disableClose: true,
     });
+    this.selection.clear();
 
     dialogRef.afterClosed().subscribe((result) => {
-      this.getProducts(); // Refresh list after editing
+      if (result) this.getProducts();
     });
   }
 
@@ -95,7 +94,10 @@ export class ProductsComponent implements OnInit {
 
   deleteSelected() {
     const selectedIds = this.selection.selected.map((s) => s.id);
-    console.log(selectedIds);
+    this.productService.deleteProducts(selectedIds).subscribe(() => {
+      this.getProducts();
+      this.toastr.success("Products deleted successfully!", "Success");
+    });
     this.selection.clear();
   }
 }

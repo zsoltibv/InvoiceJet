@@ -41,7 +41,7 @@ export class DocumentSeriesComponent {
 
   getDocumentSeries(): void {
     this.documentSeriesService
-      .getDocumentSeriesForUserId(this.authService.userId)
+      .getDocumentSeriesForUserId()
       .subscribe((series) => {
         console.log(series);
         this.documentSeriesList = series;

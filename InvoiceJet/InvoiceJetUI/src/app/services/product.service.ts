@@ -1,26 +1,37 @@
-import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { HttpClient } from "@angular/common/http";
+import { Injectable } from "@angular/core";
 import { IProduct } from "../models/IProduct";
 import { environment } from "environment";
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: "root",
 })
 export class ProductService {
   private baseUrl = environment.apiUrl;
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {}
 
-  public getProductsForUserId(userId: string) {
+  public getProductsForUserId() {
     return this.http.get<IProduct[]>(
-      `${this.baseUrl}/Product/GetAllProductsForUserId/${userId}`
+      `${this.baseUrl}/Product/GetAllProductsForUserId/`
     );
   }
 
-  public addOrEditProduct(product: IProduct, userId: string) {
-    return this.http.put<IProduct>(
-      `${this.baseUrl}/Product/AddOrEditProduct/${userId}`,
+  public addProduct(product: IProduct) {
+    return this.http.post<IProduct>(
+      `${this.baseUrl}/Product/AddProduct/`,
       product
     );
+  }
+
+  public editProduct(product: IProduct) {
+    return this.http.put<IProduct>(
+      `${this.baseUrl}/Product/EditProduct/`,
+      product
+    );
+  }
+
+  public deleteProducts(productIds: number[]) {
+    return this.http.put(`${this.baseUrl}/Product/DeleteProducts/`, productIds);
   }
 }

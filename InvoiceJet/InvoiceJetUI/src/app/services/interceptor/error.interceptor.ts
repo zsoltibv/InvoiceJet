@@ -44,7 +44,7 @@ export class ErrorInterceptor implements HttpInterceptor {
     console.error("Final error message:", message);
     switch (statusCode) {
       case 400:
-        this.toastr.error(message, "Bad Request");
+        this.toastr.error(message, "Error");
         break;
       case 401:
         this.toastr.error("Session has expired", "Unauthorized");

@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
 using InvoiceJet.Application.DTOs;
+using InvoiceJet.Domain.Exceptions;
 using InvoiceJet.Domain.Interfaces;
 using InvoiceJet.Domain.Models;
-using Microsoft.EntityFrameworkCore;
 
 namespace InvoiceJet.Application.Services.Impl;
 
@@ -10,28 +10,24 @@ public class DocumentSeriesService : IDocumentSeriesService
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;
+    private readonly IUserService _userService;
 
-    public DocumentSeriesService(IMapper mapper, IUnitOfWork unitOfWork)
+    public DocumentSeriesService(IMapper mapper, IUnitOfWork unitOfWork, IUserService userService)
     {
         _mapper = mapper;
         _unitOfWork = unitOfWork;
+        _userService = userService;
     }
 
-    public async Task<ICollection<DocumentSeriesDto>> GetAllDocumentSeriesForUserId(Guid userId)
+    public async Task<List<DocumentSeriesDto>> GetAllDocumentSeriesForUserId()
     {
-        var userWithFirm = await _unitOfWork.Users.Query()
-            .Where(u => u.Id == userId)
-            .Include(u => u.ActiveUserFirm)
-            .ThenInclude(ds => ds.DocumentSeries)!
-            .ThenInclude(dt => dt.DocumentType)
-            .FirstOrDefaultAsync();
-
-        if (userWithFirm?.ActiveUserFirm is null)
+        var userFirmId = await _unitOfWork.Users.GetUserFirmIdAsync(_userService.GetCurrentUserId());
+        if (!userFirmId.HasValue)
         {
-            return new List<DocumentSeriesDto>();
+            throw new UserHasNoAssociatedFirmException();
         }
 
-        return _mapper.Map<ICollection<DocumentSeries>, ICollection<DocumentSeriesDto>>(userWithFirm.ActiveUserFirm
-            .DocumentSeries!);
+        var documentSeries = await _unitOfWork.DocumentSeries.GetAllDocumentSeriesForActiveUserFirm(_userService.GetCurrentUserId());
+        return _mapper.Map<List<DocumentSeries>, List<DocumentSeriesDto>>(documentSeries);
     }
 }

@@ -23,10 +23,9 @@ public class BankAccountService : IBankAccountService
     public async Task<ICollection<BankAccountDto>> GetUserFirmBankAccounts()
     {
         var bankAccounts = await _unitOfWork.BankAccounts.GetUserFirmBankAccountsAsync(_userService.GetCurrentUserId());
-
-        if (bankAccounts == null || bankAccounts.Count == 0)
+        if (bankAccounts.Count == 0)
         {
-            return [];
+            return new List<BankAccountDto>();
         }
 
         var bankAccountDtos = _mapper.Map<List<BankAccountDto>>(bankAccounts);
@@ -36,7 +35,13 @@ public class BankAccountService : IBankAccountService
     public async Task<BankAccountDto> AddUserFirmBankAccount(BankAccountDto bankAccountDto)
     {
         var bankAccount = _mapper.Map<BankAccount>(bankAccountDto);
-        bankAccount.UserFirmId = await _unitOfWork.Users.GetUserFirmIdAsync(_userService.GetCurrentUserId());
+        
+        var userFirmId = await _unitOfWork.Users.GetUserFirmIdAsync(_userService.GetCurrentUserId());
+        if (!userFirmId.HasValue)
+        {
+            throw new UserHasNoAssociatedFirmException();
+        }
+        bankAccount.UserFirmId = userFirmId.Value;
 
         if (bankAccount.IsActive)
         {
@@ -76,7 +81,6 @@ public class BankAccountService : IBankAccountService
             {
                 throw new BankAccountAssociatedWithDocumentsException($"Can't delete. Bank account is associated with documents.");
             }
-
 
             await _unitOfWork.BankAccounts.RemoveAsync(bankAccount);
         }

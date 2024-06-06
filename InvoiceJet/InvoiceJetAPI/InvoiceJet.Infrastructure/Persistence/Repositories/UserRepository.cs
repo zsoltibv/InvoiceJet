@@ -10,7 +10,7 @@ public class UserRepository : GenericRepository<User>, IUserRepository
     {
     }
 
-    public async Task<int> GetUserFirmIdAsync(Guid userId)
+    public async Task<int?> GetUserFirmIdAsync(Guid userId)
     {
         var userFirmId = await _dbSet
             .Where(u => u.Id == userId)
@@ -21,14 +21,14 @@ public class UserRepository : GenericRepository<User>, IUserRepository
         return userFirmId;
     }
 
-    public async Task<UserFirm> GetUserFirmAsync(Guid userId)
+    public async Task<UserFirm?> GetUserFirmAsync(Guid userId)
     {
         var userFirm = await _dbSet
             .Where(u => u.Id == userId)
-            .Include(uf => uf.ActiveUserFirm)
+                .Include(uf => uf.ActiveUserFirm)
             .Select(uf => uf.ActiveUserFirm)
             .SingleOrDefaultAsync();
 
-        return userFirm!;
+        return userFirm;
     }
 }

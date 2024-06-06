@@ -2,7 +2,6 @@ import { AuthService } from "./../../../services/auth.service";
 import { FirmService } from "./../../../services/firm.service";
 import { Component, OnInit } from "@angular/core";
 import { FormGroup, FormControl, Validators } from "@angular/forms";
-import { MatSnackBar } from "@angular/material/snack-bar";
 import { ToastrService } from "ngx-toastr";
 import { IFirm } from "src/app/models/IFirm";
 
@@ -20,7 +19,6 @@ export class FirmDetailsComponent implements OnInit {
   constructor(
     private firmService: FirmService,
     private authService: AuthService,
-    private snackBar: MatSnackBar,
     private toastr: ToastrService
   ) {
     this.firmDetailsForm = new FormGroup({
@@ -90,7 +88,6 @@ export class FirmDetailsComponent implements OnInit {
       .getFirmFromAnaf(this.firmDetailsForm.value.cuiValue)
       .subscribe({
         next: (firm) => {
-          console.log(firm);
           this.firmDetailsForm.patchValue({
             firmName: firm.name,
             regCom: firm.regCom,
@@ -98,6 +95,7 @@ export class FirmDetailsComponent implements OnInit {
             county: firm.county,
             city: firm.city,
           });
+          this.toastr.success("Firm details fetched successfully.", "Success");
         },
       });
   }

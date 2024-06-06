@@ -11,9 +11,9 @@ export class DocumentSeriesService {
 
   constructor(private http: HttpClient) {}
 
-  public getDocumentSeriesForUserId(userId: string) {
+  public getDocumentSeriesForUserId() {
     return this.http.get<IDocumentSeries[]>(
-      `${this.baseUrl}/DocumentSeries/GetAllDocumentSeriesForUserId/${userId}`
+      `${this.baseUrl}/DocumentSeries/GetAllDocumentSeriesForUserId`
     );
   }
 }

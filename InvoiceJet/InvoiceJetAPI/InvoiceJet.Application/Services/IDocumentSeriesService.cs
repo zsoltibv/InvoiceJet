@@ -4,5 +4,5 @@ namespace InvoiceJet.Application.Services;
 
 public interface IDocumentSeriesService
 {
-    Task<ICollection<DocumentSeriesDto>> GetAllDocumentSeriesForUserId(Guid userId);
+    Task<List<DocumentSeriesDto>> GetAllDocumentSeriesForUserId();
 }

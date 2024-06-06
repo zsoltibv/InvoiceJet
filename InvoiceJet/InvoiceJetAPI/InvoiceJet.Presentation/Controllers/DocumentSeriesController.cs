@@ -17,10 +17,10 @@ public class DocumentSeriesController : ControllerBase
         _documentSeriesService = documentSeriesService;
     }
 
-    [HttpGet("GetAllDocumentSeriesForUserId/{userId}")]
-    public async Task<ActionResult<DocumentSeriesDto>> GetAllDocumentSeriesForUserId(Guid userId)
+    [HttpGet("GetAllDocumentSeriesForUserId")]
+    public async Task<ActionResult<DocumentSeriesDto>> GetAllDocumentSeriesForUserId()
     {
-        var bankAccountDto = await _documentSeriesService.GetAllDocumentSeriesForUserId(userId);
+        var bankAccountDto = await _documentSeriesService.GetAllDocumentSeriesForUserId();
         return Ok(bankAccountDto);
     }
 }

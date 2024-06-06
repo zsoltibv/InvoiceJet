@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using InvoiceJet.Application.DTOs;
+using InvoiceJet.Domain.Exceptions;
 using InvoiceJet.Domain.Interfaces;
 using InvoiceJet.Domain.Models;
 using Microsoft.EntityFrameworkCore;
@@ -80,6 +81,11 @@ public class DocumentService : IDocumentService
     public async Task<DocumentRequestDto> AddDocument(DocumentRequestDto documentRequestDto)
     {
         var userFirmId = await _unitOfWork.Users.GetUserFirmIdAsync(_userService.GetCurrentUserId());
+        if(!userFirmId.HasValue)
+        {
+            throw new UserHasNoAssociatedFirmException();
+        }
+        
         Document document = new Document
         {
             Id = documentRequestDto.Id,
@@ -99,7 +105,7 @@ public class DocumentService : IDocumentService
         await _unitOfWork.Documents.AddAsync(document);
         await _unitOfWork.CompleteAsync();
 
-        await UpdateDocumentProducts(document.Id, documentRequestDto.Products, userFirmId);
+        await UpdateDocumentProducts(document.Id, documentRequestDto.Products, userFirmId.Value);
 
         DocumentSeries docSeries = await _unitOfWork.DocumentSeries.Query()
             .Where(ds => ds.Id == documentRequestDto.DocumentSeries.Id)
@@ -115,6 +121,11 @@ public class DocumentService : IDocumentService
     public async Task<DocumentRequestDto> EditDocument(DocumentRequestDto documentRequestDto)
     {
         var userFirmId = await _unitOfWork.Users.GetUserFirmIdAsync(_userService.GetCurrentUserId());
+        if(!userFirmId.HasValue)
+        {
+            throw new UserHasNoAssociatedFirmException();
+        }
+        
         var document = await _unitOfWork.Documents.GetByIdAsync(documentRequestDto.Id);
 
         if (document == null)
@@ -131,7 +142,7 @@ public class DocumentService : IDocumentService
 
         await _unitOfWork.Documents.UpdateAsync(document);
 
-        await UpdateDocumentProducts(document.Id, documentRequestDto.Products, userFirmId);
+        await UpdateDocumentProducts(document.Id, documentRequestDto.Products, userFirmId.Value);
 
         await _unitOfWork.CompleteAsync();
         return documentRequestDto;

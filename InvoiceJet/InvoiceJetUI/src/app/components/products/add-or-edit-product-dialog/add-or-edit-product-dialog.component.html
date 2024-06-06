@@ -30,7 +30,7 @@
 
       <!-- Unit Of Measurement Field -->
       <div class="row">
-        <mat-form-field >
+        <mat-form-field>
           <mat-label>Unit of Measurement</mat-label>
           <input matInput formControlName="unitOfMeasurement" />
         </mat-form-field>
@@ -38,7 +38,7 @@
 
       <!-- TVA Value Field -->
       <div class="row">
-        <mat-form-field >
+        <mat-form-field>
           <mat-label>TVA Value (%)</mat-label>
           <input type="number" matInput formControlName="tvaValue" />
         </mat-form-field>
@@ -56,6 +56,15 @@
 
       <!-- Submit Button -->
       <div class="controls">
+        <button
+          mat-stroked-button
+          color="primary"
+          type="button"
+          (click)="closeDialog()"
+          *ngIf="isEditMode"
+        >
+          {{ "Cancel" }}
+        </button>
         <button mat-raised-button color="primary" type="submit">
           {{ isEditMode ? "Update" : "Submit" }}
         </button>

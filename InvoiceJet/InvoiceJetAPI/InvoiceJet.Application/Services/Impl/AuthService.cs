@@ -60,13 +60,13 @@ public class AuthService : IAuthService
 
     private string CreateToken(User user)
     {
-        List<Claim> claims = new List<Claim>
+        var claims = new List<Claim>
         {
-            new Claim("userId", user.Id.ToString()),
-            new Claim("firstName", user.FirstName),
-            new Claim("lastName", user.LastName),
-            new Claim("email", user.Email),
-            new Claim(ClaimTypes.Role, "User")
+            new("userId", user.Id.ToString()),
+            new("firstName", user.FirstName),
+            new("lastName", user.LastName),
+            new("email", user.Email),
+            new(ClaimTypes.Role, "User")
         };
 
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(

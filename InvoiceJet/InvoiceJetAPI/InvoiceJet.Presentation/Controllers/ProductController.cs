@@ -17,17 +17,31 @@ public class ProductController : ControllerBase
         _productService = productService;
     }
 
-    [HttpGet("GetAllProductsForUserId/{userId}")]
-    public async Task<ActionResult<ICollection<ProductDto>>> GetAllProductsForUserId(Guid userId)
+    [HttpGet("GetAllProductsForUserId")]
+    public async Task<ActionResult<ICollection<ProductDto>>> GetAllProductsForUserId()
     {
-        ICollection<ProductDto> productsDto = await _productService.GetAllProductsForUserId(userId);
+        var productsDto = await _productService.GetUserFirmProducts();
         return Ok(productsDto);
     }
 
-    [HttpPut("AddOrEditProduct/{userId}")]
-    public async Task<ActionResult<ProductDto>> AddOrEditProduct(ProductDto product, Guid userId)
+    [HttpPost("AddProduct")]
+    public async Task<ActionResult<ProductDto>> AddProduct(ProductDto product)
     {
-        ProductDto productDto = await _productService.AddOrEditProduct(product, userId);
+        var productDto = await _productService.AddProduct(product);
         return Ok(productDto);
+    }
+
+    [HttpPut("EditProduct")]
+    public async Task<ActionResult<ProductDto>> EditProduct(ProductDto product)
+    {
+        var productDto = await _productService.EditProduct(product);
+        return Ok(productDto);
+    }
+
+    [HttpPut("DeleteProducts")]
+    public async Task<ActionResult<ProductDto>> DeleteProducts(int[] productIds)
+    {
+        await _productService.DeleteProducts(productIds);
+        return Ok();
     }
 }

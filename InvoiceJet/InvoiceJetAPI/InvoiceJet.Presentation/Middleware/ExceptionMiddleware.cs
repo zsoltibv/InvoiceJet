@@ -27,6 +27,10 @@ namespace InvoiceJet.Presentation.Middleware
             {
                 await HandleExceptionAsync(context, ex, HttpStatusCode.BadRequest);
             }
+            catch (UserHasNoAssociatedFirmException ex)
+            {
+                await HandleExceptionAsync(context, ex, HttpStatusCode.BadRequest);
+            }
             catch (Exception ex)
             {
                 await HandleExceptionAsync(context, ex, HttpStatusCode.InternalServerError);

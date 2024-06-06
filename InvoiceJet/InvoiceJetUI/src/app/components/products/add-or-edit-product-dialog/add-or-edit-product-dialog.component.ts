@@ -1,16 +1,9 @@
-import { ToastrModule, ToastrService } from "ngx-toastr";
-import { AuthService } from "./../../../services/auth.service";
+import { ToastrService } from "ngx-toastr";
 import { ProductService } from "src/app/services/product.service";
-import { Component, Inject, Input, OnInit } from "@angular/core";
-import {
-  FormBuilder,
-  FormControl,
-  FormGroup,
-  Validators,
-} from "@angular/forms";
+import { Component, Inject, OnInit } from "@angular/core";
+import { FormControl, FormGroup, Validators } from "@angular/forms";
 import { IProduct } from "src/app/models/IProduct";
 import { MAT_DIALOG_DATA, MatDialogRef } from "@angular/material/dialog";
-import { MatSnackBar } from "@angular/material/snack-bar";
 
 @Component({
   selector: "app-add-or-edit-product-dialog",
@@ -24,10 +17,8 @@ export class AddOrEditProductDialogComponent implements OnInit {
 
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: IProduct,
-    private fb: FormBuilder,
     private productService: ProductService,
     private dialogRef: MatDialogRef<AddOrEditProductDialogComponent>,
-    private authService: AuthService,
     private toastr: ToastrService
   ) {
     this.productForm = new FormGroup({
@@ -61,19 +52,26 @@ export class AddOrEditProductDialogComponent implements OnInit {
       const productData: IProduct = this.productForm.value;
       productData.id = this.data?.id! ?? 0;
 
-      console.log(productData, this.authService.userId);
-
-      this.productService
-        .addOrEditProduct(productData, this.authService.userId)
-        .subscribe(() => {
-          this.toastr.success(
-            this.isEditMode ? "Product updated" : "Produc added",
-            "Success"
-          );
-          this.dialogRef.close(true);
+      if (this.isEditMode) {
+        this.productService.editProduct(productData).subscribe({
+          next: () => {
+            this.toastr.success("Product updated successfully!");
+          },
         });
+      } else {
+        this.productService.addProduct(productData).subscribe({
+          next: () => {
+            this.toastr.success("Product added successfully!");
+          },
+        });
+      }
+      this.dialogRef.close(true);
     } else {
       this.errorMessage = "Please fill in all required fields.";
     }
+  }
+
+  closeDialog() {
+    this.dialogRef.close(false);
   }
 }
