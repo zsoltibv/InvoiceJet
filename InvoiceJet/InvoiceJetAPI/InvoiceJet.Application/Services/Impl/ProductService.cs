@@ -35,9 +35,15 @@ public class ProductService : IProductService
     public async Task<ProductDto> AddProduct(ProductDto productDto)
     {
         var userFirmId = await _unitOfWork.Users.GetUserFirmIdAsync(_userService.GetCurrentUserId());
-        if (!userFirmId.HasValue)
+        if(!userFirmId.HasValue)
         {
             throw new UserHasNoAssociatedFirmException();
+        }
+        
+        var productWithSameName = await _unitOfWork.Products.FindUserFirmProductByName(_userService.GetCurrentUserId(), productDto.Name);
+        if (productWithSameName != null)
+        {
+            throw new ProductWithSameNameExistsException(productDto.Name);
         }
 
         var product = _mapper.Map<Product>(productDto);
@@ -72,7 +78,7 @@ public class ProductService : IProductService
 
             if (isAssociatedWithDocumentProduct)
             {
-                throw new ProductAssociatedWithInvoiceException();
+                throw new ProductAssociatedWithInvoiceException(product.Name);
             }
 
             await _unitOfWork.Products.RemoveAsync(product);

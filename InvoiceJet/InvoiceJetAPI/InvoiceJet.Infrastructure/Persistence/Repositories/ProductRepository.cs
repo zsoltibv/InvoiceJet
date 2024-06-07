@@ -1,4 +1,5 @@
-﻿using InvoiceJet.Domain.Interfaces.Repositories;
+﻿using InvoiceJet.Application.DTOs;
+using InvoiceJet.Domain.Interfaces.Repositories;
 using InvoiceJet.Domain.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -27,5 +28,12 @@ public class ProductRepository : GenericRepository<Product>, IProductRepository
        return await _dbSet
             .Where(p => productIds.Contains(p.Id))
             .ToListAsync();
+    }
+    
+    public async Task<Product?> FindUserFirmProductByName(Guid userId, string name)
+    {
+        return await _dbSet
+            .Where(p => p.UserFirm!.UserId == userId && p.UserFirm.User.ActiveUserFirmId == p.UserFirmId)
+            .FirstOrDefaultAsync(p => p.Name == name);
     }
 }

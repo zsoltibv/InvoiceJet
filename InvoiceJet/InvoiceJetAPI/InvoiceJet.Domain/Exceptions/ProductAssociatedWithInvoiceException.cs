@@ -2,7 +2,8 @@
 
 public class ProductAssociatedWithInvoiceException : Exception
 {
-    public ProductAssociatedWithInvoiceException() : base("Can't delete. Product is associated with an invoice.")
+    public ProductAssociatedWithInvoiceException(string productName) 
+        : base($"Can't delete. Product {productName} is associated with an invoice.")
     {
     }
 }

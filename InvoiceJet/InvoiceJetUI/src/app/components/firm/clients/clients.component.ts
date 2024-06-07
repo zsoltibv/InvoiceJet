@@ -1,4 +1,3 @@
-import { AuthService } from "src/app/services/auth.service";
 import { FirmService } from "src/app/services/firm.service";
 import { LiveAnnouncer } from "@angular/cdk/a11y";
 import { Component, ViewChild } from "@angular/core";
@@ -8,6 +7,7 @@ import { AddEditClientDialogComponent } from "../add-edit-client-dialog/add-edit
 import { MatDialog } from "@angular/material/dialog";
 import { IFirm } from "src/app/models/IFirm";
 import { SelectionModel } from "@angular/cdk/collections";
+import { ToastrService } from "ngx-toastr";
 
 @Component({
   selector: "app-clients",
@@ -32,7 +32,7 @@ export class ClientsComponent {
     private _liveAnnouncer: LiveAnnouncer,
     public dialog: MatDialog,
     private firmService: FirmService,
-    private authService: AuthService
+    private toastr: ToastrService
   ) {}
 
   @ViewChild(MatSort) sort!: MatSort;
@@ -42,12 +42,10 @@ export class ClientsComponent {
   }
 
   getUserFirms(): void {
-    this.firmService
-      .getUserClientFirmsById(this.authService.userId)
-      .subscribe((firms) => {
-        this.firms = firms;
-        this.dataSource.data = this.firms;
-      });
+    this.firmService.getUserClientFirms().subscribe((firms) => {
+      this.firms = firms;
+      this.dataSource.data = this.firms;
+    });
   }
 
   ngAfterViewInit() {
@@ -64,19 +62,22 @@ export class ClientsComponent {
 
   openNewClientDialog() {
     const dialogRef = this.dialog.open(AddEditClientDialogComponent, {});
+    this.selection.clear();
 
-    dialogRef.afterClosed().subscribe(() => {
-      this.getUserFirms();
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result == true) this.getUserFirms();
     });
   }
 
   openEditClientDialog(firm: IFirm) {
     const dialogRef = this.dialog.open(AddEditClientDialogComponent, {
       data: firm,
+      disableClose: true,
     });
+    this.selection.clear();
 
     dialogRef.afterClosed().subscribe((result) => {
-      this.getUserFirms();
+      if (result == true) this.getUserFirms();
     });
   }
 
@@ -94,7 +95,12 @@ export class ClientsComponent {
 
   deleteSelected() {
     const selectedIds = this.selection.selected.map((s) => s.id);
-    console.log(selectedIds);
+    if (selectedIds.length > 0) {
+      this.firmService.deleteFirms(selectedIds).subscribe(() => {
+        this.getUserFirms();
+        this.toastr.success("Firms deleted successfully");
+      });
+    }
     this.selection.clear();
   }
 }

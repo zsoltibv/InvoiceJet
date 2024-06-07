@@ -1,6 +1,6 @@
 import { ToastrModule, ToastrService } from "ngx-toastr";
 import { LiveAnnouncer } from "@angular/cdk/a11y";
-import { Component, ViewChild } from "@angular/core";
+import { ChangeDetectorRef, Component, ViewChild } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
 import { MatSort } from "@angular/material/sort";
 import { MatTableDataSource } from "@angular/material/table";
@@ -45,7 +45,8 @@ export class BankAccountsComponent {
     private _liveAnnouncer: LiveAnnouncer,
     public dialog: MatDialog,
     private bankAccountService: BankAccountService,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private cdr: ChangeDetectorRef
   ) {}
 
   @ViewChild(MatSort) sort!: MatSort;

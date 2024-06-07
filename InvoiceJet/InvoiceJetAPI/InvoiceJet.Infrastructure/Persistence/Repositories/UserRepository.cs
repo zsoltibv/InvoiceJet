@@ -26,6 +26,7 @@ public class UserRepository : GenericRepository<User>, IUserRepository
         var userFirm = await _dbSet
             .Where(u => u.Id == userId)
                 .Include(uf => uf.ActiveUserFirm)
+                    .ThenInclude(uf => uf.Firm)
             .Select(uf => uf.ActiveUserFirm)
             .SingleOrDefaultAsync();
 

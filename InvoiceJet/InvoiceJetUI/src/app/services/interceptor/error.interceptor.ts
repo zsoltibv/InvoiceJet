@@ -41,7 +41,6 @@ export class ErrorInterceptor implements HttpInterceptor {
   }
 
   private handleError(statusCode: number, message: string): void {
-    console.error("Final error message:", message);
     switch (statusCode) {
       case 400:
         this.toastr.error(message, "Error");
@@ -53,7 +52,7 @@ export class ErrorInterceptor implements HttpInterceptor {
         this.toastr.error(message, "Not Found");
         break;
       case 500:
-        this.toastr.error(message, "Internal Server Error");
+        this.toastr.error(message, "Error");
         break;
       default:
         this.toastr.error(message, "Unexpected Error");

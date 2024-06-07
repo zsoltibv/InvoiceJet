@@ -16,11 +16,7 @@ export class FirmDetailsComponent implements OnInit {
   currentUserFirm: IFirm | null = null;
   errorMessage: string | null = null;
 
-  constructor(
-    private firmService: FirmService,
-    private authService: AuthService,
-    private toastr: ToastrService
-  ) {
+  constructor(private firmService: FirmService, private toastr: ToastrService) {
     this.firmDetailsForm = new FormGroup({
       firmName: new FormControl("", Validators.required),
       cuiValue: new FormControl("", Validators.required),
@@ -32,7 +28,7 @@ export class FirmDetailsComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.firmService.getUserActiveFirmById(this.authService.userId).subscribe({
+    this.firmService.getUserActiveFirm().subscribe({
       next: (firm) => {
         if (firm) {
           this.currentUserFirm = firm;
@@ -67,10 +63,8 @@ export class FirmDetailsComponent implements OnInit {
     };
 
     if (this.firmDetailsForm.valid) {
-      console.log(this.authService.userId);
-      this.firmService
-        .addOrEditFirm(firm, this.authService.userId, false)
-        .subscribe({
+      if (this.currentUserFirm) {
+        this.firmService.editFirm(firm, false).subscribe({
           next: () => {
             this.toastr.success(
               "Firm details updated successfully.",
@@ -78,6 +72,16 @@ export class FirmDetailsComponent implements OnInit {
             );
           },
         });
+      } else {
+        this.firmService.addFirm(firm, false).subscribe({
+          next: () => {
+            this.toastr.success(
+              "Firm details updated successfully.",
+              "Success"
+            );
+          },
+        });
+      }
     } else {
       this.errorMessage = "Please fill all the required fields";
     }

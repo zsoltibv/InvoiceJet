@@ -20,28 +20,42 @@ public class FirmController : ControllerBase
     [HttpGet("fromAnaf/{cui}")]
     public async Task<ActionResult<FirmDto>> GetFirmDataFromAnaf(string cui)
     {
-        FirmDto firmDataDto = await _firmService.GetFirmDataFromAnaf(cui);
+        var firmDataDto = await _firmService.GetFirmDataFromAnaf(cui);
         return Ok(firmDataDto);
     }
-
-    [HttpPut("addOrEditFirm/{userId}/{isClient}")]
-    public async Task<ActionResult> AddOrEditFirm([FromBody] FirmDto firmDto, Guid userId, bool isClient)
+    
+    [HttpPost("AddFirm/{isClient}")]
+    public async Task<ActionResult> AddFirm([FromBody] FirmDto firmDto, bool isClient)
     {
-        var updatedOrNewFirm = await _firmService.AddOrEditFirm(firmDto, userId, isClient);
+        var updatedOrNewFirm = await _firmService.AddFirm(firmDto, isClient);
+        return Ok(updatedOrNewFirm);
+    }
+    
+    [HttpPut("EditFirm/{isClient}")]
+    public async Task<ActionResult> EditFirm([FromBody] FirmDto firmDto, bool isClient)
+    {
+        var updatedOrNewFirm = await _firmService.EditFirm(firmDto, isClient);
         return Ok(updatedOrNewFirm);
     }
 
-    [HttpGet("GetUserActiveFirmById/{userId}")]
-    public async Task<ActionResult> GetUserActiveFirmById(Guid userId)
+    [HttpGet("GetUserActiveFirm")]
+    public async Task<ActionResult> GetUserActiveFirm()
     {
-        var firm = await _firmService.GetUserActiveFirmById(userId);
+        var firm = await _firmService.GetUserActiveFirm();
         return Ok(firm);
     }
 
-    [HttpGet("GetUserClientFirmsById/{userId}")]
-    public async Task<ActionResult> GetUserClientFirmsById(Guid userId)
+    [HttpGet("GetUserClientFirms")]
+    public async Task<ActionResult> GetUserClientFirms()
     {
-        var firm = await _firmService.GetUserClientFirmsById(userId);
-        return Ok(firm);
+        var clientFirms = await _firmService.GetUserClientFirms();
+        return Ok(clientFirms);
+    }
+    
+    [HttpPut("DeleteFirms")]
+    public async Task<ActionResult> DeleteFirms(int[] firmIds)
+    {
+        await _firmService.DeleteFirms(firmIds);
+        return Ok();
     }
 }

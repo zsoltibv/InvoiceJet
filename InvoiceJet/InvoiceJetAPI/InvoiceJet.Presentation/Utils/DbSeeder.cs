@@ -17,9 +17,9 @@ public static class DbSeeder
             {
                 var documentTypes = new List<DocumentType>
                 {
-                    new DocumentType { Name = "Factura" },
-                    new DocumentType { Name = "Factura Storno" },
-                    new DocumentType { Name = "Proforma" }
+                    new() { Name = "Factura" },
+                    new() { Name = "Factura Storno" },
+                    new() { Name = "Proforma" }
                 };
 
                 context.DocumentType.AddRange(documentTypes);
@@ -30,8 +30,8 @@ public static class DbSeeder
             {
                 var documentStatuses = new List<DocumentStatus>
                 {
-                    new DocumentStatus { Status = "Unpaid" },
-                    new DocumentStatus { Status = "Paid" },
+                    new() { Status = "Unpaid" },
+                    new() { Status = "Paid" },
                 };
 
                 context.DocumentStatus.AddRange(documentStatuses);
@@ -47,7 +47,7 @@ public static class DbSeeder
         {
             var documentSeries = new List<DocumentSeries>
             {
-                new DocumentSeries
+                new()
                 {
                     SeriesName = DateTime.Now.Year.ToString(),
                     FirstNumber = 1,
@@ -58,7 +58,7 @@ public static class DbSeeder
                         .FirstOrDefaultAsync(),
                     UserFirmId = userFirmId
                 },
-                new DocumentSeries
+                new()
                 {
                     SeriesName = DateTime.Now.Year.ToString(),
                     FirstNumber = 1,
@@ -69,7 +69,7 @@ public static class DbSeeder
                         .FirstOrDefaultAsync(),
                     UserFirmId = userFirmId
                 },
-                new DocumentSeries
+                new()
                 {
                     SeriesName = DateTime.Now.Year.ToString(),
                     FirstNumber = 1,

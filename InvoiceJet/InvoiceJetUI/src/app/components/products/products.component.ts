@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from "@angular/core";
+import { ChangeDetectorRef, Component, OnInit, ViewChild } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
 import { MatSort } from "@angular/material/sort";
 import { MatTableDataSource } from "@angular/material/table";
@@ -31,7 +31,8 @@ export class ProductsComponent implements OnInit {
     public dialog: MatDialog,
     private productService: ProductService,
     private _liveAnnouncer: LiveAnnouncer,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private cdr: ChangeDetectorRef
   ) {}
 
   @ViewChild(MatSort) sort!: MatSort;
@@ -47,16 +48,12 @@ export class ProductsComponent implements OnInit {
     });
   }
 
-  ngAfterViewInit() {
-    this.dataSource.sort = this.sort;
-  }
-
   openNewProductDialog(): void {
     const dialogRef = this.dialog.open(AddOrEditProductDialogComponent, {});
     this.selection.clear();
 
     dialogRef.afterClosed().subscribe((result) => {
-      if (result) this.getProducts();
+      if (result == true) this.getProducts();
     });
   }
 
@@ -68,7 +65,7 @@ export class ProductsComponent implements OnInit {
     this.selection.clear();
 
     dialogRef.afterClosed().subscribe((result) => {
-      if (result) this.getProducts();
+      if (result == true) this.getProducts();
     });
   }
 

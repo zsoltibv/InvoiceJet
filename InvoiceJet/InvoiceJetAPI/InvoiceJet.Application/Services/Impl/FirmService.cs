@@ -16,210 +16,172 @@ public class FirmService : IFirmService
     private readonly IMapper _mapper;
     private readonly string _apiUrl;
     private readonly IUnitOfWork _unitOfWork;
+    private readonly IUserService _userService;
 
-    public FirmService(IConfiguration config, IMapper mapper, IUnitOfWork unitOfWork)
+    public FirmService(IConfiguration config, IMapper mapper, IUnitOfWork unitOfWork, IUserService userService)
     {
         _httpClient = new HttpClient();
         _mapper = mapper;
         _unitOfWork = unitOfWork;
+        _userService = userService;
         _apiUrl = config.GetSection("AppSettings")?["AnafApiUrl"] ??
                   throw new ArgumentNullException("AnafApiUrl is not configured");
     }
 
+    public async Task<FirmDto> AddFirm(FirmDto firmDto, bool isClient)
+    {
+        var firm = _mapper.Map<Firm>(firmDto);
+        await _unitOfWork.Firms.AddAsync(firm);
+        await _unitOfWork.CompleteAsync();
+    
+        await ManageUserFirmRelation(firm.Id, isClient);
+
+        firmDto.Id = firm.Id;
+        return firmDto;
+    }
+    
+    public async Task<FirmDto> EditFirm(FirmDto firmDto, bool isClient)
+    {
+        var firm = await _unitOfWork.Firms.GetByIdAsync(firmDto.Id);
+        if (firm == null)
+        {
+            throw new Exception("Firm not found.");
+        }
+
+        firm = _mapper.Map(firmDto, firm);
+        await _unitOfWork.CompleteAsync();
+
+        await ManageUserFirmRelation(firm.Id, isClient);
+        
+        return firmDto;
+    }
+    
+    private async Task ManageUserFirmRelation(int firmId, bool isClient)
+    {
+        var userId = _userService.GetCurrentUserId();
+        var existingUserFirm = await _unitOfWork.UserFirms.GetUserFirmById(userId, firmId);
+        
+        if (existingUserFirm == null)
+        {
+            await _unitOfWork.UserFirms.AddAsync(new UserFirm
+            {
+                UserId = userId,
+                FirmId = firmId,
+                IsClient = isClient
+            });
+        }
+        else
+        {
+            existingUserFirm.IsClient = isClient;
+        }
+        
+        await _unitOfWork.CompleteAsync();
+    }
+    
+    public async Task<FirmDto> GetUserActiveFirm()
+    {
+        var activeUserFirm = await _unitOfWork.Users.GetUserFirmAsync(_userService.GetCurrentUserId());
+        return activeUserFirm == null ? new FirmDto() : _mapper.Map<FirmDto>(activeUserFirm.Firm);
+    }
+    
+    public async Task<List<FirmDto>> GetUserClientFirms()
+    {
+        var clients = await _unitOfWork.UserFirms.GetUserFirmClients(_userService.GetCurrentUserId());
+        if (clients.Count == 0)
+        {
+            return new List<FirmDto>();
+        }
+
+        var firms = clients.Select(u => u.Firm).ToList();
+        return _mapper.Map<List<FirmDto>>(firms);
+    }
+
+    public async Task DeleteFirms(int[] firmIds)
+    {
+        foreach (var firmId in firmIds)
+        {
+            var firm = await _unitOfWork.Firms.GetByIdAsync(firmId) ??
+                          throw new Exception("Product not found.");
+
+            bool isAssociatedWithDocuments = await _unitOfWork.Documents.Query()
+                .AnyAsync(d => d.ClientId == firmId);
+
+            if (isAssociatedWithDocuments)
+            {
+                throw new FirmAssociatedWithDocumentException(firm.Name);
+            }
+
+            await _unitOfWork.Firms.RemoveAsync(firm);
+        }
+
+        await _unitOfWork.CompleteAsync();
+    }
+
     public async Task<FirmDto> GetFirmDataFromAnaf(string cui)
     {
-        FirmDto firmDto = new FirmDto();
+        var firmDto = new FirmDto();
+        var currentDate = DateTime.Now.ToString("yyyy-MM-dd");
         try
         {
-            string currentDate = DateTime.Now.ToString("yyyy-MM-dd");
-
             var requestBody = new[]
             {
                 new
                 {
-                    cui = cui,
+                    cui,
                     data = currentDate
                 }
             };
 
             var response = await _httpClient.PostAsJsonAsync(_apiUrl, requestBody);
 
-            if (response.IsSuccessStatusCode)
+            if (!response.IsSuccessStatusCode)
+                throw new AnafFirmNotFoundException(cui);
+
+            var responseString = await response.Content.ReadAsStringAsync();
+            var json = JObject.Parse(responseString);
+
+            var dateGenerale = json["found"]?[0]?["date_generale"];
+            if (dateGenerale != null)
             {
-                var responseString = await response.Content.ReadAsStringAsync();
-                JObject json = JObject.Parse(responseString);
+                string? name = dateGenerale["denumire"]?.ToString();
+                string? cuiValue = dateGenerale["cui"]?.ToString();
+                string? regCom = dateGenerale["nrRegCom"]?.ToString();
+                string? address = dateGenerale["adresa"]?.ToString();
 
-                var dateGenerale = json["found"]?[0]?["date_generale"];
-                if (dateGenerale != null)
+                string[] addressPrefixes = { "STR.", "ŞOS.", "BLD.", "CAL." };
+                if (address != null)
                 {
-                    if (dateGenerale != null)
+                    foreach (var prefix in addressPrefixes)
                     {
-                        string? name = dateGenerale["denumire"]?.ToString();
-                        string? cuiValue = dateGenerale["cui"]?.ToString();
-                        string? regCom = dateGenerale["nrRegCom"]?.ToString();
-                        string? address = dateGenerale["adresa"]?.ToString();
-
-                        int startIndex = address.IndexOf("STR.");
-                        if (startIndex == -1)
-                        {
-                            startIndex = address.IndexOf("ŞOS.");
-                        }
-
-                        if (startIndex == -1)
-                        {
-                            startIndex = address.IndexOf("BLD.");
-                        }
-
-                        if (startIndex == -1)
-                        {
-                            startIndex = address.IndexOf("CAL.");
-                        }
-
-                        if (name != null && cuiValue != null && regCom != null && address != null)
-                        {
-                            firmDto.Name = name;
-                            firmDto.RegCom = regCom;
-                            firmDto.Cui = cuiValue;
+                        var startIndex = address.IndexOf(prefix, StringComparison.Ordinal);
+                        if (startIndex != -1)
                             firmDto.Address = address.Substring(startIndex);
-                        }
                     }
-                }
 
-                var adrDomiciliuFiscal = json["found"]?[0]?["adresa_domiciliu_fiscal"];
-                if (adrDomiciliuFiscal != null)
-                {
-                    string? county = adrDomiciliuFiscal["ddenumire_Judet"]?.ToString();
-                    string? city = adrDomiciliuFiscal["ddenumire_Localitate"]?.ToString();
-                    if (county != null && city != null)
+                    if (name != null && cuiValue != null && regCom != null)
                     {
-                        firmDto.County = county;
-                        firmDto.City = city;
+                        firmDto.Name = name;
+                        firmDto.RegCom = regCom;
+                        firmDto.Cui = cuiValue;
                     }
                 }
-
-                return firmDto;
             }
 
-            throw new AnafFirmNotFoundException(cui);
+            var adrDomiciliuFiscal = json["found"]?[0]?["adresa_domiciliu_fiscal"];
+            if (adrDomiciliuFiscal == null) return firmDto;
+
+            var county = adrDomiciliuFiscal["ddenumire_Judet"]?.ToString();
+            var city = adrDomiciliuFiscal["ddenumire_Localitate"]?.ToString();
+
+            if (county == null || city == null) return firmDto;
+            firmDto.County = county;
+            firmDto.City = city;
+
+            return firmDto;
         }
         catch (Exception)
         {
             throw new AnafFirmNotFoundException(cui);
         }
-    }
-
-    public async Task<FirmDto> AddOrEditFirm(FirmDto firmDto, Guid userId, bool isClient)
-    {
-        Firm firm;
-        if (firmDto.Id != 0)
-        {
-            firm = await _unitOfWork.Firms.GetByIdAsync(firmDto.Id);
-            if (firm == null)
-            {
-                return null;
-            }
-
-            firm = _mapper.Map(firmDto, firm);
-        }
-        else
-        {
-            firm = _mapper.Map<Firm>(firmDto);
-            await _unitOfWork.Firms.AddAsync(firm);
-        }
-
-        await _unitOfWork.CompleteAsync();
-
-        if (firmDto.Id == 0 || isClient)
-        {
-            var existingUserFirm = await _unitOfWork.UserFirms.Query()
-                .FirstOrDefaultAsync(uf => uf.UserId == userId && uf.FirmId == firm.Id);
-
-            if (existingUserFirm == null)
-            {
-                await _unitOfWork.UserFirms.AddAsync(new UserFirm
-                {
-                    UserId = userId,
-                    FirmId = firm.Id,
-                    IsClient = isClient
-                });
-            }
-            else
-            {
-                existingUserFirm.IsClient = isClient;
-            }
-        }
-
-        await _unitOfWork.CompleteAsync();
-
-        if (firmDto.Id == 0 && !isClient)
-        {
-            var existingUser = await _unitOfWork.Users.Query()
-                .Where(u => u.Id == userId)
-                .FirstOrDefaultAsync();
-
-            if (existingUser is not null)
-            {
-                var activeUserFirm = await _unitOfWork.UserFirms.Query()
-                    .Where(uf => uf.UserId == userId && uf.FirmId == firm.Id)
-                    .FirstOrDefaultAsync();
-
-                if (activeUserFirm == null)
-                {
-                    activeUserFirm = new UserFirm
-                    {
-                        UserId = userId,
-                        FirmId = firm.Id,
-                        IsClient = false
-                    };
-                    await _unitOfWork.UserFirms.AddAsync(activeUserFirm);
-                    await _unitOfWork.CompleteAsync();
-                    existingUser.ActiveUserFirmId = activeUserFirm.UserFirmId;
-                }
-                else
-                {
-                    existingUser.ActiveUserFirmId = activeUserFirm.UserFirmId;
-                    // await DbSeeder.SeedDocumentSeries(_dbContext, activeUserFirm.UserFirmId);
-                }
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        await _unitOfWork.CompleteAsync();
-
-        firmDto.Id = firm.Id;
-        return firmDto;
-    }
-
-    public async Task<FirmDto> GetUserActiveFirmById(Guid userId)
-    {
-        var activeUserFirm = await _unitOfWork.Users.Query()
-            .Where(u => u.Id == userId)
-            .Include(u => u.ActiveUserFirm)
-            .Select(u => u.ActiveUserFirm.Firm)
-            .FirstOrDefaultAsync();
-
-        if (activeUserFirm == null)
-        {
-            return new FirmDto();
-        }
-
-        return _mapper.Map<FirmDto>(activeUserFirm);
-    }
-
-    public async Task<ICollection<FirmDto>> GetUserClientFirmsById(Guid userId)
-    {
-        var userFirms = await _unitOfWork.UserFirms.Query()
-            .Where(u => u.UserId.Equals(userId) && u.IsClient)
-            .Include(f => f.Firm)
-            .ToListAsync();
-
-        var firms = userFirms.Select(u => u.Firm).ToList();
-
-        var firmDtos = _mapper.Map<ICollection<FirmDto>>(firms);
-
-        return firmDtos;
     }
 }

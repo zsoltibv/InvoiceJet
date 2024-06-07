@@ -1,10 +1,8 @@
 import { Component, Inject } from "@angular/core";
 import { FormControl, FormGroup, Validators } from "@angular/forms";
 import { MAT_DIALOG_DATA, MatDialogRef } from "@angular/material/dialog";
-import { MatSnackBar } from "@angular/material/snack-bar";
 import { ToastrService } from "ngx-toastr";
 import { IFirm } from "src/app/models/IFirm";
-import { AuthService } from "src/app/services/auth.service";
 import { FirmService } from "src/app/services/firm.service";
 
 @Component({
@@ -21,8 +19,6 @@ export class AddEditClientDialogComponent {
 
   constructor(
     private firmService: FirmService,
-    private authService: AuthService,
-    private snackBar: MatSnackBar,
     private toastr: ToastrService,
     @Inject(MAT_DIALOG_DATA) public data: IFirm,
     private dialogRef: MatDialogRef<AddEditClientDialogComponent>
@@ -66,23 +62,27 @@ export class AddEditClientDialogComponent {
       city: this.firmDetailsForm.value.city!,
     };
 
-    console.log(firm);
-
     if (this.firmDetailsForm.valid) {
-      console.log(this.authService.userId);
-      this.firmService
-        .addOrEditFirm(firm, this.authService.userId)
-        .subscribe(() => {
-          this.toastr.success("Firm details updated successfully");
-          this.dialogRef.close(true);
+      if (this.isEditMode) {
+        this.firmService.editFirm(firm).subscribe({
+          next: () => {
+            this.toastr.success("Firm details updated successfully");
+          },
         });
+      } else {
+        this.firmService.addFirm(firm).subscribe({
+          next: () => {
+            this.toastr.success("Firm added successfully");
+          },
+        });
+      }
+      this.dialogRef.close(true);
     } else {
       this.errorMessage = "Please fill all the required fields";
     }
   }
 
   onCloudIconClick(): void {
-    console.log("Cloud icon clicked");
     this.firmService
       .getFirmFromAnaf(this.firmDetailsForm.value.cuiValue)
       .subscribe({
@@ -94,7 +94,13 @@ export class AddEditClientDialogComponent {
             county: firm.county,
             city: firm.city,
           });
+
+          this.toastr.success("Firm details fetched from ANAF");
         },
       });
+  }
+
+  closeDialog(): void {
+    this.dialogRef.close(false);
   }
 }

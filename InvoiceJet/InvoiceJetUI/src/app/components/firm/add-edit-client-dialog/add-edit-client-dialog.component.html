@@ -89,8 +89,17 @@
       <div *ngIf="errorMessage" class="p-error">{{ errorMessage }}</div>
 
       <div class="controls">
+        <button
+          mat-stroked-button
+          color="primary"
+          type="button"
+          (click)="closeDialog()"
+          *ngIf="isEditMode"
+        >
+          {{ "Cancel" }}
+        </button>
         <button mat-raised-button color="primary" type="submit">
-          {{ currentUserFirm ? "Update" : "Submit" }}
+          {{ isEditMode ? "Update" : "Submit" }}
         </button>
       </div>
     </form>
