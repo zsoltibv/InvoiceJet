@@ -79,6 +79,31 @@ public class InvoiceDocument : IDocument
                 }
             });
             
+            row.ConstantItem(100).Element(e =>
+            {
+                // Check if the document status is "Paid"
+                if (Model.DocumentStatus?.Status == "Paid")
+                {
+                    e.Background(Colors.Green.Medium) // Green background for paid
+                        .AlignCenter()
+                        .AlignMiddle()
+                        .Padding(5)
+                        .Text("Paid") // Display "Paid"
+                        .FontSize(14)
+                        .Bold();
+                }
+                else
+                {
+                    e.Background(Colors.Red.Medium) // Red background for unpaid
+                        .AlignCenter()
+                        .AlignMiddle()
+                        .Padding(5)
+                        .Text("Unpaid") // Display "Unpaid"
+                        .FontSize(14)
+                        .Bold();
+                }
+            });
+            
             // Optional: Add company logo if available
             // row.ConstantItem(175).Image(LogoImage);
         });

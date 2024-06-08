@@ -292,7 +292,7 @@ public class DocumentService : IDocumentService
             if (document == null)
                 throw new Exception("Document not found.");
 
-            document.DocumentStatusId = 3;
+            document.DocumentTypeId = (int)DocumentTypeEnum.StornoInvoice;
             await _unitOfWork.Documents.UpdateAsync(document);
             await _unitOfWork.CompleteAsync();
         }
