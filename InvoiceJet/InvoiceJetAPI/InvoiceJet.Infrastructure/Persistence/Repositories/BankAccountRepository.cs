@@ -21,4 +21,11 @@ public class BankAccountRepository : GenericRepository<BankAccount>, IBankAccoun
             .Where(ba => ba.UserFirm.UserId == userId && ba.UserFirm.User.ActiveUserFirmId == ba.UserFirmId)
             .ToListAsync();
     }
+    
+    public async Task<BankAccount?> GetUserFirmActiveBankAccountAsync(Guid userId)
+    {
+        return await _dbSet
+            .Where(ba => ba.UserFirm.UserId == userId && ba.UserFirm.User.ActiveUserFirmId == ba.UserFirmId && ba.IsActive)
+            .FirstOrDefaultAsync();
+    }
 }

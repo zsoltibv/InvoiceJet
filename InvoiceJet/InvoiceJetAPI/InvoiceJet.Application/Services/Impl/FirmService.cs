@@ -73,6 +73,7 @@ public class FirmService : IFirmService
         else
         {
             existingUserFirm.IsClient = isClient;
+            //seed document series: DbSeeder.SeedDocumentSeries
         }
         
         await _unitOfWork.CompleteAsync();
@@ -105,12 +106,12 @@ public class FirmService : IFirmService
 
             bool isAssociatedWithDocuments = await _unitOfWork.Documents.Query()
                 .AnyAsync(d => d.ClientId == firmId);
-
+            
             if (isAssociatedWithDocuments)
             {
                 throw new FirmAssociatedWithDocumentException(firm.Name);
             }
-
+            
             await _unitOfWork.Firms.RemoveAsync(firm);
         }
 

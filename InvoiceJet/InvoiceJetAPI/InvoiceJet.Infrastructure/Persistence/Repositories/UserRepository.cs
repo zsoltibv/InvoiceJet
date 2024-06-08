@@ -27,6 +27,8 @@ public class UserRepository : GenericRepository<User>, IUserRepository
             .Where(u => u.Id == userId)
                 .Include(uf => uf.ActiveUserFirm)
                     .ThenInclude(uf => uf.Firm)
+                .Include(uf => uf.ActiveUserFirm)
+                    .ThenInclude(u => u.User)
             .Select(uf => uf.ActiveUserFirm)
             .SingleOrDefaultAsync();
 

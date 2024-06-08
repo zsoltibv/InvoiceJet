@@ -55,7 +55,10 @@ export class ErrorInterceptor implements HttpInterceptor {
         this.toastr.error(message, "Error");
         break;
       default:
-        this.toastr.error(message, "Unexpected Error");
+        this.toastr.error(
+          "An unexpected error has occured.",
+          "Unexpected Error"
+        );
         break;
     }
   }
