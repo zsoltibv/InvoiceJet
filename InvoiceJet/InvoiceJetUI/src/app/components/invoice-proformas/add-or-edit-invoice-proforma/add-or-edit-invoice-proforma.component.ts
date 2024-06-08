@@ -335,6 +335,7 @@ export class AddOrEditInvoiceProformaComponent {
           data: { pdfUrl: url },
           width: "100vw",
           height: "90vh",
+          disableClose: true,
         });
       },
       error: (err) => {

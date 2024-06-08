@@ -78,7 +78,7 @@ public class InvoiceDocument : IDocument
                     });
                 }
             });
-
+            
             // Optional: Add company logo if available
             // row.ConstantItem(175).Image(LogoImage);
         });

@@ -8,11 +8,13 @@ using InvoiceJet.Application.Services;
 using InvoiceJet.Application.Services.Impl;
 using InvoiceJet.Domain.Interfaces;
 using InvoiceJet.Domain.Interfaces.Repositories;
+using InvoiceJet.Infrastructure.Factories;
+using InvoiceJet.Infrastructure.Factories.Impl;
 using InvoiceJet.Infrastructure.Persistence;
 using InvoiceJet.Infrastructure.Persistence.Repositories;
 using InvoiceJet.Infrastructure.Services;
 using InvoiceJet.Presentation.Middleware;
-using InvoiceJet.Presentation.Utils;
+using InvoiceJet.Presentation.Seeders;
 using QuestPDF.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -25,8 +27,12 @@ builder.Services.AddDbContext<InvoiceJetDbContext>(options =>
 
 QuestPDF.Settings.License = LicenseType.Community;
 builder.Services.AddHttpContextAccessor();
+
+//repositories
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+
+//services
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IFirmService, FirmService>();
@@ -35,6 +41,11 @@ builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<IDocumentSeriesService, DocumentSeriesService>();
 builder.Services.AddScoped<IDocumentService, DocumentService>();
 builder.Services.AddScoped<IPdfGenerationService, PdfGenerationService>();
+
+//factories
+// builder.Services.AddSingleton<IDocumentFactory, InvoiceDocumentFactory>();
+// builder.Services.AddSingleton<IDocumentFactory, ProformaDocumentFactory>();
+// builder.Services.AddSingleton<DocumentFactoryProvider>();
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddControllers();

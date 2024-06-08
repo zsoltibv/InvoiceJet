@@ -17,13 +17,15 @@ public class FirmService : IFirmService
     private readonly string _apiUrl;
     private readonly IUnitOfWork _unitOfWork;
     private readonly IUserService _userService;
+    private readonly IDocumentSeriesService _documentSeriesService;
 
-    public FirmService(IConfiguration config, IMapper mapper, IUnitOfWork unitOfWork, IUserService userService)
+    public FirmService(IConfiguration config, IMapper mapper, IUnitOfWork unitOfWork, IUserService userService, IDocumentSeriesService documentSeriesService)
     {
         _httpClient = new HttpClient();
         _mapper = mapper;
         _unitOfWork = unitOfWork;
         _userService = userService;
+        _documentSeriesService = documentSeriesService;
         _apiUrl = config.GetSection("AppSettings")?["AnafApiUrl"] ??
                   throw new ArgumentNullException("AnafApiUrl is not configured");
     }
@@ -73,7 +75,7 @@ public class FirmService : IFirmService
         else
         {
             existingUserFirm.IsClient = isClient;
-            //seed document series: DbSeeder.SeedDocumentSeries
+            await _documentSeriesService.AddInitialDocumentSeries(existingUserFirm.UserFirmId);
         }
         
         await _unitOfWork.CompleteAsync();

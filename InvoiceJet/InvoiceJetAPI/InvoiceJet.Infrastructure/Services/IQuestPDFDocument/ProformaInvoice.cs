@@ -6,7 +6,7 @@ using QuestPDF.Infrastructure;
 
 namespace InvoiceJet.Infrastructure.Services.IQuestPDFDocument;
 
-public class InvoiceProforma : IDocument
+public class ProformaInvoice : IDocument
 {
     public DocumentRequestDto Model { get; }
 
@@ -27,7 +27,7 @@ public class InvoiceProforma : IDocument
         }
     }
 
-    public InvoiceProforma(DocumentRequestDto model)
+    public ProformaInvoice(DocumentRequestDto model)
     {
         Model = model;
     }
@@ -60,7 +60,7 @@ public class InvoiceProforma : IDocument
             row.RelativeItem().Column(column =>
             {
                 column
-                    .Item().Text($"Invoice Proforma #{FullDocumentNumber}")
+                    .Item().Text($"Invoice #{FullDocumentNumber}")
                     .FontSize(20).SemiBold().FontColor(Colors.Blue.Medium);
 
                 column.Item().Text(text =>
@@ -77,6 +77,17 @@ public class InvoiceProforma : IDocument
                         text.Span($"{Model.DueDate.Value:d}");
                     });
                 }
+            });
+            
+            row.ConstantItem(100).Element(e =>
+            {
+                e.Background(Colors.Yellow.Darken3)
+                    .AlignCenter()
+                    .AlignMiddle()
+                    .Padding(5)
+                    .Text("Proforma")
+                    .FontSize(14)
+                    .Bold();
             });
 
             // Optional: Add company logo if available

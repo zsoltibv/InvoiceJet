@@ -8,6 +8,6 @@ public class DocumentProductRequestDto
     public decimal TotalPrice { get; set; }
     public bool ContainsTva { get; set; } = false;
     public string UnitOfMeasurement { get; set; } = string.Empty;
-    public decimal TvaValue { get; set; } = 19;
+    public int TvaValue { get; set; } = 19;
     public int Quantity { get; set; }
 }

@@ -1,5 +1,6 @@
 ﻿using InvoiceJet.Application.DTOs;
 using InvoiceJet.Application.Services;
+using InvoiceJet.Infrastructure.Factories;
 using InvoiceJet.Infrastructure.Services.IQuestPDFDocument;
 using QuestPDF.Fluent;
 using QuestPDF.Infrastructure;
@@ -33,28 +34,10 @@ public class PdfGenerationService : IPdfGenerationService
         {
             using (var memoryStream = new MemoryStream())
             {
-                switch (invoiceData.DocumentType!.Id)
-                {
-                    case 1:
-                        if (invoiceData.DocumentStatus!.Id == 3)
-                        {
-                            IDocument stornoDocument = new InvoiceStorno(invoiceData);
-                            stornoDocument.GeneratePdf(memoryStream);
-                        }
-                        else
-                        {
-                            IDocument document = new InvoiceDocument(invoiceData);
-                            document.GeneratePdf(memoryStream);
-                        }
-
-                        break;
-                    case 2:
-                        IDocument proformaDocument = new InvoiceProforma(invoiceData);
-                        proformaDocument.GeneratePdf(memoryStream);
-                        break;
-                    default:
-                        throw new Exception("Invalid document type");
-                }
+                DocumentFactoryProvider documentFactoryProvider = new DocumentFactoryProvider();
+                IDocumentFactory documentFactory = documentFactoryProvider.GetDocumentFactory(invoiceData.DocumentType!.Id);
+                IDocument document = documentFactory.CreateDocument(invoiceData);
+                document.GeneratePdf(memoryStream);
 
                 return memoryStream.ToArray();
             }

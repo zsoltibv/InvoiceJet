@@ -16,4 +16,8 @@
       <ProjectReference Include="..\InvoiceJet.Domain\InvoiceJet.Domain.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Factories\Impl\" />
+    </ItemGroup>
+
 </Project>

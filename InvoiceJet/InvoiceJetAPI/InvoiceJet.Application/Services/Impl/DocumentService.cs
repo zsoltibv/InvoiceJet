@@ -28,13 +28,11 @@ public class DocumentService : IDocumentService
         int userFirmId)
     {
         decimal totalInvoicePrice = 0;
-        decimal totalInvoicePriceWithTVA = 0;
-
-        // Remove existing DocumentProducts if it's an edit operation
-        var existingDocumentProducts = _unitOfWork.DocumentProducts.Query().Where(dp => dp.DocumentId == documentId);
+        decimal totalInvoicePriceWithTva = 0;
+        
+        var existingDocumentProducts = _unitOfWork.DocumentProducts.GetAllDocumentProductsForDocument(documentId);
         await _unitOfWork.DocumentProducts.RemoveRangeAsync(existingDocumentProducts);
-
-        // Add new DocumentProducts
+        
         foreach (var documentProductDto in documentProductsDto)
         {
             Product product;
@@ -42,7 +40,7 @@ public class DocumentService : IDocumentService
             if (documentProductDto.Id > 0)
             {
                 product = await _unitOfWork.Products.Query()
-                    .FirstOrDefaultAsync(product => product.Name == documentProductDto.Name);
+                    .FirstOrDefaultAsync(product => product.Name == documentProductDto.Name && product.UserFirmId == userFirmId);
                 if (product == null)
                 {
                     throw new Exception("Product not found.");
@@ -52,30 +50,29 @@ public class DocumentService : IDocumentService
             {
                 product = _mapper.Map<Product>(documentProductDto);
                 product.UserFirmId = userFirmId;
-                await _unitOfWork.Products.AddAsync(product); // This will only be actually saved later
+                await _unitOfWork.Products.AddAsync(product); 
             }
 
-            DocumentProduct documentProduct = new DocumentProduct
+            var documentProduct = new DocumentProduct
             {
                 Quantity = documentProductDto.Quantity,
                 Product = product,
-                DocumentId = documentId, // Now we have DocumentId available
+                DocumentId = documentId, 
                 UnitPrice = documentProductDto.UnitPrice,
                 TotalPrice = documentProductDto.TotalPrice,
             };
 
             totalInvoicePrice += documentProductDto.UnitPrice * documentProductDto.Quantity;
-            totalInvoicePriceWithTVA += documentProductDto.TotalPrice;
+            totalInvoicePriceWithTva += documentProductDto.TotalPrice;
 
-            await _unitOfWork.DocumentProducts.AddAsync(documentProduct); // Add to DbContext
+            await _unitOfWork.DocumentProducts.AddAsync(documentProduct);
         }
-
-        // Update the total prices for the document
+        
         var document = await _unitOfWork.Documents.GetByIdAsync(documentId);
         if (document != null)
         {
             document.UnitPrice = totalInvoicePrice;
-            document.TotalPrice = totalInvoicePriceWithTVA;
+            document.TotalPrice = totalInvoicePriceWithTva;
             await _unitOfWork.Documents.UpdateAsync(document);
         }
     }
@@ -88,15 +85,15 @@ public class DocumentService : IDocumentService
             throw new UserHasNoAssociatedFirmException();
         }
 
-        Document document = new Document
+        var document = new Document
         {
             Id = documentRequestDto.Id,
-            DocumentNumber = documentRequestDto.DocumentSeries.SeriesName +
-                             documentRequestDto.DocumentSeries.CurrentNumber.ToString("D4"),
+            DocumentNumber = documentRequestDto.DocumentSeries?.SeriesName +
+                             documentRequestDto.DocumentSeries?.CurrentNumber.ToString("D4"),
             IssueDate = documentRequestDto.IssueDate,
             DueDate = documentRequestDto.DueDate,
-            DocumentTypeId = documentRequestDto.DocumentSeries.DocumentType?.Id,
-            DocumentStatusId = 1,
+            DocumentTypeId = documentRequestDto.DocumentSeries?.DocumentType?.Id,
+            DocumentStatusId = (int)DocumentStatusEnum.Unpaid,
             BankAccount = await _unitOfWork.BankAccounts.Query()
                 .Where(ba => ba.UserFirmId == userFirmId && ba.IsActive)
                 .FirstOrDefaultAsync(),
@@ -108,16 +105,18 @@ public class DocumentService : IDocumentService
         await _unitOfWork.CompleteAsync();
 
         await UpdateDocumentProducts(document.Id, documentRequestDto.Products, userFirmId.Value);
-
-        DocumentSeries docSeries = await _unitOfWork.DocumentSeries.Query()
-            .Where(ds => ds.Id == documentRequestDto.DocumentSeries.Id)
-            .FirstOrDefaultAsync();
-
-        docSeries.CurrentNumber++;
-        await _unitOfWork.DocumentSeries.UpdateAsync(docSeries);
+        if (documentRequestDto.DocumentSeries != null)
+            await IncreaseDocumentSeriesNumber(documentRequestDto.DocumentSeries.Id);
 
         await _unitOfWork.CompleteAsync();
         return documentRequestDto;
+    }
+    
+    private async Task IncreaseDocumentSeriesNumber(int documentSeriesId)
+    {
+        var docSeries = await _unitOfWork.DocumentSeries.GetByIdAsync(documentSeriesId);
+        docSeries!.CurrentNumber++;
+        await _unitOfWork.DocumentSeries.UpdateAsync(docSeries);
     }
 
     public async Task<DocumentRequestDto> EditDocument(DocumentRequestDto documentRequestDto)

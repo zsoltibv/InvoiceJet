@@ -3,6 +3,6 @@
 public enum DocumentTypeEnum
 {
     Invoice = 1,
-    StornoInvoice = 2,
-    ProformaInvoice = 3,
+    ProformaInvoice = 2,
+    StornoInvoice = 3,
 }

@@ -6,7 +6,7 @@ using QuestPDF.Infrastructure;
 
 namespace InvoiceJet.Infrastructure.Services.IQuestPDFDocument;
 
-public class InvoiceStorno : IDocument
+public class StornoInvoice : IDocument
 {
     public DocumentRequestDto Model { get; }
 
@@ -27,7 +27,7 @@ public class InvoiceStorno : IDocument
         }
     }
 
-    public InvoiceStorno(DocumentRequestDto model)
+    public StornoInvoice(DocumentRequestDto model)
     {
         Model = model;
     }
@@ -60,7 +60,7 @@ public class InvoiceStorno : IDocument
             row.RelativeItem().Column(column =>
             {
                 column
-                    .Item().Text($"Invoice Storno #{FullDocumentNumber}")
+                    .Item().Text($"Invoice #{FullDocumentNumber}")
                     .FontSize(20).SemiBold().FontColor(Colors.Blue.Medium);
 
                 column.Item().Text(text =>
@@ -77,6 +77,17 @@ public class InvoiceStorno : IDocument
                         text.Span($"{Model.DueDate.Value:d}");
                     });
                 }
+            });
+            
+            row.ConstantItem(100).Element(e =>
+            {
+                e.Background(Colors.Yellow.Medium)
+                    .AlignCenter()
+                    .AlignMiddle()
+                    .Padding(5)
+                    .Text("Storno")
+                    .FontSize(14)
+                    .Bold();
             });
 
             // Optional: Add company logo if available

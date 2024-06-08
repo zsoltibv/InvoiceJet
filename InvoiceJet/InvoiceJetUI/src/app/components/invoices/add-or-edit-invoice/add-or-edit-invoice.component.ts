@@ -338,6 +338,7 @@ export class AddOrEditInvoiceComponent {
           data: { pdfUrl: url },
           width: "100vw",
           height: "90vh",
+          disableClose: true,
         });
       },
       error: (err) => {

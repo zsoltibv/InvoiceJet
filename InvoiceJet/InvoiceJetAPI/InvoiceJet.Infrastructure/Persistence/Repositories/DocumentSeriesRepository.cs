@@ -14,7 +14,7 @@ public class DocumentSeriesRepository : GenericRepository<DocumentSeries>, IDocu
     {
         return _dbSet
             .Include(ds => ds.UserFirm)
-                .ThenInclude(uf => uf!.User)
+            .ThenInclude(uf => uf!.User)
             .Include(ds => ds.DocumentType)
             .Where(ds => ds.UserFirm!.UserId.Equals(userId) && ds.UserFirm.User.ActiveUserFirmId == ds.UserFirmId)
             .ToListAsync();
