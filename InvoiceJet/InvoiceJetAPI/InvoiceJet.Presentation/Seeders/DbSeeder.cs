@@ -17,8 +17,8 @@ public static class DbSeeder
                 var documentTypes = new List<DocumentType>
                 {
                     new() { Name = "Factura" },
-                    new() { Name = "Factura Storno" },
-                    new() { Name = "Proforma" }
+                    new() { Name = "Factura Proforma" },
+                    new() { Name = "Factura Storno" }
                 };
 
                 context.DocumentType.AddRange(documentTypes);

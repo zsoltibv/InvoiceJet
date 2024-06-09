@@ -1,13 +1,13 @@
-﻿using QuestPDF.Infrastructure;
-using InvoiceJet.Application.DTOs;
+﻿using InvoiceJet.Application.DTOs;
 using InvoiceJet.Infrastructure.Services.IQuestPDFDocument;
+using QuestPDF.Infrastructure;
 
 namespace InvoiceJet.Infrastructure.Factories.Impl;
 
-public class InvoiceDocumentFactory : IDocumentFactory
+public class StornoDocumentFactory: IDocumentFactory
 {
     public IDocument CreateDocument(DocumentRequestDto invoiceData)
     {
-        return new InvoiceDocument(invoiceData);
+        return new StornoInvoice(invoiceData);
     }
 }

@@ -3,6 +3,5 @@
 public enum DocumentStatusEnum
 {
     Unpaid = 1,
-    Paid = 2,
-    Storno = 3
+    Paid = 2
 }

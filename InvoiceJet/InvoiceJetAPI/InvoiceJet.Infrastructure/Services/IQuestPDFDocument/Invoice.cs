@@ -124,9 +124,6 @@ public class InvoiceDocument : IDocument
 
             column.Item().Element(ComposeTable);
 
-            var totalPrice = Model.Products.Sum(x => x.TotalPrice);
-            column.Item().PaddingRight(5).AlignRight().Text($"Grand total: {totalPrice:C}").SemiBold();
-
             // Optional: Add comments or additional sections as needed
         });
     }
@@ -142,34 +139,57 @@ public class InvoiceDocument : IDocument
                 columns.RelativeColumn();
                 columns.RelativeColumn();
                 columns.RelativeColumn();
+                columns.RelativeColumn();
             });
 
             table.Header(header =>
             {
                 header.Cell().Text("#");
                 header.Cell().Text("Product").Style(TextStyle.Default.SemiBold());
+                header.Cell().AlignRight().Text("Qt.").Style(TextStyle.Default.SemiBold());
                 header.Cell().AlignRight().Text("Unit price").Style(TextStyle.Default.SemiBold());
-                header.Cell().AlignRight().Text("Quantity").Style(TextStyle.Default.SemiBold());
-                header.Cell().AlignRight().Text("Total").Style(TextStyle.Default.SemiBold());
-
-                header.Cell().ColumnSpan(5).PaddingTop(5).BorderBottom(1).BorderColor(Colors.Black);
+                header.Cell().AlignRight().Text("Value").Style(TextStyle.Default.SemiBold());
+                header.Cell().AlignRight().Text("Total TVA").Style(TextStyle.Default.SemiBold());
+                
+                header.Cell().ColumnSpan(6).PaddingVertical(5).BorderBottom(1).BorderColor(Colors.Black);
             });
 
             int index = 0;
             foreach (var item in Model.Products)
             {
                 index++;
-                table.Cell().Element(cell => cell.BorderBottom(1).BorderColor(Colors.Grey.Lighten2).PaddingVertical(5))
-                    .Text($"{index}");
-                table.Cell().Element(cell => cell.BorderBottom(1).BorderColor(Colors.Grey.Lighten2).PaddingVertical(5))
-                    .Text(item.Name);
-                table.Cell().Element(cell => cell.BorderBottom(1).BorderColor(Colors.Grey.Lighten2).PaddingVertical(5))
-                    .AlignRight().Text($"{item.UnitPrice:C}");
-                table.Cell().Element(cell => cell.BorderBottom(1).BorderColor(Colors.Grey.Lighten2).PaddingVertical(5))
-                    .AlignRight().Text($"{item.Quantity}");
-                table.Cell().Element(cell => cell.BorderBottom(1).BorderColor(Colors.Grey.Lighten2).PaddingVertical(5))
-                    .AlignRight().Text($"{item.TotalPrice:C}");
+                var value = item.UnitPrice * item.Quantity;
+                var totalTVAItem = item.TotalPrice - item.UnitPrice * item.Quantity;
+                table.Cell().Text($"{index}");
+                table.Cell().Text(item.Name);
+                table.Cell().AlignRight().Text($"{item.Quantity}");
+                table.Cell().AlignRight().Text($"{item.UnitPrice}");
+                table.Cell().AlignRight().Text($"{value:F2}");
+                table.Cell().AlignRight().Text($"{totalTVAItem:F2}");
+                
+                table.Cell().ColumnSpan(6).PaddingVertical(5).BorderBottom(1).BorderColor(Colors.Grey.Lighten2);
             }
+            
+            var subtotal = Model.Products.Sum(x => x.UnitPrice * x.Quantity);
+            var totalTVA = Model.Products.Sum(x => x.TotalPrice - x.UnitPrice * x.Quantity);
+            var grandTotal = subtotal + totalTVA;
+            
+            table.Footer(footer =>
+            {
+                footer.Cell().ColumnSpan(3);  // Empty columns to align the text
+                footer.Cell().Element(cell => cell.BorderBottom(1).BorderColor(Colors.Grey.Lighten2).PaddingVertical(5))
+                    .AlignRight().Text("Subtotal:");
+                footer.Cell().Element(cell => cell.BorderBottom(1).BorderColor(Colors.Grey.Lighten2).PaddingVertical(5))
+                    .AlignRight().Text($"{subtotal:F2}");
+                footer.Cell().Element(cell => cell.BorderBottom(1).BorderColor(Colors.Grey.Lighten2).PaddingVertical(5))
+                    .AlignRight().Text($"{totalTVA:F2}");
+                
+                footer.Cell().ColumnSpan(3);  // Empty columns to align the text
+                footer.Cell().Element(cell => cell.BorderBottom(1).BorderColor(Colors.Grey.Lighten2).PaddingVertical(5))
+                    .AlignRight().Text($"Total plata:");
+                footer.Cell().ColumnSpan(2).Element(cell => cell.BorderBottom(1).BorderColor(Colors.Grey.Lighten2).PaddingVertical(5))
+                    .AlignRight().Text($"{grandTotal:C}").FontSize(16).Bold();
+            });
         });
     }
 }

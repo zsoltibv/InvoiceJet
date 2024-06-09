@@ -11,6 +11,7 @@ public class DocumentFactoryProvider
         {
             (int)DocumentTypeEnum.Invoice => new InvoiceDocumentFactory(),
             (int)DocumentTypeEnum.ProformaInvoice => new ProformaDocumentFactory(),
+            (int)DocumentTypeEnum.StornoInvoice => new StornoDocumentFactory(),
             _ => throw new Exception("Invalid document type")
         };
     }
