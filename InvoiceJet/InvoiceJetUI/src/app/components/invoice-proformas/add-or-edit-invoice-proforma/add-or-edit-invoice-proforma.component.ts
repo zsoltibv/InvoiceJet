@@ -13,6 +13,7 @@ import { FirmService } from "src/app/services/firm.service";
 import { AuthService } from "src/app/services/auth.service";
 import { DocumentService } from "src/app/services/document.service";
 import { PdfViewerComponent } from "src/app/components/pdf-viewer/pdf-viewer.component";
+import { ToastrService } from "ngx-toastr";
 @Component({
   selector: "app-add-or-edit-invoice-proforma",
   templateUrl: "./add-or-edit-invoice-proforma.component.html",
@@ -52,7 +53,8 @@ export class AddOrEditInvoiceProformaComponent {
     private documentService: DocumentService,
     private dialog: MatDialog,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private toastr: ToastrService
   ) {}
 
   ngOnInit(): void {
@@ -274,10 +276,8 @@ export class AddOrEditInvoiceProformaComponent {
     documentData.documentType = { id: 2, name: "" };
 
     if (!this.isEditMode) {
-      console.log("Updating invoice");
       this.updateDocument(documentData);
     } else {
-      console.log("Adding invoice");
       this.addDocument(documentData);
     }
   }
@@ -285,11 +285,8 @@ export class AddOrEditInvoiceProformaComponent {
   updateDocument(documentData: IDocumentRequest) {
     this.documentService.updateDocument(documentData).subscribe({
       next: () => {
-        console.log("Invoice updated successfully");
+        this.toastr.success("Document updated successfully");
         this.router.navigateByUrl("/dashboard/invoice-proformas");
-      },
-      error: (err) => {
-        console.error("Error updating invoice", err);
       },
     });
   }
@@ -297,11 +294,8 @@ export class AddOrEditInvoiceProformaComponent {
   addDocument(documentData: IDocumentRequest) {
     this.documentService.addDocument(documentData).subscribe({
       next: () => {
-        console.log("Invoice added successfully");
+        this.toastr.success("Document added successfully");
         this.router.navigateByUrl("/dashboard/invoices");
-      },
-      error: (err) => {
-        console.error("Error adding invoice", err);
       },
     });
   }
@@ -312,9 +306,6 @@ export class AddOrEditInvoiceProformaComponent {
     this.documentService.generateDocumentPdf(documentData).subscribe({
       next: () => {
         console.log("Invoice pdf generated successfully");
-      },
-      error: (err) => {
-        console.error("Error generating invoice pdf", err);
       },
     });
   }

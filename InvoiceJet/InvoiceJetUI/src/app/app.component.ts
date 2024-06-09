@@ -8,7 +8,7 @@ import { NavigationEnd, Router } from "@angular/router";
   styleUrls: ["./app.component.scss"],
 })
 export class AppComponent {
-  title = "FacturilaUI";
+  title = "InvoiceJet";
   isLoginOrRegister = false;
 
   constructor(private authService: AuthService, private router: Router) {

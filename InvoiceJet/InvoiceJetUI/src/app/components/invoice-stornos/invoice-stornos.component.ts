@@ -55,7 +55,9 @@ export class InvoiceStornosComponent {
     }
   }
 
-  previewStornoInvoice(row: IDocumentTableRecord): void {}
+  openEditInvoiceStornoDialog(row: IDocumentTableRecord): void {
+    this.router.navigate(["/dashboard/edit-invoice-storno", row.id]);
+  }
 
   deleteSelected(): void {
     console.log(this.selection.selected);

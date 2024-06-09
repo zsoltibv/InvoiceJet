@@ -15,6 +15,7 @@ import { InvoicesComponent } from "./components/invoices/invoices.component";
 import { InvoiceStornosComponent } from "./components/invoice-stornos/invoice-stornos.component";
 import { InvoiceProformasComponent } from "./components/invoice-proformas/invoice-proformas.component";
 import { AddOrEditInvoiceProformaComponent } from "./components/invoice-proformas/add-or-edit-invoice-proforma/add-or-edit-invoice-proforma.component";
+import { AddOrEditInvoiceStornosComponent } from "./components/invoice-stornos/add-or-edit-invoice-stornos/add-or-edit-invoice-stornos.component";
 
 const routes: Routes = [
   { path: "login", component: LoginComponent },
@@ -82,6 +83,11 @@ const routes: Routes = [
   {
     path: "dashboard/edit-invoice-proforma/:id",
     component: AddOrEditInvoiceProformaComponent,
+    canActivate: [AuthGuard],
+  },
+  {
+    path: "dashboard/edit-invoice-storno/:id",
+    component: AddOrEditInvoiceStornosComponent,
     canActivate: [AuthGuard],
   },
   { path: "**", component: DashboardComponent, canActivate: [AuthGuard] },
