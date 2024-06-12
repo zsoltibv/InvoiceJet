@@ -34,6 +34,10 @@ public class DocumentSeriesService : IDocumentSeriesService
 
     public async Task AddInitialDocumentSeries(int userFirmId)
     {
+        if(await _unitOfWork.DocumentSeries.Query().AnyAsync(d => d.UserFirmId == userFirmId))
+        {
+            return;
+        }
         var documentSeries = new List<DocumentSeries>
         {
             new()

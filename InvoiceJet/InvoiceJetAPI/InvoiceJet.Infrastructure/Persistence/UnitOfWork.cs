@@ -4,35 +4,20 @@ using InvoiceJet.Infrastructure.Persistence.Repositories;
 
 namespace InvoiceJet.Infrastructure.Persistence;
 
-public class UnitOfWork : IUnitOfWork
+public class UnitOfWork(InvoiceJetDbContext context) : IUnitOfWork
 {
-    private readonly InvoiceJetDbContext _context;
-    
-    public UnitOfWork(InvoiceJetDbContext context)
-    {
-        _context = context;
-        BankAccounts = new BankAccountRepository(context);
-        DocumentProducts = new DocumentProductRepository(context);
-        Documents = new DocumentRepository(context);
-        DocumentSeries = new DocumentSeriesRepository(context);
-        DocumentStatuses = new DocumentStatusRepository(context);
-        DocumentTypes = new DocumentTypeRepository(context);
-        Firms = new FirmRepository(context);
-        Products = new ProductRepository(context);
-        UserFirms = new UserFirmRepository(context);
-        Users = new UserRepository(context);
-    }
+    private readonly InvoiceJetDbContext _context = context;
 
-    public IBankAccountRepository BankAccounts { get; }
-    public IDocumentProductRepository DocumentProducts { get; }
-    public IDocumentRepository Documents { get; }
-    public IDocumentSeriesRepository DocumentSeries { get; }
-    public IDocumentStatusRepository DocumentStatuses { get; }
-    public IDocumentTypeRepository DocumentTypes { get; }
-    public IFirmRepository Firms { get; }
-    public IProductRepository Products { get; }
-    public IUserFirmRepository UserFirms { get; }
-    public IUserRepository Users { get; }
+    public IBankAccountRepository BankAccounts { get; } = new BankAccountRepository(context);
+    public IDocumentProductRepository DocumentProducts { get; } = new DocumentProductRepository(context);
+    public IDocumentRepository Documents { get; } = new DocumentRepository(context);
+    public IDocumentSeriesRepository DocumentSeries { get; } = new DocumentSeriesRepository(context);
+    public IDocumentStatusRepository DocumentStatuses { get; } = new DocumentStatusRepository(context);
+    public IDocumentTypeRepository DocumentTypes { get; } = new DocumentTypeRepository(context);
+    public IFirmRepository Firms { get; } = new FirmRepository(context);
+    public IProductRepository Products { get; } = new ProductRepository(context);
+    public IUserFirmRepository UserFirms { get; } = new UserFirmRepository(context);
+    public IUserRepository Users { get; } = new UserRepository(context);
 
     public async Task<int> CompleteAsync()
     {

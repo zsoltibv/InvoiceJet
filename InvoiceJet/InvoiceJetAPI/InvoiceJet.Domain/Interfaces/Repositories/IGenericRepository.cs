@@ -9,5 +9,5 @@ public interface IGenericRepository<T> where T : class
     Task UpdateAsync(T entity);
     Task RemoveAsync(T entity);
     Task RemoveRangeAsync(IEnumerable<T> entities);
-    IQueryable<T> Query();  // Exposes the IQueryable for the repository
+    IQueryable<T> Query();  
 }
