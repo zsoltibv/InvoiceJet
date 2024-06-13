@@ -9,17 +9,12 @@ import {
 } from "@angular/router";
 import { Observable } from "rxjs";
 import { AuthService } from "src/app/services/auth.service";
-import { TokenExpiredDialogComponent } from "../components/token-expired-dialog/token-expired-dialog.component";
 
 @Injectable({
   providedIn: "root",
 })
 export class AuthGuard implements CanActivate {
-  constructor(
-    private authService: AuthService,
-    private router: Router,
-    private dialog: MatDialog
-  ) {}
+  constructor(private authService: AuthService, private router: Router) {}
 
   canActivate(
     route: ActivatedRouteSnapshot,

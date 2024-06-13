@@ -26,10 +26,8 @@ export class ErrorInterceptor implements HttpInterceptor {
         let errorMessage = "Unknown Error Occurred";
 
         if (serverError instanceof ErrorEvent) {
-          // Client-side error
           errorMessage = `Error: ${serverError.message}`;
         } else {
-          // Server-side error
           errorMessage =
             serverError?.message || error.message || "Server error";
           this.handleError(error.status, errorMessage);
