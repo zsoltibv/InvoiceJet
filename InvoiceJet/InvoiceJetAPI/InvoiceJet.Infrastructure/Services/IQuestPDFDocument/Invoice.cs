@@ -186,7 +186,7 @@ public class InvoiceDocument : IDocument
                 
                 footer.Cell().ColumnSpan(3);  // Empty columns to align the text
                 footer.Cell().Element(cell => cell.BorderBottom(1).BorderColor(Colors.Grey.Lighten2).PaddingVertical(5))
-                    .AlignRight().Text($"Total plata:");
+                    .AlignRight().Text($"Total pay:");
                 footer.Cell().ColumnSpan(2).Element(cell => cell.BorderBottom(1).BorderColor(Colors.Grey.Lighten2).PaddingVertical(5))
                     .AlignRight().Text($"{grandTotal:C}").FontSize(16).Bold();
             });
