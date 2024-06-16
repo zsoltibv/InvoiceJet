@@ -14,9 +14,9 @@ export class DocumentService {
 
   constructor(private http: HttpClient) {}
 
-  public getDocumentAutofillInfo(userId: string, documentTypeId: number) {
+  public getDocumentAutofillInfo(documentTypeId: number) {
     return this.http.get<IDocumentAutofill>(
-      `${this.baseUrl}/Document/GetDocumentAutofillInfo/${userId}/${documentTypeId}`
+      `${this.baseUrl}/Document/GetDocumentAutofillInfo/${documentTypeId}`
     );
   }
 

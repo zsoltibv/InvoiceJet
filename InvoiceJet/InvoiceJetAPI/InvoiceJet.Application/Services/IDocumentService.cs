@@ -4,7 +4,7 @@ namespace InvoiceJet.Application.Services;
 
 public interface IDocumentService
 {
-    Task<DocumentAutofillDto> GetDocumentAutofillInfo(Guid userId, int documentTypeId);
+    Task<DocumentAutofillDto> GetDocumentAutofillInfo(int documentTypeId);
     Task<DocumentRequestDto> AddDocument(DocumentRequestDto documentRequestDto);
     Task<DocumentRequestDto> EditDocument(DocumentRequestDto documentRequestDto);
     Task<DocumentRequestDto> GeneratePdfDocument(DocumentRequestDto documentRequestDto);

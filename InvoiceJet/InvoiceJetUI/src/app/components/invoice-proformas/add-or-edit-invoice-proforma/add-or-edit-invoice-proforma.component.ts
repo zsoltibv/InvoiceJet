@@ -82,7 +82,7 @@ export class AddOrEditInvoiceProformaComponent {
     });
 
     this.documentService
-      .getDocumentAutofillInfo(this.authService.userId, 2)
+      .getDocumentAutofillInfo(2)
       .subscribe({
         next: (data) => {
           this.invoiceAutofillData = data;

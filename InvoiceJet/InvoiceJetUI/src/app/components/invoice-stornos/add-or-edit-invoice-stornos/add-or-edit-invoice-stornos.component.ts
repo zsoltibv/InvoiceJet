@@ -81,7 +81,7 @@ export class AddOrEditInvoiceStornosComponent {
     });
 
     this.documentService
-      .getDocumentAutofillInfo(this.authService.userId, 3)
+      .getDocumentAutofillInfo(3)
       .subscribe({
         next: (data) => {
           this.invoiceAutofillData = data;

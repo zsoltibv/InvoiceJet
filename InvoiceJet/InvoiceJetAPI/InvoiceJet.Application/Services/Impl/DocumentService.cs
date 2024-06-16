@@ -187,8 +187,9 @@ public class DocumentService : IDocumentService
         };
     }
 
-    public async Task<DocumentAutofillDto> GetDocumentAutofillInfo(Guid userId, int documentTypeId)
+    public async Task<DocumentAutofillDto> GetDocumentAutofillInfo(int documentTypeId)
     {
+        var userId = _userService.GetCurrentUserId();
         var userFirmId = await _unitOfWork.Users.GetUserFirmIdAsync(userId);
         if (!userFirmId.HasValue) return new DocumentAutofillDto();
 
