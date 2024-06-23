@@ -1,9 +1,10 @@
 ﻿using InvoiceJet.Application.DTOs;
+using InvoiceJet.Domain.Models;
 
 namespace InvoiceJet.Application.Services;
 
 public interface IDocumentSeriesService
 {
     Task<List<DocumentSeriesDto>> GetAllDocumentSeriesForUserId();
-    Task AddInitialDocumentSeries(int userFirmId);
+    Task AddInitialDocumentSeries(UserFirm userFirm);
 }

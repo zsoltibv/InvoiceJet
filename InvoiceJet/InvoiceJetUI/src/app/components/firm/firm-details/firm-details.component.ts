@@ -63,7 +63,7 @@ export class FirmDetailsComponent implements OnInit {
     };
 
     if (this.firmDetailsForm.valid) {
-      if (this.currentUserFirm) {
+      if (this.currentUserFirm.id !== 0) {
         this.firmService.editFirm(firm, false).subscribe({
           next: () => {
             this.toastr.success(

@@ -65,17 +65,25 @@ public class FirmService : IFirmService
         
         if (existingUserFirm == null)
         {
-            await _unitOfWork.UserFirms.AddAsync(new UserFirm
+            var newUserFirm = new UserFirm
             {
                 UserId = userId,
                 FirmId = firmId,
                 IsClient = isClient
-            });
+            };
+
+            await _unitOfWork.UserFirms.AddAsync(newUserFirm);
+
+            var user = await _unitOfWork.Users.GetUserByIdAsync(_userService.GetCurrentUserId());
+            if (user!.ActiveUserFirm == null)
+            {
+                user.ActiveUserFirm = newUserFirm;
+                await _documentSeriesService.AddInitialDocumentSeries(newUserFirm);
+            }
         }
         else
         {
             existingUserFirm.IsClient = isClient;
-            await _documentSeriesService.AddInitialDocumentSeries(existingUserFirm.UserFirmId);
         }
         
         await _unitOfWork.CompleteAsync();

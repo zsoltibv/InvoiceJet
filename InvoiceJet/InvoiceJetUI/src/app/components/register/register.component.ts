@@ -1,26 +1,26 @@
-import { Component } from '@angular/core';
+import { Router } from "@angular/router";
+import { Component } from "@angular/core";
 import { FormControl, FormGroup, Validators } from "@angular/forms";
-import { ILoginUser } from "src/app/models/ILoginUser";
 import { IRegisterUser } from "src/app/models/IRegisterUser";
 import { AuthService } from "src/app/services/auth.service";
 
 @Component({
-  selector: 'app-register',
-  templateUrl: './register.component.html',
-  styleUrls: ['./register.component.scss']
+  selector: "app-register",
+  templateUrl: "./register.component.html",
+  styleUrls: ["./register.component.scss"],
 })
 export class RegisterComponent {
   errorMessage: string | null = null;
   hide = true; // Use this to toggle password visibility
 
   registerForm = new FormGroup({
-    firstName: new FormControl('', [Validators.required]),
-    lastName: new FormControl('', [Validators.required]),
-    email: new FormControl('', [Validators.required, Validators.email]),
-    password: new FormControl('', [Validators.required]),
+    firstName: new FormControl("", [Validators.required]),
+    lastName: new FormControl("", [Validators.required]),
+    email: new FormControl("", [Validators.required, Validators.email]),
+    password: new FormControl("", [Validators.required]),
   });
 
-  constructor(private authService: AuthService) { }
+  constructor(private authService: AuthService, private router: Router) {}
 
   onSubmit() {
     if (this.registerForm.invalid) {
@@ -35,12 +35,11 @@ export class RegisterComponent {
     };
 
     this.authService.register(user).subscribe({
-      next: (response) => {
-        // Handle response
+      next: (token: string) => {
+        console.log(token);
+        localStorage.setItem("authToken", token);
+        this.router.navigate(["dashboard"]);
       },
-      error: (err) => {
-        this.errorMessage = err.message;
-      }
     });
   }
 }

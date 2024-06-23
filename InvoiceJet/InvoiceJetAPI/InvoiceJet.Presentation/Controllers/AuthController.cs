@@ -2,6 +2,7 @@
 using InvoiceJet.Application.Services;
 using InvoiceJet.Domain.Models;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json.Linq;
 
 namespace InvoiceJet.Presentation.Controllers;
 
@@ -19,21 +20,14 @@ public class AuthController : ControllerBase
     [HttpPost("register")]
     public async Task<ActionResult<User>> Register([FromBody] UserRegisterDto userDto)
     {
-        var userToRegister = await _authService.RegisterUser(userDto);
-        return Ok(userToRegister);
+        var token = await _authService.RegisterUser(userDto);
+        return Ok(token);
     }
 
     [HttpPost("login")]
     public async Task<ActionResult<User>> Login([FromBody] UserLoginDto userDto)
     {
-        try
-        {
-            string token = await _authService.LoginUser(userDto);
-            return Ok(token);
-        }
-        catch (Exception ex)
-        {
-            return BadRequest(ex.Message);
-        }
+        string token = await _authService.LoginUser(userDto);
+        return Ok(token);
     }
 }

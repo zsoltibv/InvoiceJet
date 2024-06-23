@@ -23,7 +23,7 @@ public class AuthService : IAuthService
         _configuration = configuration;
     }
 
-    public async Task<User> RegisterUser(UserRegisterDto userDto)
+    public async Task<string> RegisterUser(UserRegisterDto userDto)
     {
         var user = new User
         {
@@ -37,7 +37,8 @@ public class AuthService : IAuthService
         await _unitOfWork.Users.AddAsync(user);
         await _unitOfWork.CompleteAsync();
 
-        return user;
+        string token = CreateToken(user);
+        return token;
     }
 
     public async Task<string> LoginUser(UserLoginDto userDto)

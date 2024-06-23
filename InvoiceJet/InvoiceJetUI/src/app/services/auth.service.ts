@@ -25,12 +25,10 @@ export class AuthService {
     private dialog: MatDialog
   ) {}
 
-  public register(user: IRegisterUser): Observable<HttpEvent<string>> {
-    return this.http.post<string>(
-      this.baseUrl + "/Auth/register",
-      user,
-      this.options
-    );
+  public register(user: IRegisterUser): Observable<string> {
+    return this.http.post(this.baseUrl + "/Auth/register", user, {
+      responseType: "text",
+    });
   }
 
   public login(user: ILoginUser): Observable<string> {

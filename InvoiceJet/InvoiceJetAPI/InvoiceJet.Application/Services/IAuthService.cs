@@ -5,6 +5,6 @@ namespace InvoiceJet.Application.Services;
 
 public interface IAuthService
 {
-    Task<User> RegisterUser(UserRegisterDto userDto);
+    Task<string> RegisterUser(UserRegisterDto userDto);
     Task<string> LoginUser(UserLoginDto userDto);
 }

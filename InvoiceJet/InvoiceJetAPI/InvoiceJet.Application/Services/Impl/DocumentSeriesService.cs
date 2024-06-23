@@ -25,19 +25,15 @@ public class DocumentSeriesService : IDocumentSeriesService
         var userFirmId = await _unitOfWork.Users.GetUserFirmIdAsync(_userService.GetCurrentUserId());
         if (!userFirmId.HasValue)
         {
-            throw new UserHasNoAssociatedFirmException();
+            return new List<DocumentSeriesDto>();
         }
 
         var documentSeries = await _unitOfWork.DocumentSeries.GetAllDocumentSeriesForActiveUserFirm(_userService.GetCurrentUserId());
         return _mapper.Map<List<DocumentSeries>, List<DocumentSeriesDto>>(documentSeries);
     }
 
-    public async Task AddInitialDocumentSeries(int userFirmId)
+    public async Task AddInitialDocumentSeries(UserFirm userFirm)
     {
-        if(await _unitOfWork.DocumentSeries.Query().AnyAsync(d => d.UserFirmId == userFirmId))
-        {
-            return;
-        }
         var documentSeries = new List<DocumentSeries>
         {
             new()
@@ -49,7 +45,7 @@ public class DocumentSeriesService : IDocumentSeriesService
                 DocumentType = await _unitOfWork.DocumentTypes.Query()
                     .Where(d => d.Name.Equals("Factura"))
                     .FirstOrDefaultAsync(),
-                UserFirmId = userFirmId
+                UserFirm = userFirm
             },
             new()
             {
@@ -60,7 +56,7 @@ public class DocumentSeriesService : IDocumentSeriesService
                 DocumentType = await _unitOfWork.DocumentTypes.Query()
                     .Where(d => d.Name.Equals("Factura Storno"))
                     .FirstOrDefaultAsync(),
-                UserFirmId = userFirmId
+                UserFirm = userFirm
             },
             new()
             {
@@ -69,9 +65,9 @@ public class DocumentSeriesService : IDocumentSeriesService
                 CurrentNumber = 1,
                 IsDefault = true,
                 DocumentType = await _unitOfWork.DocumentTypes.Query()
-                    .Where(d => d.Name.Equals("Proforma"))
+                    .Where(d => d.Name.Equals("Factura Proforma"))
                     .FirstOrDefaultAsync(),
-                UserFirmId = userFirmId
+                UserFirm = userFirm
             },
         };
 

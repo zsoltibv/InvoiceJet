@@ -193,19 +193,24 @@ public class DocumentService : IDocumentService
         var userFirmId = await _unitOfWork.Users.GetUserFirmIdAsync(userId);
         if (!userFirmId.HasValue) return new DocumentAutofillDto();
 
+        var clients = await _unitOfWork.Firms.Query()
+            .Where(f => f.UserFirms!.Any(uf => uf.UserId == userId && uf.IsClient))
+            .ToListAsync();
+        var documentSeries = await _unitOfWork.DocumentSeries.Query()
+            .Where(ds => ds.UserFirmId == userFirmId && ds.DocumentTypeId == documentTypeId)
+            .Include(ds => ds.DocumentType)
+            .ToListAsync();
+        var documentStatuses = await _unitOfWork.DocumentStatuses.Query().ToListAsync();
+        var products = await _unitOfWork.Products.Query()
+            .Where(p => p.UserFirmId == userFirmId)
+            .ToListAsync();
+
         var dto = new DocumentAutofillDto
         {
-            Clients = await _unitOfWork.Firms.Query()
-                .Where(f => f.UserFirms!.Any(uf => uf.UserId == userId && uf.IsClient))
-                .ToListAsync(),
-            DocumentSeries = await _unitOfWork.DocumentSeries.Query()
-                .Where(ds => ds.UserFirmId == userFirmId && ds.DocumentTypeId == documentTypeId)
-                .Include(ds => ds.DocumentType)
-                .ToListAsync(),
-            DocumentStatuses = await _unitOfWork.DocumentStatuses.Query().ToListAsync(),
-            Products = await _unitOfWork.Products.Query()
-                .Where(p => p.UserFirmId == userFirmId)
-                .ToListAsync()
+            Clients = _mapper.Map<List<FirmDto>>(clients),
+            DocumentSeries = _mapper.Map<List<DocumentSeriesDto>>(documentSeries),
+            DocumentStatuses = _mapper.Map<List<DocumentStatusDto>>(documentStatuses),
+            Products = _mapper.Map<List<ProductDto>>(products)
         };
 
         return dto;
