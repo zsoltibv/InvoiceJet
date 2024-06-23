@@ -70,6 +70,29 @@
               Password Name is required
             </mat-error>
           </mat-form-field>
+
+          <mat-label>Password Confirmation</mat-label>
+          <mat-form-field>
+            <input
+              matInput
+              [type]="hide ? 'password' : 'text'"
+              formControlName="passwordConfirmation"
+              placeholder="Enter your password again"
+            />
+            <button
+              type="button"
+              mat-icon-button
+              matSuffix
+              (click)="hide = !hide"
+            >
+              <mat-icon>{{ hide ? "visibility_off" : "visibility" }}</mat-icon>
+            </button>
+            <mat-error
+              *ngIf="registerForm.get('passwordConfirmation')?.errors?.['required']"
+            >
+              Password confirmation is required
+            </mat-error>
+          </mat-form-field>
         </div>
         <div class="controls">
           <button mat-raised-button color="primary" type="submit">

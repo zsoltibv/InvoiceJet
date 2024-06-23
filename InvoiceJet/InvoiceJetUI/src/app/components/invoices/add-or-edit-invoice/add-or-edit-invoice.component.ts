@@ -96,9 +96,6 @@ export class AddOrEditInvoiceComponent {
         this.setupClientFilters();
         this.setupProductFilters();
       },
-      error: (err) => {
-        console.error("Error fetching data", err);
-      },
     });
 
     this.invoiceForm = this.fb.group({
@@ -271,7 +268,8 @@ export class AddOrEditInvoiceComponent {
   }
 
   onSubmit(): void {
-    console.log("Form submitted", this.invoiceForm.value);
+    if (this.invoiceForm.invalid) return;
+
     const documentData: IDocumentRequest = this.invoiceForm.value;
     documentData.documentType = { id: 1, name: "" };
 

@@ -1,6 +1,7 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using System.Text.RegularExpressions;
 using InvoiceJet.Application.DTOs;
 using InvoiceJet.Domain.Exceptions;
 using InvoiceJet.Domain.Interfaces;
@@ -25,6 +26,26 @@ public class AuthService : IAuthService
 
     public async Task<string> RegisterUser(UserRegisterDto userDto)
     {
+        var existingUser = await _unitOfWork.Users.Query()
+            .FirstOrDefaultAsync(u => u.Email == userDto.Email);
+
+        if (existingUser != null)
+        {
+            throw new UserAlreadyExistsException(userDto.Email);
+        }
+
+        var passwordRules = new Regex(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$");
+
+        if (!passwordRules.IsMatch(userDto.Password))
+        {
+            throw new InvalidPasswordException();
+        }
+
+        if (userDto.Password != userDto.PasswordConfirmation)
+        {
+            throw new PasswordMismatchException();
+        }
+
         var user = new User
         {
             Email = userDto.Email,
@@ -52,7 +73,7 @@ public class AuthService : IAuthService
 
         if (!BC.Verify(userDto.Password, user.PasswordHash))
         {
-            throw new Exception("Password is incorrect.");
+            throw new IncorrectPasswordException();
         }
 
         string token = CreateToken(user);

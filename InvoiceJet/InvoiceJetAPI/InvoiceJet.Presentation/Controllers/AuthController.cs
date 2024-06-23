@@ -21,13 +21,13 @@ public class AuthController : ControllerBase
     public async Task<ActionResult<User>> Register([FromBody] UserRegisterDto userDto)
     {
         var token = await _authService.RegisterUser(userDto);
-        return Ok(token);
+        return Ok(new { token });
     }
 
     [HttpPost("login")]
     public async Task<ActionResult<User>> Login([FromBody] UserLoginDto userDto)
     {
         string token = await _authService.LoginUser(userDto);
-        return Ok(token);
+        return Ok(new { token });
     }
 }

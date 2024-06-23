@@ -28,8 +28,8 @@ export class LoginComponent {
       };
 
       this.authService.login(user).subscribe({
-        next: (token: string) => {
-          localStorage.setItem("authToken", token);
+        next: (response: { token: string }) => {
+          localStorage.setItem("authToken", response.token);
           this.router.navigate(["dashboard"]);
         },
       });

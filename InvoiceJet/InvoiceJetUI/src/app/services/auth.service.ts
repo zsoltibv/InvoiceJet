@@ -25,16 +25,18 @@ export class AuthService {
     private dialog: MatDialog
   ) {}
 
-  public register(user: IRegisterUser): Observable<string> {
-    return this.http.post(this.baseUrl + "/Auth/register", user, {
-      responseType: "text",
-    });
+  public register(user: IRegisterUser): Observable<{ token: string }> {
+    return this.http.post<{ token: string }>(
+      this.baseUrl + "/Auth/register",
+      user
+    );
   }
 
-  public login(user: ILoginUser): Observable<string> {
-    return this.http.post(this.baseUrl + "/Auth/login", user, {
-      responseType: "text",
-    });
+  public login(user: ILoginUser): Observable<{ token: string }> {
+    return this.http.post<{ token: string }>(
+      `${this.baseUrl}/Auth/login`,
+      user
+    );
   }
 
   public logout(): void {

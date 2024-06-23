@@ -81,25 +81,23 @@ export class AddOrEditInvoiceProformaComponent {
       }
     });
 
-    this.documentService
-      .getDocumentAutofillInfo(2)
-      .subscribe({
-        next: (data) => {
-          this.invoiceAutofillData = data;
-          if (this.currentDocument) {
-            this.invoiceForm.patchValue({
-              documentStatus: this.invoiceAutofillData.documentStatuses.find(
-                (status) => status.id === this.currentDocument.documentStatus.id
-              ),
-            });
-          }
-          this.setupClientFilters();
-          this.setupProductFilters();
-        },
-        error: (err) => {
-          console.error("Error fetching data", err);
-        },
-      });
+    this.documentService.getDocumentAutofillInfo(2).subscribe({
+      next: (data) => {
+        this.invoiceAutofillData = data;
+        if (this.currentDocument) {
+          this.invoiceForm.patchValue({
+            documentStatus: this.invoiceAutofillData.documentStatuses.find(
+              (status) => status.id === this.currentDocument.documentStatus.id
+            ),
+          });
+        }
+        this.setupClientFilters();
+        this.setupProductFilters();
+      },
+      error: (err) => {
+        console.error("Error fetching data", err);
+      },
+    });
 
     this.invoiceForm = this.fb.group({
       id: 0,

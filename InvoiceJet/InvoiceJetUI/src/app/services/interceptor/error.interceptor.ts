@@ -22,14 +22,14 @@ export class ErrorInterceptor implements HttpInterceptor {
   ): Observable<HttpEvent<any>> {
     return next.handle(req).pipe(
       catchError((error: HttpErrorResponse) => {
-        const serverError = error.error;
         let errorMessage = "Unknown Error Occurred";
 
-        if (serverError instanceof ErrorEvent) {
-          errorMessage = `Error: ${serverError.message}`;
+        if (error.error instanceof ErrorEvent) {
+          // Client-side error
+          errorMessage = `Error: ${error.error.message}`;
         } else {
-          errorMessage =
-            serverError?.message || error.message || "Server error";
+          // Server-side error
+          errorMessage = error.error.message || error.message || "Server error";
           this.handleError(error.status, errorMessage);
         }
 
@@ -54,7 +54,7 @@ export class ErrorInterceptor implements HttpInterceptor {
         break;
       default:
         this.toastr.error(
-          "An unexpected error has occured.",
+          "An unexpected error has occurred.",
           "Unexpected Error"
         );
         break;

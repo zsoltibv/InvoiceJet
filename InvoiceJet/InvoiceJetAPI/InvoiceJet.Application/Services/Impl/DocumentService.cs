@@ -96,7 +96,7 @@ public class DocumentService : IDocumentService
             DocumentStatusId = (int)DocumentStatusEnum.Unpaid,
             BankAccount = await _unitOfWork.BankAccounts.Query()
                 .Where(ba => ba.UserFirmId == userFirmId && ba.IsActive)
-                .FirstOrDefaultAsync(),
+                .FirstOrDefaultAsync() ?? throw new NoBankAccountAddedException(),
             ClientId = documentRequestDto.Client.Id,
             UserFirmId = userFirmId
         };

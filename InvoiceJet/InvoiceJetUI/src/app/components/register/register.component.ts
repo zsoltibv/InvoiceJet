@@ -18,6 +18,7 @@ export class RegisterComponent {
     lastName: new FormControl("", [Validators.required]),
     email: new FormControl("", [Validators.required, Validators.email]),
     password: new FormControl("", [Validators.required]),
+    passwordConfirmation: new FormControl("", [Validators.required]),
   });
 
   constructor(private authService: AuthService, private router: Router) {}
@@ -32,12 +33,12 @@ export class RegisterComponent {
       lastName: this.registerForm.value.lastName!,
       email: this.registerForm.value.email!,
       password: this.registerForm.value.password!,
+      passwordConfirmation: this.registerForm.value.passwordConfirmation!,
     };
 
     this.authService.register(user).subscribe({
-      next: (token: string) => {
-        console.log(token);
-        localStorage.setItem("authToken", token);
+      next: (response: { token: string }) => {
+        localStorage.setItem("authToken", response.token);
         this.router.navigate(["dashboard"]);
       },
     });
