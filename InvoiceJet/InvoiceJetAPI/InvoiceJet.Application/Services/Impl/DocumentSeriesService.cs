@@ -32,6 +32,39 @@ public class DocumentSeriesService : IDocumentSeriesService
         return _mapper.Map<List<DocumentSeries>, List<DocumentSeriesDto>>(documentSeries);
     }
 
+    public async Task AddDocumentSeries(DocumentSeriesDto documentSeriesDto)
+    {
+        var userFirmId = await _unitOfWork.Users.GetUserFirmIdAsync(_userService.GetCurrentUserId());
+        if (!userFirmId.HasValue)
+        {
+            throw new UserHasNoAssociatedFirmException();
+        }
+
+        var documentSeries = _mapper.Map<DocumentSeries>(documentSeriesDto);
+        documentSeries.UserFirmId = userFirmId.Value;
+        documentSeries.DocumentTypeId = documentSeriesDto.DocumentType!.Id; // Set the DocumentTypeId
+
+        await _unitOfWork.DocumentSeries.AddAsync(documentSeries);
+        await _unitOfWork.CompleteAsync();
+    }
+
+    public async Task UpdateDocumentSeries(DocumentSeriesDto documentSeriesDto)
+    {
+        var documentSeries = await _unitOfWork.DocumentSeries.Query()
+            .FirstOrDefaultAsync(ds => ds.Id == documentSeriesDto.Id);
+
+        if (documentSeries == null)
+        {
+            throw new Exception("Document Series not found");
+        }
+
+        _mapper.Map(documentSeriesDto, documentSeries);
+        documentSeries.DocumentTypeId = documentSeriesDto.DocumentType!.Id;
+
+        await _unitOfWork.DocumentSeries.UpdateAsync(documentSeries);
+        await _unitOfWork.CompleteAsync();
+    }
+
     public async Task AddInitialDocumentSeries(UserFirm userFirm)
     {
         var documentSeries = new List<DocumentSeries>

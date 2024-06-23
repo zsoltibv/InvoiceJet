@@ -7,6 +7,7 @@ import { MatTableDataSource } from "@angular/material/table";
 import { IDocumentSeries } from "src/app/models/IDocumentSeries";
 import { AuthService } from "src/app/services/auth.service";
 import { DocumentSeriesService } from "src/app/services/document-series.service";
+import { AddOrEditDocumentSeriesDialogComponent } from "./add-or-edit-document-series-dialog/add-or-edit-document-series-dialog.component";
 
 @Component({
   selector: "app-document-series",
@@ -54,10 +55,32 @@ export class DocumentSeriesComponent {
   }
 
   openNewDocumentSeriesDialog() {
-    throw new Error("Method not implemented.");
+    const dialogRef = this.dialog.open(AddOrEditDocumentSeriesDialogComponent, {
+      width: "400px",
+      panelClass: "custom-dialog-panel",
+      data: null,
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        this.getDocumentSeries();
+      }
+    });
   }
+
   openEditDocumentSeriesDialog(row: IDocumentSeries) {
-    throw new Error("Method not implemented.");
+    const dialogRef = this.dialog.open(AddOrEditDocumentSeriesDialogComponent, {
+      width: "400px",
+      data: row,
+      panelClass: "custom-dialog-panel",
+      disableClose: true,
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        this.getDocumentSeries();
+      }
+    });
   }
 
   announceSortChange(sortState: any) {

@@ -7,4 +7,6 @@ public interface IDocumentSeriesService
 {
     Task<List<DocumentSeriesDto>> GetAllDocumentSeriesForUserId();
     Task AddInitialDocumentSeries(UserFirm userFirm);
+    Task AddDocumentSeries(DocumentSeriesDto documentSeriesDto);
+    Task UpdateDocumentSeries(DocumentSeriesDto documentSeriesDto);
 }

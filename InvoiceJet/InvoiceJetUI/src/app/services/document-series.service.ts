@@ -16,4 +16,18 @@ export class DocumentSeriesService {
       `${this.baseUrl}/DocumentSeries/GetAllDocumentSeriesForUserId`
     );
   }
+
+  public addDocumentSeries(documentSeries: IDocumentSeries) {
+    return this.http.post<IDocumentSeries>(
+      `${this.baseUrl}/DocumentSeries/AddDocumentSeries`,
+      documentSeries
+    );
+  }
+
+  public updateDocumentSeries(documentSeries: IDocumentSeries) {
+    return this.http.put<IDocumentSeries>(
+      `${this.baseUrl}/DocumentSeries/UpdateDocumentSeries`,
+      documentSeries
+    );
+  }
 }

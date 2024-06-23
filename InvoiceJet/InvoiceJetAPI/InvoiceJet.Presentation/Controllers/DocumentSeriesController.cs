@@ -23,4 +23,25 @@ public class DocumentSeriesController : ControllerBase
         var bankAccountDto = await _documentSeriesService.GetAllDocumentSeriesForUserId();
         return Ok(bankAccountDto);
     }
+
+    [HttpPost("AddDocumentSeries")]
+    public async Task<ActionResult> AddDocumentSeries([FromBody] DocumentSeriesDto documentSeriesDto)
+    {
+        try
+        {
+            await _documentSeriesService.AddDocumentSeries(documentSeriesDto);
+            return Ok();
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
+
+    [HttpPut("UpdateDocumentSeries")]
+    public async Task<ActionResult> UpdateDocumentSeries([FromBody] DocumentSeriesDto documentSeriesDto)
+    {
+        await _documentSeriesService.UpdateDocumentSeries(documentSeriesDto);
+        return Ok();
+    }
 }
