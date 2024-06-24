@@ -1,3 +1,4 @@
+import { DocumentSeriesService } from "./../../services/document-series.service";
 import { LiveAnnouncer } from "@angular/cdk/a11y";
 import { SelectionModel } from "@angular/cdk/collections";
 import { Component, ViewChild } from "@angular/core";
@@ -6,8 +7,8 @@ import { MatSort } from "@angular/material/sort";
 import { MatTableDataSource } from "@angular/material/table";
 import { IDocumentSeries } from "src/app/models/IDocumentSeries";
 import { AuthService } from "src/app/services/auth.service";
-import { DocumentSeriesService } from "src/app/services/document-series.service";
 import { AddOrEditDocumentSeriesDialogComponent } from "./add-or-edit-document-series-dialog/add-or-edit-document-series-dialog.component";
+import { ToastrService } from "ngx-toastr";
 
 @Component({
   selector: "app-document-series",
@@ -31,7 +32,8 @@ export class DocumentSeriesComponent {
     public dialog: MatDialog,
     private documentSeriesService: DocumentSeriesService,
     private authService: AuthService,
-    private _liveAnnouncer: LiveAnnouncer
+    private _liveAnnouncer: LiveAnnouncer,
+    private toastr: ToastrService
   ) {}
 
   @ViewChild(MatSort) sort!: MatSort;
@@ -104,9 +106,14 @@ export class DocumentSeriesComponent {
 
   deleteSelected() {
     const selectedIds = this.selection.selected.map((s) => s.id); // Get IDs of selected items
-    console.log(selectedIds); // Implement deletion logic here
-    // After deletion, update the dataSource and clear selection
-    // this.dataSource.data = newData;
+    console.log(selectedIds);
+    this.documentSeriesService
+      .deleteDocumentSeries(selectedIds)
+      .subscribe(() => {
+        this.getDocumentSeries();
+        this.selection.clear();
+        this.toastr.success("Document series deleted successfully.", "Success");
+      });
     this.selection.clear();
   }
 }

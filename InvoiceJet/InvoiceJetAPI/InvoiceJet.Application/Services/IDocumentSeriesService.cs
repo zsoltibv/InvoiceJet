@@ -9,4 +9,5 @@ public interface IDocumentSeriesService
     Task AddInitialDocumentSeries(UserFirm userFirm);
     Task AddDocumentSeries(DocumentSeriesDto documentSeriesDto);
     Task UpdateDocumentSeries(DocumentSeriesDto documentSeriesDto);
+    Task DeleteDocumentSeries(int[] documentSeriesIds);
 }

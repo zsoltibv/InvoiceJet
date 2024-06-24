@@ -30,4 +30,11 @@ export class DocumentSeriesService {
       documentSeries
     );
   }
+
+  deleteDocumentSeries(documentIds: number[]) {
+    return this.http.put(
+      `${this.baseUrl}/DocumentSeries/DeleteDocumentSeries`,
+      documentIds
+    );
+  }
 }

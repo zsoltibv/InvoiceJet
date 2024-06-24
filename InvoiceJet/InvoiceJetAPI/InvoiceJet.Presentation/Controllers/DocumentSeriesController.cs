@@ -1,5 +1,6 @@
 ﻿using InvoiceJet.Application.DTOs;
 using InvoiceJet.Application.Services;
+using InvoiceJet.Application.Services.Impl;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -42,6 +43,13 @@ public class DocumentSeriesController : ControllerBase
     public async Task<ActionResult> UpdateDocumentSeries([FromBody] DocumentSeriesDto documentSeriesDto)
     {
         await _documentSeriesService.UpdateDocumentSeries(documentSeriesDto);
+        return Ok();
+    }
+
+    [HttpPut("DeleteDocumentSeries")]
+    public async Task<ActionResult> DeleteDocumentSeries(int[] documentSeriesIds)
+    {
+        await _documentSeriesService.DeleteDocumentSeries(documentSeriesIds);
         return Ok();
     }
 }

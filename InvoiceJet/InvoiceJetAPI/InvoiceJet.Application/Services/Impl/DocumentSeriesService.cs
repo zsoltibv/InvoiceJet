@@ -65,6 +65,16 @@ public class DocumentSeriesService : IDocumentSeriesService
         await _unitOfWork.CompleteAsync();
     }
 
+    public async Task DeleteDocumentSeries(int[] documentSeriesIds)
+    {
+        var documentSeries = await _unitOfWork.DocumentSeries.Query()
+           .Where(d => documentSeriesIds.Contains(d.Id))
+           .ToListAsync();
+
+        await _unitOfWork.DocumentSeries.RemoveRangeAsync(documentSeries);
+        await _unitOfWork.CompleteAsync();
+    }
+
     public async Task AddInitialDocumentSeries(UserFirm userFirm)
     {
         var documentSeries = new List<DocumentSeries>
