@@ -56,7 +56,6 @@ export class DocumentSeriesComponent {
 
   openNewDocumentSeriesDialog() {
     const dialogRef = this.dialog.open(AddOrEditDocumentSeriesDialogComponent, {
-      width: "400px",
       panelClass: "custom-dialog-panel",
       data: null,
     });
@@ -70,7 +69,6 @@ export class DocumentSeriesComponent {
 
   openEditDocumentSeriesDialog(row: IDocumentSeries) {
     const dialogRef = this.dialog.open(AddOrEditDocumentSeriesDialogComponent, {
-      width: "400px",
       data: row,
       panelClass: "custom-dialog-panel",
       disableClose: true,
