@@ -1,4 +1,4 @@
-import { Component } from "@angular/core";
+import { ChangeDetectorRef, Component } from "@angular/core";
 import { FormArray, FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { MatDialog } from "@angular/material/dialog";
 import { MatTableDataSource } from "@angular/material/table";
@@ -53,7 +53,8 @@ export class AddOrEditInvoiceStornosComponent {
     private documentService: DocumentService,
     private dialog: MatDialog,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
@@ -89,6 +90,7 @@ export class AddOrEditInvoiceStornosComponent {
               (status) => status.id === this.currentDocument.documentStatus.id
             ),
           });
+          this.cdr.detectChanges();
         }
         this.setupClientFilters();
         this.setupProductFilters();
@@ -207,13 +209,11 @@ export class AddOrEditInvoiceStornosComponent {
       productGroup.patchValue({
         id: selectedProduct.id,
         unitPrice: selectedProduct.price,
-        totalPrice:
-          selectedProduct.price +
-          (selectedProduct.price * selectedProduct.tvaValue) / 100,
         unitOfMeasurement: selectedProduct.unitOfMeasurement,
         tvaValue: selectedProduct.tvaValue,
         containsTva: selectedProduct.containsTva,
       });
+      this.calculateTotalPrice(index);
     }
   }
 
