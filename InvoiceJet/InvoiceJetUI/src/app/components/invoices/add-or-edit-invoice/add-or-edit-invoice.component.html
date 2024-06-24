@@ -195,6 +195,7 @@
             mat-cell
             *matCellDef="let product; let i = index"
             [formGroupName]="i"
+            [ngClass]="{ 'no-outline': !isEditMode }"
             class="small-cell-container"
           >
             <mat-form-field class="small-cell" subscriptSizing="dynamic">
@@ -202,6 +203,7 @@
                 matInput
                 formControlName="unitOfMeasurement"
                 placeholder="Unit of Measurement"
+                [readonly]="!isEditMode"
               />
             </mat-form-field>
           </td>
@@ -215,12 +217,17 @@
             *matCellDef="let product; let i = index"
             [formGroupName]="i"
           >
-            <mat-form-field class="full-width" subscriptSizing="dynamic">
+            <mat-form-field
+              class="full-width"
+              [ngClass]="{ 'no-outline': !isEditMode }"
+              subscriptSizing="dynamic"
+            >
               <input
                 matInput
                 formControlName="tvaValue"
                 placeholder="TVA Value"
                 type="number"
+                [readonly]="!isEditMode"
                 (change)="calculateTotalPrice(i)"
               />
             </mat-form-field>

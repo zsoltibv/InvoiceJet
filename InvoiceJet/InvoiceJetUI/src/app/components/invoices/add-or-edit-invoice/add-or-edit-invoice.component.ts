@@ -235,8 +235,6 @@ export class AddOrEditInvoiceComponent {
   }
 
   calculatePriceWithoutTVA(index: number, isChecked: boolean): void {
-    console.log("Checkbox checked", isChecked);
-
     const productGroup = this.productsFormArray.at(index) as FormGroup;
     const unitPrice = parseFloat(productGroup.get("unitPrice")!.value);
     const quantity = parseFloat(productGroup.get("quantity")!.value);
@@ -251,9 +249,9 @@ export class AddOrEditInvoiceComponent {
         totalPrice: parseFloat(newTotalPrice.toFixed(2)),
       });
     } else {
-      const unitPrice = parseFloat(productGroup.get("unitPrice").value);
-      const quantity = parseFloat(productGroup.get("quantity").value);
-      const tvaValue = parseFloat(productGroup.get("tvaValue").value);
+      const unitPrice = parseFloat(productGroup.get("unitPrice")!.value);
+      const quantity = parseFloat(productGroup.get("quantity")!.value);
+      const tvaValue = parseFloat(productGroup.get("tvaValue")!.value);
 
       const originalUnitPrice = unitPrice * (1 + tvaValue / 100);
       const originalTotalPrice =

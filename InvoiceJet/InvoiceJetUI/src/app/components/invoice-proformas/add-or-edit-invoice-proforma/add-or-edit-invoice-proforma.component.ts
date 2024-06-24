@@ -269,7 +269,8 @@ export class AddOrEditInvoiceProformaComponent {
   }
 
   onSubmit(): void {
-    console.log("Form submitted", this.invoiceForm.value);
+    if (this.invoiceForm.invalid) return;
+
     const documentData: IDocumentRequest = this.invoiceForm.value;
     documentData.documentType = { id: 2, name: "" };
 
@@ -293,7 +294,7 @@ export class AddOrEditInvoiceProformaComponent {
     this.documentService.addDocument(documentData).subscribe({
       next: () => {
         this.toastr.success("Document added successfully");
-        this.router.navigateByUrl("/dashboard/invoices");
+        this.router.navigateByUrl("/dashboard/invoice-proformas");
       },
     });
   }

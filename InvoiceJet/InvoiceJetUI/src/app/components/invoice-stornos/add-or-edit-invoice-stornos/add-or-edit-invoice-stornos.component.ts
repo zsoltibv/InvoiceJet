@@ -80,25 +80,23 @@ export class AddOrEditInvoiceStornosComponent {
       }
     });
 
-    this.documentService
-      .getDocumentAutofillInfo(3)
-      .subscribe({
-        next: (data) => {
-          this.invoiceAutofillData = data;
-          if (this.currentDocument) {
-            this.invoiceForm.patchValue({
-              documentStatus: this.invoiceAutofillData.documentStatuses.find(
-                (status) => status.id === this.currentDocument.documentStatus.id
-              ),
-            });
-          }
-          this.setupClientFilters();
-          this.setupProductFilters();
-        },
-        error: (err) => {
-          console.error("Error fetching data", err);
-        },
-      });
+    this.documentService.getDocumentAutofillInfo(3).subscribe({
+      next: (data) => {
+        this.invoiceAutofillData = data;
+        if (this.currentDocument) {
+          this.invoiceForm.patchValue({
+            documentStatus: this.invoiceAutofillData.documentStatuses.find(
+              (status) => status.id === this.currentDocument.documentStatus.id
+            ),
+          });
+        }
+        this.setupClientFilters();
+        this.setupProductFilters();
+      },
+      error: (err) => {
+        console.error("Error fetching data", err);
+      },
+    });
 
     this.invoiceForm = this.fb.group({
       id: 0,
@@ -270,7 +268,8 @@ export class AddOrEditInvoiceStornosComponent {
   }
 
   onSubmit(): void {
-    console.log("Form submitted", this.invoiceForm.value);
+    if (this.invoiceForm.invalid) return;
+
     const documentData: IDocumentRequest = this.invoiceForm.value;
     documentData.documentType = { id: 3, name: "" };
 
@@ -287,7 +286,7 @@ export class AddOrEditInvoiceStornosComponent {
     this.documentService.updateDocument(documentData).subscribe({
       next: () => {
         console.log("Invoice updated successfully");
-        this.router.navigateByUrl("/dashboard/invoice-proformas");
+        this.router.navigateByUrl("/dashboard/invoice-stornos");
       },
       error: (err) => {
         console.error("Error updating invoice", err);
@@ -299,7 +298,7 @@ export class AddOrEditInvoiceStornosComponent {
     this.documentService.addDocument(documentData).subscribe({
       next: () => {
         console.log("Invoice added successfully");
-        this.router.navigateByUrl("/dashboard/invoices");
+        this.router.navigateByUrl("/dashboard/invoice-stornos");
       },
       error: (err) => {
         console.error("Error adding invoice", err);
@@ -346,7 +345,7 @@ export class AddOrEditInvoiceStornosComponent {
   }
 
   goBack(): void {
-    this.router.navigateByUrl("/dashboard/invoice-proformas");
+    this.router.navigateByUrl("/dashboard/invoice-stornos");
   }
 
   get isEditMode(): boolean {
