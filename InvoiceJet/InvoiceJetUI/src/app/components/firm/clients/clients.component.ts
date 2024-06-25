@@ -1,6 +1,6 @@
 import { FirmService } from "src/app/services/firm.service";
 import { LiveAnnouncer } from "@angular/cdk/a11y";
-import { Component, ViewChild } from "@angular/core";
+import { ChangeDetectorRef, Component, ViewChild } from "@angular/core";
 import { MatSort } from "@angular/material/sort";
 import { MatTableDataSource } from "@angular/material/table";
 import { AddEditClientDialogComponent } from "../add-edit-client-dialog/add-edit-client-dialog.component";
@@ -43,8 +43,9 @@ export class ClientsComponent {
 
   getUserFirms(): void {
     this.firmService.getUserClientFirms().subscribe((firms) => {
-      this.firms = firms;
-      this.dataSource.data = this.firms;
+      console.log(firms);
+      this.firms = [...firms];
+      this.dataSource.data = [...this.firms];
     });
   }
 
@@ -65,6 +66,7 @@ export class ClientsComponent {
     this.selection.clear();
 
     dialogRef.afterClosed().subscribe((result) => {
+      console.log(result);
       if (result == true) this.getUserFirms();
     });
   }

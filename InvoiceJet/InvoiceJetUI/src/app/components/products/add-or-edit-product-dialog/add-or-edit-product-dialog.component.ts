@@ -56,16 +56,17 @@ export class AddOrEditProductDialogComponent implements OnInit {
         this.productService.editProduct(productData).subscribe({
           next: () => {
             this.toastr.success("Product updated successfully!");
+            this.dialogRef.close(true);
           },
         });
       } else {
         this.productService.addProduct(productData).subscribe({
           next: () => {
             this.toastr.success("Product added successfully!");
+            this.dialogRef.close(true);
           },
         });
       }
-      this.dialogRef.close(true);
     } else {
       this.errorMessage = "Please fill in all required fields.";
     }

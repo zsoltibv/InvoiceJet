@@ -67,16 +67,17 @@ export class AddEditClientDialogComponent {
         this.firmService.editFirm(firm).subscribe({
           next: () => {
             this.toastr.success("Firm details updated successfully");
+            this.dialogRef.close(true);
           },
         });
       } else {
         this.firmService.addFirm(firm).subscribe({
           next: () => {
             this.toastr.success("Firm added successfully");
+            this.dialogRef.close(true);
           },
         });
       }
-      this.dialogRef.close(true);
     } else {
       this.errorMessage = "Please fill all the required fields";
     }

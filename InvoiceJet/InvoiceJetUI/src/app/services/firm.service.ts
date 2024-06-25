@@ -2,6 +2,7 @@ import { Injectable } from "@angular/core";
 import { environment } from "src/environments/environment";
 import { IFirm } from "../models/IFirm";
 import { HttpClient } from "@angular/common/http";
+import { Subject } from "rxjs";
 
 @Injectable({
   providedIn: "root",
