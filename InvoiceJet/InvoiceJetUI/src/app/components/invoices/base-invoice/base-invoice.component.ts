@@ -17,6 +17,7 @@ import { MatDialog } from "@angular/material/dialog";
 import { ToastrService } from "ngx-toastr";
 import { PdfViewerComponent } from "../../pdf-viewer/pdf-viewer.component";
 import { IDocumentStatus } from "src/app/models/IDocumentStatus";
+import { dueDateValidator } from "./date-validator";
 
 @Component({
   selector: "app-base-invoice",
@@ -69,7 +70,7 @@ export abstract class BaseInvoiceComponent implements OnInit, AfterViewInit {
       id: 0,
       client: [null, Validators.required],
       issueDate: [new Date(), Validators.required],
-      dueDate: null,
+      dueDate: [null, dueDateValidator],
       documentSeries: [null],
       documentStatus: [null],
       products: this.fb.array([this.createProductGroup()]),

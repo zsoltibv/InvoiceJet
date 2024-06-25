@@ -175,7 +175,7 @@ public class StornoInvoice : IDocument
                     .AlignRight().Text($"Total pay:");
                 footer.Cell().ColumnSpan(2).Element(cell =>
                         cell.BorderBottom(1).BorderColor(Colors.Grey.Lighten2).PaddingVertical(5))
-                    .AlignRight().Text($"{-grandTotal} lei").FontSize(16).Bold();
+                    .AlignRight().Text($"{-grandTotal:F2} lei").FontSize(16).Bold();
             });
         });
     }
