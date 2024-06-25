@@ -2,6 +2,7 @@ import { ChangeDetectorRef, Component, OnInit, ViewChild } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
 import { MatSort } from "@angular/material/sort";
 import { MatTableDataSource } from "@angular/material/table";
+import { MatPaginator } from "@angular/material/paginator";
 import { IProduct } from "src/app/models/IProduct";
 import { ProductService } from "src/app/services/product.service";
 import { AddOrEditProductDialogComponent } from "./add-or-edit-product-dialog/add-or-edit-product-dialog.component";
@@ -36,9 +37,15 @@ export class ProductsComponent implements OnInit {
   ) {}
 
   @ViewChild(MatSort) sort!: MatSort;
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
 
   ngOnInit(): void {
     this.getProducts();
+  }
+
+  ngAfterViewInit() {
+    this.dataSource.sort = this.sort;
+    this.dataSource.paginator = this.paginator;
   }
 
   getProducts(): void {
@@ -46,6 +53,15 @@ export class ProductsComponent implements OnInit {
       this.products = products;
       this.dataSource.data = this.products;
     });
+  }
+
+  applyFilter(event: Event) {
+    const filterValue = (event.target as HTMLInputElement).value;
+    this.dataSource.filter = filterValue.trim().toLowerCase();
+
+    if (this.dataSource.paginator) {
+      this.dataSource.paginator.firstPage();
+    }
   }
 
   openNewProductDialog(): void {
@@ -96,5 +112,13 @@ export class ProductsComponent implements OnInit {
       this.toastr.success("Products deleted successfully!", "Success");
     });
     this.selection.clear();
+  }
+
+  clearSearch(input: HTMLInputElement) {
+    input.value = "";
+    this.dataSource.filter = "";
+    if (this.dataSource.paginator) {
+      this.dataSource.paginator.firstPage();
+    }
   }
 }

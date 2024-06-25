@@ -1,4 +1,4 @@
-<mat-progress-bar mode="query" *ngIf="!invoices"></mat-progress-bar>
+<mat-progress-bar mode="query" *ngIf="!invoices.length"></mat-progress-bar>
 <div class="inner-container">
   <div class="app-header">
     <div class="left">
@@ -23,12 +23,30 @@
           <span>Delete selected</span>
         </button>
       </mat-menu>
-
       <button mat-stroked-button [matMenuTriggerFor]="menu">
         <mat-icon color="primary">more_vert</mat-icon>
       </button>
     </div>
   </div>
+  <mat-form-field appearance="outline" class="search-container">
+    <mat-label>Search</mat-label>
+    <input
+      matInput
+      #searchInput
+      (keyup)="applyFilter($event)"
+      placeholder="Search"
+    />
+    <button
+      mat-icon-button
+      *ngIf="searchInput.value"
+      matSuffix
+      mat-icon-button
+      aria-label="Clear"
+      (click)="clearSearch(searchInput)"
+    >
+      <mat-icon>clear</mat-icon>
+    </button>
+  </mat-form-field>
   <table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z2">
     <!-- Checkbox Column -->
     <ng-container matColumnDef="select">
@@ -103,4 +121,9 @@
       (click)="openEditInvoiceDialog(row)"
     ></tr>
   </table>
+  <mat-paginator
+    [pageSizeOptions]="[10, 20, 30]"
+    showFirstLastButtons
+    class="mat-elevation-z2"
+  ></mat-paginator>
 </div>

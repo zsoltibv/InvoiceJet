@@ -1,12 +1,12 @@
 import { DocumentSeriesService } from "./../../services/document-series.service";
 import { LiveAnnouncer } from "@angular/cdk/a11y";
 import { SelectionModel } from "@angular/cdk/collections";
-import { Component, ViewChild } from "@angular/core";
+import { Component, OnInit, ViewChild } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
 import { MatSort } from "@angular/material/sort";
 import { MatTableDataSource } from "@angular/material/table";
+import { MatPaginator } from "@angular/material/paginator";
 import { IDocumentSeries } from "src/app/models/IDocumentSeries";
-import { AuthService } from "src/app/services/auth.service";
 import { AddOrEditDocumentSeriesDialogComponent } from "./add-or-edit-document-series-dialog/add-or-edit-document-series-dialog.component";
 import { ToastrService } from "ngx-toastr";
 
@@ -15,7 +15,7 @@ import { ToastrService } from "ngx-toastr";
   templateUrl: "./document-series.component.html",
   styleUrls: ["./document-series.component.scss"],
 })
-export class DocumentSeriesComponent {
+export class DocumentSeriesComponent implements OnInit {
   displayedColumns: string[] = [
     "select",
     "documentType",
@@ -31,15 +31,20 @@ export class DocumentSeriesComponent {
   constructor(
     public dialog: MatDialog,
     private documentSeriesService: DocumentSeriesService,
-    private authService: AuthService,
     private _liveAnnouncer: LiveAnnouncer,
     private toastr: ToastrService
   ) {}
 
   @ViewChild(MatSort) sort!: MatSort;
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
 
   ngOnInit(): void {
     this.getDocumentSeries();
+  }
+
+  ngAfterViewInit() {
+    this.dataSource.sort = this.sort;
+    this.dataSource.paginator = this.paginator;
   }
 
   getDocumentSeries(): void {
@@ -50,10 +55,6 @@ export class DocumentSeriesComponent {
         this.documentSeriesList = series;
         this.dataSource.data = this.documentSeriesList;
       });
-  }
-
-  ngAfterViewInit() {
-    this.dataSource.sort = this.sort;
   }
 
   openNewDocumentSeriesDialog() {
@@ -91,13 +92,29 @@ export class DocumentSeriesComponent {
     }
   }
 
+  applyFilter(event: Event) {
+    const filterValue = (event.target as HTMLInputElement).value;
+    this.dataSource.filter = filterValue.trim().toLowerCase();
+
+    if (this.dataSource.paginator) {
+      this.dataSource.paginator.firstPage();
+    }
+  }
+
+  clearSearch(input: HTMLInputElement) {
+    input.value = "";
+    this.dataSource.filter = "";
+    if (this.dataSource.paginator) {
+      this.dataSource.paginator.firstPage();
+    }
+  }
+
   isAllSelected() {
     const numSelected = this.selection.selected.length;
     const numRows = this.dataSource.data.length;
     return numSelected === numRows;
   }
 
-  /** Selects all rows if they are not all selected; otherwise clear selection. */
   masterToggle() {
     this.isAllSelected()
       ? this.selection.clear()

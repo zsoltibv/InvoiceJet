@@ -1,6 +1,8 @@
 import { SelectionModel } from "@angular/cdk/collections";
-import { Component } from "@angular/core";
+import { Component, ViewChild } from "@angular/core";
 import { MatTableDataSource } from "@angular/material/table";
+import { MatPaginator } from "@angular/material/paginator";
+import { MatSort } from "@angular/material/sort";
 import { Router } from "@angular/router";
 import { IDocumentTableRecord } from "src/app/models/IDocumentTableRecord";
 import { DocumentService } from "src/app/services/document.service";
@@ -24,6 +26,9 @@ export class InvoicesComponent {
   selection = new SelectionModel<IDocumentTableRecord>(true, []);
   invoices: IDocumentTableRecord[] = [];
 
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
+  @ViewChild(MatSort) sort!: MatSort;
+
   constructor(
     private router: Router,
     private documentService: DocumentService
@@ -33,12 +38,26 @@ export class InvoicesComponent {
     this.loadInvoices();
   }
 
+  ngAfterViewInit() {
+    this.dataSource.paginator = this.paginator;
+    this.dataSource.sort = this.sort;
+  }
+
   loadInvoices(): void {
     this.documentService.getDocuments(1).subscribe((invoices) => {
       this.dataSource.data = invoices;
       this.invoices = invoices;
       console.log(this.invoices);
     });
+  }
+
+  applyFilter(event: Event) {
+    const filterValue = (event.target as HTMLInputElement).value;
+    this.dataSource.filter = filterValue.trim().toLowerCase();
+
+    if (this.dataSource.paginator) {
+      this.dataSource.paginator.firstPage();
+    }
   }
 
   isAllSelected() {
@@ -87,5 +106,13 @@ export class InvoicesComponent {
         console.error("Error transforming to storno", err);
       },
     });
+  }
+
+  clearSearch(input: HTMLInputElement) {
+    input.value = "";
+    this.dataSource.filter = "";
+    if (this.dataSource.paginator) {
+      this.dataSource.paginator.firstPage();
+    }
   }
 }

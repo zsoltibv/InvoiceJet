@@ -36,3 +36,12 @@ h1 {
 .clickable {
   cursor: pointer;
 }
+
+mat-paginator {
+  margin-top: 20px;
+  border-radius: 5px;
+}
+
+.search-container {
+  max-width: 300px;
+}

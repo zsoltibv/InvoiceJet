@@ -1,25 +1,23 @@
-import { ToastrModule, ToastrService } from "ngx-toastr";
+import { ToastrService } from "ngx-toastr";
 import { LiveAnnouncer } from "@angular/cdk/a11y";
-import { ChangeDetectorRef, Component, ViewChild } from "@angular/core";
+import { ChangeDetectorRef, Component, OnInit, ViewChild } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
 import { MatSort } from "@angular/material/sort";
 import { MatTableDataSource } from "@angular/material/table";
+import { MatPaginator } from "@angular/material/paginator";
 import { IBankAccount } from "src/app/models/IBankAccount";
-import { AuthService } from "src/app/services/auth.service";
 import { BankAccountService } from "src/app/services/bank-account.service";
 import { AddOrEditBankAccountDialogComponent } from "./add-or-edit-bank-account-dialog/add-or-edit-bank-account-dialog.component";
 import { ICurrency } from "src/app/models/ICurrency";
 import { Currency } from "src/app/enums/Currency";
 import { SelectionModel } from "@angular/cdk/collections";
-import { MatSnackBar } from "@angular/material/snack-bar";
-import { HttpErrorResponse } from "@angular/common/http";
 
 @Component({
   selector: "app-bank-accounts",
   templateUrl: "./bank-accounts.component.html",
   styleUrls: ["./bank-accounts.component.scss"],
 })
-export class BankAccountsComponent {
+export class BankAccountsComponent implements OnInit {
   displayedColumns: string[] = [
     "select",
     "bankName",
@@ -50,9 +48,15 @@ export class BankAccountsComponent {
   ) {}
 
   @ViewChild(MatSort) sort!: MatSort;
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
 
   ngOnInit(): void {
     this.getUserBankAccounts();
+  }
+
+  ngAfterViewInit() {
+    this.dataSource.sort = this.sort;
+    this.dataSource.paginator = this.paginator;
   }
 
   getUserBankAccounts(): void {
@@ -60,10 +64,6 @@ export class BankAccountsComponent {
       this.bankAccounts = this.mapCurrencyNames(accounts);
       this.dataSource.data = this.bankAccounts;
     });
-  }
-
-  ngAfterViewInit() {
-    this.dataSource.sort = this.sort;
   }
 
   announceSortChange(sortState: any) {
@@ -110,6 +110,23 @@ export class BankAccountsComponent {
         currencyName: currency ? currency.name : "Unknown",
       };
     });
+  }
+
+  applyFilter(event: Event) {
+    const filterValue = (event.target as HTMLInputElement).value;
+    this.dataSource.filter = filterValue.trim().toLowerCase();
+
+    if (this.dataSource.paginator) {
+      this.dataSource.paginator.firstPage();
+    }
+  }
+
+  clearSearch(input: HTMLInputElement) {
+    input.value = "";
+    this.dataSource.filter = "";
+    if (this.dataSource.paginator) {
+      this.dataSource.paginator.firstPage();
+    }
   }
 
   isAllSelected() {

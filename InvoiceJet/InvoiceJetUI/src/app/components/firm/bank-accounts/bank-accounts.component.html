@@ -25,6 +25,27 @@
       </button>
     </div>
   </div>
+
+  <mat-form-field appearance="outline" class="search-container">
+    <mat-label>Search</mat-label>
+    <input
+      matInput
+      #searchInput
+      (keyup)="applyFilter($event)"
+      placeholder="Search"
+    />
+    <button
+      mat-icon-button
+      *ngIf="searchInput.value"
+      matSuffix
+      mat-icon-button
+      aria-label="Clear"
+      (click)="clearSearch(searchInput)"
+    >
+      <mat-icon>clear</mat-icon>
+    </button>
+  </mat-form-field>
+
   <table
     mat-table
     [dataSource]="dataSource"
@@ -87,4 +108,10 @@
       (click)="openEditBankAccountDialog(row)"
     ></tr>
   </table>
+
+  <mat-paginator
+    class="mat-elevation-z2"
+    [pageSizeOptions]="[10, 20, 30]"
+    showFirstLastButtons
+  ></mat-paginator>
 </div>

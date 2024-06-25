@@ -3,6 +3,7 @@ import { LiveAnnouncer } from "@angular/cdk/a11y";
 import { ChangeDetectorRef, Component, ViewChild } from "@angular/core";
 import { MatSort } from "@angular/material/sort";
 import { MatTableDataSource } from "@angular/material/table";
+import { MatPaginator } from "@angular/material/paginator";
 import { AddEditClientDialogComponent } from "../add-edit-client-dialog/add-edit-client-dialog.component";
 import { MatDialog } from "@angular/material/dialog";
 import { IFirm } from "src/app/models/IFirm";
@@ -36,6 +37,7 @@ export class ClientsComponent {
   ) {}
 
   @ViewChild(MatSort) sort!: MatSort;
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
 
   ngOnInit(): void {
     this.getUserFirms();
@@ -51,6 +53,7 @@ export class ClientsComponent {
 
   ngAfterViewInit() {
     this.dataSource.sort = this.sort;
+    this.dataSource.paginator = this.paginator;
   }
 
   announceSortChange(sortState: any) {
@@ -61,13 +64,22 @@ export class ClientsComponent {
     }
   }
 
+  applyFilter(event: Event) {
+    const filterValue = (event.target as HTMLInputElement).value;
+    this.dataSource.filter = filterValue.trim().toLowerCase();
+
+    if (this.dataSource.paginator) {
+      this.dataSource.paginator.firstPage();
+    }
+  }
+
   openNewClientDialog() {
     const dialogRef = this.dialog.open(AddEditClientDialogComponent, {});
     this.selection.clear();
 
     dialogRef.afterClosed().subscribe((result) => {
       console.log(result);
-      if (result == true) this.getUserFirms();
+      if (result === true) this.getUserFirms();
     });
   }
 
@@ -79,7 +91,7 @@ export class ClientsComponent {
     this.selection.clear();
 
     dialogRef.afterClosed().subscribe((result) => {
-      if (result == true) this.getUserFirms();
+      if (result === true) this.getUserFirms();
     });
   }
 
@@ -104,5 +116,13 @@ export class ClientsComponent {
       });
     }
     this.selection.clear();
+  }
+
+  clearSearch(input: HTMLInputElement) {
+    input.value = "";
+    this.dataSource.filter = "";
+    if (this.dataSource.paginator) {
+      this.dataSource.paginator.firstPage();
+    }
   }
 }

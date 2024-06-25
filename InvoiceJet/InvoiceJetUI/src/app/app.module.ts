@@ -39,7 +39,7 @@ import { InvoiceStornosComponent } from "./components/invoice-stornos/invoice-st
 import { ErrorInterceptor } from "./services/interceptor/error.interceptor";
 import { ToastrModule } from "ngx-toastr";
 import { AddOrEditInvoiceStornosComponent } from "./components/invoice-stornos/add-or-edit-invoice-stornos/add-or-edit-invoice-stornos.component";
-import { BaseInvoiceComponent } from "./components/invoices/base-invoice/base-invoice.component";
+import { MatPaginatorModule } from "@angular/material/paginator";
 
 @NgModule({
   declarations: [
@@ -76,6 +76,7 @@ import { BaseInvoiceComponent } from "./components/invoices/base-invoice/base-in
     MaterialModule,
     HttpClientModule,
     NgChartsModule,
+    MatPaginatorModule,
     ToastrModule.forRoot({
       timeOut: 4000,
       positionClass: "toast-bottom-right",
