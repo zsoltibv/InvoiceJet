@@ -1,5 +1,5 @@
 import { UserService } from "./user.service";
-import { environment } from "./../../../environment";
+import { environment } from "../../environments/environment";
 import { Injectable } from "@angular/core";
 import { IRegisterUser } from "../models/IRegisterUser";
 import { Observable } from "rxjs";

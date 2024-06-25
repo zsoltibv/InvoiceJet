@@ -22,7 +22,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddDbContext<InvoiceJetDbContext>(options =>
 {
-    options.UseSqlServer(builder.Configuration.GetConnectionString("InvoiceJetConnectionString"));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("ProdConnection"));
 });
 
 QuestPDF.Settings.License = LicenseType.Community;

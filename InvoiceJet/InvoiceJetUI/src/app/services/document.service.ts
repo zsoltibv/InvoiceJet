@@ -1,6 +1,6 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { environment } from "environment";
+import { environment } from "src/environments/environment";
 import { IDocumentAutofill } from "../models/IDocumentAutofill";
 import { IDocumentRequest } from "../models/IDocumentRequest";
 import { IDocumentTableRecord } from "../models/IDocumentTableRecord";

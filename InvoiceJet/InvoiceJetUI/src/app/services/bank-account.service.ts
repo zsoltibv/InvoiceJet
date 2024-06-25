@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import { IBankAccount } from "../models/IBankAccount";
 import { HttpClient } from "@angular/common/http";
-import { environment } from "environment";
+import { environment } from "src/environments/environment";
 
 @Injectable({
   providedIn: "root",
