@@ -29,10 +29,10 @@ public class DocumentService : IDocumentService
     {
         decimal totalInvoicePrice = 0;
         decimal totalInvoicePriceWithTva = 0;
-        
+
         var existingDocumentProducts = _unitOfWork.DocumentProducts.GetAllDocumentProductsForDocument(documentId);
         await _unitOfWork.DocumentProducts.RemoveRangeAsync(existingDocumentProducts);
-        
+
         foreach (var documentProductDto in documentProductsDto)
         {
             Product product;
@@ -50,14 +50,14 @@ public class DocumentService : IDocumentService
             {
                 product = _mapper.Map<Product>(documentProductDto);
                 product.UserFirmId = userFirmId;
-                await _unitOfWork.Products.AddAsync(product); 
+                await _unitOfWork.Products.AddAsync(product);
             }
 
             var documentProduct = new DocumentProduct
             {
                 Quantity = documentProductDto.Quantity,
                 Product = product,
-                DocumentId = documentId, 
+                DocumentId = documentId,
                 UnitPrice = documentProductDto.UnitPrice,
                 TotalPrice = documentProductDto.TotalPrice,
             };
@@ -67,7 +67,7 @@ public class DocumentService : IDocumentService
 
             await _unitOfWork.DocumentProducts.AddAsync(documentProduct);
         }
-        
+
         var document = await _unitOfWork.Documents.GetByIdAsync(documentId);
         if (document != null)
         {
@@ -111,7 +111,7 @@ public class DocumentService : IDocumentService
         await _unitOfWork.CompleteAsync();
         return documentRequestDto;
     }
-    
+
     private async Task IncreaseDocumentSeriesNumber(int documentSeriesId)
     {
         var docSeries = await _unitOfWork.DocumentSeries.GetByIdAsync(documentSeriesId);
@@ -178,7 +178,7 @@ public class DocumentService : IDocumentService
         documentRequestDto.BankAccount = _mapper.Map<BankAccountDto>(documentBankAccount);
 
         var pdfContent = _pdfGenerationService.GetInvoicePdfStream(documentRequestDto);
-        
+
         return new DocumentStreamDto
         {
             DocumentNumber = documentRequestDto.DocumentNumber ??
@@ -219,7 +219,7 @@ public class DocumentService : IDocumentService
     public async Task<List<DocumentTableRecordDto>> GetDocumentTableRecords(int documentTypeId)
     {
         var activeUserFirm = await _unitOfWork.Users.GetUserFirmAsync(_userService.GetCurrentUserId());
-        if (activeUserFirm is null) 
+        if (activeUserFirm is null)
             return new List<DocumentTableRecordDto>();
 
         var documents = await _unitOfWork.Documents.GetAllDocumentsByType(activeUserFirm.UserFirmId, documentTypeId);
@@ -245,17 +245,17 @@ public class DocumentService : IDocumentService
         await _unitOfWork.CompleteAsync();
     }
 
-    public async Task<DashboardStatsDto> GetDashboardStats()
+    public async Task<DashboardStatsDto> GetDashboardStats(int year, int documentType)
     {
         var activeUserFirm = await _unitOfWork.Users.GetUserFirmAsync(_userService.GetCurrentUserId());
         if (activeUserFirm is null)
             return new DashboardStatsDto();
 
-        var totalDocumentsTask = await _unitOfWork.Documents.GetTotalDocumentsAsync(activeUserFirm.UserFirmId);
+        var totalDocumentsTask = await GetTotalDocumentsAsync(activeUserFirm.UserFirmId, year, documentType);
         var totalClientsTask = await _unitOfWork.Firms.GetTotalClientsAsync(activeUserFirm.UserId);
         var totalProductsTask = await _unitOfWork.Products.GetTotalProductsAsync(activeUserFirm.UserFirmId);
         var totalBankAccountsTask = await _unitOfWork.BankAccounts.GetTotalBankAccountsAsync(activeUserFirm.UserFirmId);
-        var monthlyTotalsTask = await GetMonthlyTotalsAsync(activeUserFirm.UserFirmId);
+        var monthlyTotalsTask = await GetMonthlyTotalsAsync(activeUserFirm.UserFirmId, year, documentType);
 
         return new DashboardStatsDto
         {
@@ -267,11 +267,10 @@ public class DocumentService : IDocumentService
         };
     }
 
-    private async Task<List<MonthlyTotalDto>> GetMonthlyTotalsAsync(int userFirmId)
+    private async Task<List<MonthlyTotalDto>> GetMonthlyTotalsAsync(int userFirmId, int year, int documentType)
     {
         return await _unitOfWork.Documents.Query()
-            .Where(d => d.UserFirmId == userFirmId && d.IssueDate.Year == DateTime.Now.Year &&
-                        d.DocumentType!.Id == (int)DocumentTypeEnum.Invoice)
+            .Where(d => d.UserFirmId == userFirmId && d.IssueDate.Year == year && d.DocumentType!.Id == documentType)
             .GroupBy(d => new { month = d.IssueDate.Month })
             .Select(group => new MonthlyTotalDto
             {
@@ -281,6 +280,13 @@ public class DocumentService : IDocumentService
             })
             .OrderBy(x => x.Month)
             .ToListAsync();
+    }
+
+    public async Task<int> GetTotalDocumentsAsync(int userFirmId, int year, int documentType)
+    {
+        return await _unitOfWork.Documents.Query()
+            .Where(d => d.UserFirmId == userFirmId && d.IssueDate.Year == year && d.DocumentType!.Id == documentType)
+            .CountAsync();
     }
 
     public async Task TransformToStorno(int[] documentIds)

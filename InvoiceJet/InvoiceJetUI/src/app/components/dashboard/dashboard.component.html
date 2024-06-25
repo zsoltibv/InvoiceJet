@@ -44,7 +44,36 @@
   </div>
   <div class="graph-container">
     <mat-card>
-      <mat-card-header>Current Year Overview</mat-card-header>
+      <div class="mat-header">
+        <h2 class="overview-text">Overview</h2>
+        <div class="controls">
+          <mat-form-field appearance="outline">
+            <mat-label>Year</mat-label>
+            <mat-select
+              [(value)]="selectedYear"
+              (selectionChange)="onSelectionChange()"
+            >
+              <mat-option *ngFor="let year of years" [value]="year">{{
+                year
+              }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Document Type</mat-label>
+            <mat-select
+              [(value)]="selectedDocumentType"
+              (selectionChange)="onSelectionChange()"
+            >
+              <mat-option
+                *ngFor="let type of documentTypes"
+                [value]="type.id"
+                >{{ type.name }}</mat-option
+              >
+            </mat-select>
+          </mat-form-field>
+        </div>
+      </div>
       <mat-card-content class="chart-data">
         <canvas
           baseChart

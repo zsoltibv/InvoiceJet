@@ -87,10 +87,10 @@ public class DocumentController : ControllerBase
         return Ok(new { Message = "Documents deleted successfully." });
     }
 
-    [HttpGet("GetDashboardStats")]
-    public async Task<IActionResult> GetDashboardStats()
+    [HttpGet("GetDashboardStats/{year}/{documentType}")]
+    public async Task<IActionResult> GetDashboardStats(int year, int documentType)
     {
-        var dashboardStats = await _documentService.GetDashboardStats();
+        var dashboardStats = await _documentService.GetDashboardStats(year, documentType);
         return Ok(dashboardStats);
     }
 

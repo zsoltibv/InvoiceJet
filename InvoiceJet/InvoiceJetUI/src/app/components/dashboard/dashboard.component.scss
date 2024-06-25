@@ -84,3 +84,10 @@ canvas {
   min-height: 600px;
   max-width: inherit;
 }
+
+.mat-header {
+  padding: 16px 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}

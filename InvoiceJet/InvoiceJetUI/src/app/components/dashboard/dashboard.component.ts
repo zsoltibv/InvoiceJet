@@ -10,6 +10,16 @@ import { ChartOptions, ChartType } from "chart.js";
   styleUrls: ["./dashboard.component.scss"],
 })
 export class DashboardComponent implements OnInit {
+  documentTypes = [
+    { id: 1, name: "Factura" },
+    { id: 2, name: "Factura Proforma" },
+    { id: 3, name: "Factura Storno" },
+  ];
+
+  years = Array.from({ length: 10 }, (_, i) => new Date().getFullYear() - i);
+  selectedYear: number = new Date().getFullYear();
+  selectedDocumentType: number = 1;
+
   dashboardStats: IDashboardStats = {
     totalDocuments: 0,
     totalClients: 0,
@@ -77,11 +87,17 @@ export class DashboardComponent implements OnInit {
     this.getDashboardData();
   }
 
+  onSelectionChange() {
+    this.getDashboardData();
+  }
+
   getDashboardData() {
-    this.documentService.getDashboardData().subscribe((data) => {
-      this.dashboardStats = data;
-      this.updateChartData(data.monthlyTotals);
-    });
+    this.documentService
+      .getDashboardData(this.selectedYear, this.selectedDocumentType)
+      .subscribe((data) => {
+        this.dashboardStats = data;
+        this.updateChartData(data.monthlyTotals);
+      });
   }
 
   updateChartData(monthlyTotals: IMonthlyTotal[]) {

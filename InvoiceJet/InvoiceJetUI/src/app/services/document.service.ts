@@ -64,9 +64,9 @@ export class DocumentService {
     );
   }
 
-  getDashboardData() {
+  getDashboardData(year: number, documentType: number) {
     return this.http.get<IDashboardStats>(
-      `${this.baseUrl}/Document/GetDashboardStats`
+      `${this.baseUrl}/Document/GetDashboardStats/${year}/${documentType}`
     );
   }
 
