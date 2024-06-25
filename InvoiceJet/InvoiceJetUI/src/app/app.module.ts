@@ -39,6 +39,7 @@ import { InvoiceStornosComponent } from "./components/invoice-stornos/invoice-st
 import { ErrorInterceptor } from "./services/interceptor/error.interceptor";
 import { ToastrModule } from "ngx-toastr";
 import { AddOrEditInvoiceStornosComponent } from "./components/invoice-stornos/add-or-edit-invoice-stornos/add-or-edit-invoice-stornos.component";
+import { BaseInvoiceComponent } from "./components/invoices/base-invoice/base-invoice.component";
 
 @NgModule({
   declarations: [

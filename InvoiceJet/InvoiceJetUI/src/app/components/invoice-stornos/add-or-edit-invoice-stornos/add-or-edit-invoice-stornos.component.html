@@ -1,5 +1,5 @@
-<mat-progress-bar mode="query" *ngIf="!contentIsLoaded"></mat-progress-bar>
-<div class="inner-container" *ngIf="contentIsLoaded">
+<mat-progress-bar mode="query" *ngIf="loading"></mat-progress-bar>
+<div class="inner-container" *ngIf="!loading">
   <div class="title-container">
     <button mat-icon-button (click)="goBack()" aria-label="Go back">
       <mat-icon>arrow_back</mat-icon>
@@ -8,11 +8,11 @@
       <div>
         <h1>
           Invoice Storno Details
-          <span *ngIf="!isEditMode"> - {{ documentNumber }} </span>
+          <span *ngIf="isEditMode"> - {{ documentNumber }} </span>
         </h1>
       </div>
       <div>
-        <mat-chip *ngIf="isEditMode"> {{ documentStatus }}</mat-chip>
+        <mat-chip *ngIf="documentStatus"> {{ documentStatus }}</mat-chip>
       </div>
     </div>
   </div>
@@ -68,7 +68,11 @@
       </mat-form-field>
 
       <!-- Serie si Numar Dropdown -->
-      <mat-form-field appearance="outline" class="grid-item" *ngIf="isEditMode">
+      <mat-form-field
+        appearance="outline"
+        class="grid-item"
+        *ngIf="!isEditMode"
+      >
         <mat-label>Document Series</mat-label>
         <mat-select formControlName="documentSeries" required>
           <mat-option
@@ -85,11 +89,7 @@
         </mat-error>
       </mat-form-field>
 
-      <mat-form-field
-        appearance="outline"
-        class="grid-item"
-        *ngIf="!isEditMode"
-      >
+      <mat-form-field appearance="outline" class="grid-item" *ngIf="isEditMode">
         <mat-label>Status</mat-label>
         <mat-select
           formControlName="documentStatus"
@@ -199,14 +199,14 @@
           >
             <mat-form-field
               class="small-cell"
-              [ngClass]="{ 'no-outline': !isEditMode }"
+              [ngClass]="{ 'no-outline': isEditMode }"
               subscriptSizing="dynamic"
             >
               <input
                 matInput
                 formControlName="unitOfMeasurement"
                 placeholder="Unit of Measurement"
-                [readonly]="!isEditMode"
+                [readonly]="isEditMode"
               />
             </mat-form-field>
           </td>
@@ -222,7 +222,7 @@
           >
             <mat-form-field
               class="full-width"
-              [ngClass]="{ 'no-outline': !isEditMode }"
+              [ngClass]="{ 'no-outline': isEditMode }"
               subscriptSizing="dynamic"
             >
               <input
@@ -230,7 +230,7 @@
                 formControlName="tvaValue"
                 placeholder="TVA Value"
                 type="number"
-                [readonly]="!isEditMode"
+                [readonly]="isEditMode"
                 (change)="calculateTotalPrice(i)"
               />
             </mat-form-field>
@@ -309,10 +309,10 @@
     </div>
     <div class="controls">
       <button mat-raised-button color="primary" type="submit">
-        {{ !isEditMode ? "Update" : "Issue" }}
+        {{ isEditMode ? "Update" : "Issue" }}
       </button>
       <button
-        *ngIf="!isEditMode"
+        *ngIf="isEditMode"
         mat-raised-button
         color="primary"
         type="button"
